@@ -1,0 +1,124 @@
+<h2>Properties section — final design</h2>
+<p class="subtitle">Santa Marta featured · enhanced cards with review quotes · "Ver detalles" links to full page</p>
+
+<div class="mockup">
+  <div class="mockup-header">Nuestras Propiedades section</div>
+  <div class="mockup-body" style="background:#f8f7ff;padding:1.5rem;border-radius:8px;font-family:system-ui,sans-serif">
+
+    <!-- Section header -->
+    <div style="text-align:center;margin-bottom:1.25rem">
+      <div style="color:#D4A843;font-size:0.7rem;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:0.3rem">DESTINOS</div>
+      <div style="color:#2D1B69;font-family:Georgia,serif;font-size:1.4rem;font-weight:bold;margin-bottom:0.75rem">Nuestras Propiedades</div>
+    </div>
+
+    <!-- City tiles — B layout, Santa Marta featured -->
+    <div style="display:grid;grid-template-columns:1.6fr 1fr;gap:0.6rem;margin-bottom:1rem">
+      <!-- Big Santa Marta -->
+      <div style="border-radius:12px;overflow:hidden;position:relative;height:140px;background:linear-gradient(to bottom,rgba(45,27,105,0.15),rgba(45,27,105,0.82)),url('https://images.unsplash.com/photo-1586077427416-c4e1d65a06a7?w=600&q=70') center/cover;cursor:pointer">
+        <div style="position:absolute;top:0.75rem;left:0.75rem;background:#D4A843;color:#2D1B69;font-size:0.6rem;font-weight:800;padding:0.2rem 0.6rem;border-radius:999px;letter-spacing:0.05em">DESTACADO</div>
+        <div style="position:absolute;bottom:0;left:0;right:0;padding:0.9rem">
+          <div style="font-family:Georgia,serif;font-size:1.2rem;font-weight:bold;color:white;margin-bottom:0.15rem">Santa Marta</div>
+          <div style="font-size:0.72rem;color:rgba(255,255,255,0.8)">8 propiedades · Pozos Colorados, Rodadero y más</div>
+        </div>
+      </div>
+      <!-- Cartagena + Medellín stacked -->
+      <div style="display:flex;flex-direction:column;gap:0.6rem">
+        <div style="border-radius:12px;overflow:hidden;position:relative;height:64px;background:linear-gradient(to bottom,rgba(45,27,105,0.15),rgba(45,27,105,0.82)),url('https://images.unsplash.com/photo-1583417319070-4a69db38a482?w=400&q=70') center/cover;cursor:pointer">
+          <div style="position:absolute;bottom:0;left:0;right:0;padding:0.6rem">
+            <div style="font-family:Georgia,serif;font-size:0.9rem;font-weight:bold;color:white">Cartagena</div>
+            <div style="font-size:0.65rem;color:rgba(255,255,255,0.8)">15 propiedades</div>
+          </div>
+        </div>
+        <div style="border-radius:12px;overflow:hidden;position:relative;height:64px;background:linear-gradient(to bottom,rgba(45,27,105,0.15),rgba(45,27,105,0.82)),url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&q=70') center/cover;cursor:pointer">
+          <div style="position:absolute;bottom:0;left:0;right:0;padding:0.6rem">
+            <div style="font-family:Georgia,serif;font-size:0.9rem;font-weight:bold;color:white">Medellín</div>
+            <div style="font-size:0.65rem;color:rgba(255,255,255,0.8)">4 propiedades</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filter pills -->
+    <div style="display:flex;gap:0.4rem;justify-content:center;margin-bottom:1.25rem;flex-wrap:wrap">
+      <div style="background:#2D1B69;color:white;padding:0.35rem 1rem;border-radius:999px;font-size:0.75rem;font-weight:600">Todas (27)</div>
+      <div style="background:white;color:#2D1B69;border:1px solid #ddd8f0;padding:0.35rem 1rem;border-radius:999px;font-size:0.75rem">Cartagena (15)</div>
+      <div style="background:white;color:#2D1B69;border:1px solid #ddd8f0;padding:0.35rem 1rem;border-radius:999px;font-size:0.75rem">Santa Marta (8)</div>
+      <div style="background:white;color:#2D1B69;border:1px solid #ddd8f0;padding:0.35rem 1rem;border-radius:999px;font-size:0.75rem">Medellín (4)</div>
+    </div>
+
+    <!-- Property cards grid -->
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.75rem">
+
+      <!-- Card 1 — Macondo (full data) -->
+      <div style="border-radius:12px;overflow:hidden;background:white;border:1px solid #eee;box-shadow:0 2px 8px rgba(0,0,0,0.07)">
+        <div style="position:relative">
+          <div style="height:110px;background:url('https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=400&q=70') center/cover"></div>
+          <div style="position:absolute;top:0.5rem;left:0.5rem;background:rgba(45,27,105,0.88);color:white;border-radius:999px;padding:0.2rem 0.5rem;font-size:0.65rem;display:flex;align-items:center;gap:0.25rem">⭐ 10 <span style="opacity:0.7">(11)</span></div>
+          <div style="position:absolute;top:0.5rem;right:0.5rem;background:white;color:#2D1B69;border-radius:999px;padding:0.2rem 0.5rem;font-size:0.65rem;font-weight:700">$75/noche</div>
+        </div>
+        <div style="padding:0.75rem">
+          <div style="color:#D4A843;font-size:0.6rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.2rem">POZOS COLORADOS · SANTA MARTA</div>
+          <div style="color:#2D1B69;font-family:Georgia,serif;font-size:0.9rem;font-weight:bold;margin-bottom:0.3rem">Macondo - 77Rentals</div>
+          <!-- Review quote -->
+          <div style="background:#f8f7ff;border-left:2px solid #D4A843;padding:0.4rem 0.5rem;border-radius:0 6px 6px 0;margin-bottom:0.5rem">
+            <div style="color:#555;font-size:0.68rem;font-style:italic;line-height:1.4">"Muy cómodo, súper bien equipado, limpio, ubicación central."</div>
+            <div style="color:#999;font-size:0.6rem;margin-top:0.2rem">— Moncada 🇨🇴 · Booking.com ✓</div>
+          </div>
+          <div style="display:flex;gap:0.3rem">
+            <div style="flex:1;background:#2D1B69;color:white;border-radius:8px;padding:0.4rem;font-size:0.7rem;font-weight:600;text-align:center;cursor:pointer">Ver detalles →</div>
+            <div style="background:#25D366;color:white;border-radius:8px;padding:0.4rem 0.6rem;font-size:0.7rem;font-weight:600;cursor:pointer">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="white" style="display:inline"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2 — VillaBaru (existing) -->
+      <div style="border-radius:12px;overflow:hidden;background:white;border:1px solid #eee;box-shadow:0 2px 8px rgba(0,0,0,0.07)">
+        <div style="position:relative">
+          <div style="height:110px;background:url('https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=400&q=70') center/cover"></div>
+          <div style="position:absolute;top:0.5rem;left:0.5rem;background:rgba(45,27,105,0.88);color:white;border-radius:999px;padding:0.2rem 0.5rem;font-size:0.65rem">⭐ 4.9 <span style="opacity:0.7">(48)</span></div>
+          <div style="position:absolute;top:0.5rem;right:0.5rem;background:white;color:#2D1B69;border-radius:999px;padding:0.2rem 0.5rem;font-size:0.65rem;font-weight:700">$180/noche</div>
+        </div>
+        <div style="padding:0.75rem">
+          <div style="color:#D4A843;font-size:0.6rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.2rem">BOCAGRANDE · CARTAGENA</div>
+          <div style="color:#2D1B69;font-family:Georgia,serif;font-size:0.9rem;font-weight:bold;margin-bottom:0.5rem">VillaBaru Casa</div>
+          <div style="color:#888;font-size:0.72rem;line-height:1.4;margin-bottom:0.5rem">Villa de lujo con terraza privada con piscina y vistas panorámicas.</div>
+          <div style="display:flex;gap:0.3rem">
+            <div style="flex:1;background:#2D1B69;color:white;border-radius:8px;padding:0.4rem;font-size:0.7rem;font-weight:600;text-align:center;cursor:pointer">Ver detalles →</div>
+            <div style="background:#25D366;color:white;border-radius:8px;padding:0.4rem 0.6rem;font-size:0.7rem;font-weight:600;cursor:pointer">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="white" style="display:inline"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3 — coming soon -->
+      <div style="border-radius:12px;overflow:hidden;background:white;border:1px dashed #ddd8f0;opacity:0.75">
+        <div style="height:110px;background:linear-gradient(135deg,#ede9f8,#d8d1f0);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.3rem">
+          <div style="font-size:1.2rem">📸</div>
+          <div style="font-size:0.65rem;color:#7c6faa;font-weight:600">Fotos próximamente</div>
+        </div>
+        <div style="padding:0.75rem">
+          <div style="color:#D4A843;font-size:0.6rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.2rem">BOCAGRANDE · CARTAGENA</div>
+          <div style="color:#2D1B69;font-family:Georgia,serif;font-size:0.9rem;font-weight:bold;margin-bottom:0.4rem">Fragata Style</div>
+          <div style="color:#aaa;font-size:0.7rem;margin-bottom:0.5rem;font-style:italic">Información completa muy pronto</div>
+          <div style="display:flex;gap:0.3rem">
+            <div style="flex:1;background:#eee;color:#aaa;border-radius:8px;padding:0.4rem;font-size:0.7rem;font-weight:600;text-align:center">Próximamente</div>
+            <div style="background:#25D366;color:white;border-radius:8px;padding:0.4rem 0.6rem;font-size:0.7rem;cursor:pointer">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="white" style="display:inline"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div style="text-align:center;margin-top:1rem;color:#7c6faa;font-size:0.72rem">Mostrando 5 de 27 propiedades · <span style="color:#2D1B69;font-weight:600;cursor:pointer">Ver todas →</span></div>
+
+  </div>
+</div>
+
+<div class="section" style="margin-top:1.5rem">
+  <p class="subtitle" style="text-align:left"><strong>Key details:</strong> Cards with full data show a review quote + "Ver detalles" button. Cards without data yet show "Próximamente" with a dimmed style but the WhatsApp button still works. City tiles click to filter. "27" in the total count is live from your data.</p>
+</div>

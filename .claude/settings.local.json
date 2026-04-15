@@ -1,0 +1,40 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(claude mcp:*)",
+      "Bash(npx uipro-cli:*)",
+      "WebFetch(domain:drive.google.com)",
+      "WebFetch(domain:www.airbnb.com)",
+      "WebFetch(domain:www.booking.com)",
+      "mcp__Claude_Preview__preview_start",
+      "WebSearch",
+      "WebFetch(domain:en.hotels-in-colombia.com)",
+      "WebFetch(domain:www.rentbyowner.com)",
+      "WebFetch(domain:fragata-style-2.cartagena-hotels.org)",
+      "Read(//c/Users/57350/.claude/skills/ui-ux-pro-max/**)",
+      "Bash(python3 scripts/search.py \"luxury vacation rental STR premium travel Colombia\" --design-system -p \"77Rentals\" -f markdown)",
+      "Bash(python scripts/search.py \"luxury vacation rental STR premium travel Colombia\" --design-system -p \"77Rentals\" -f markdown)",
+      "Bash(py scripts/search.py \"luxury vacation rental STR premium travel Colombia\" --design-system -p \"77Rentals\" -f markdown)",
+      "Read(//c/Users/57350/**)",
+      "Bash(gh repo:*)",
+      "Bash(curl -s https://raw.githubusercontent.com/obra/superpowers/main/README.md)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:api.github.com)",
+      "Bash(mkdir -p ~/.claude/skills ~/.claude/commands)",
+      "Bash(cp -r /tmp/superpowers/skills/* ~/.claude/skills/)",
+      "Bash(cp /tmp/superpowers/commands/* ~/.claude/commands/)",
+      "Bash(claude plugin:*)",
+      "Bash(bash scripts/start-server.sh --project-dir \"C:/Users/57350/Desktop/Claude 77Rentals/GitHub code v1/rentals77-main\")",
+      "Bash(npm run:*)",
+      "mcp__Claude_in_Chrome__tabs_context_mcp",
+      "mcp__Claude_in_Chrome__navigate",
+      "Bash(explorer \"C:\\\\Users\\\\57350\\\\Desktop\\\\Claude 77Rentals\\\\GitHub code v1\\\\rentals77-main\\\\public\\\\images\")",
+      "Bash(mv \"cartagena.jpg.jpg\" \"cartagena.jpg\")",
+      "Bash(mv \"santa-marta.jpg.jpg\" \"santa-marta.jpg\")",
+      "Bash(mv \"Bogota.jpg.jpg\" \"bogota.jpg\")",
+      "Bash(xargs grep:*)",
+      "Bash(dir \"C:\\\\Users\\\\57350\\\\Downloads\")"
+    ]
+  }
+}

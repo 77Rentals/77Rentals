@@ -1,0 +1,151 @@
+<h2>City-first layout — 3 options</h2>
+<p class="subtitle">How should the city tiles sit above the property cards?</p>
+
+<div class="options">
+
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Wide banner tiles (stacked horizontally)</h3>
+      <p>3 city cards side by side, each a wide photo banner with city name + property count overlay. Click to filter cards below.</p>
+      <div class="mockup" style="margin-top:0.75rem">
+        <div class="mockup-header">Properties section</div>
+        <div class="mockup-body" style="background:#f8f7ff;padding:1.5rem;border-radius:8px">
+          <div style="text-align:center;margin-bottom:1rem">
+            <div style="color:#D4A843;font-size:0.7rem;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:0.25rem">DESTINOS</div>
+            <div style="color:#2D1B69;font-family:Georgia,serif;font-size:1.3rem;font-weight:bold">Nuestras Propiedades</div>
+          </div>
+          <!-- City tiles -->
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;margin-bottom:1rem">
+            <div style="border-radius:10px;overflow:hidden;position:relative;height:90px;background:linear-gradient(to bottom,rgba(45,27,105,0.3),rgba(45,27,105,0.75)),url('https://images.unsplash.com/photo-1583417319070-4a69db38a482?w=400&q=60') center/cover">
+              <div style="position:absolute;bottom:0;left:0;right:0;padding:0.6rem;color:white">
+                <div style="font-family:Georgia,serif;font-size:0.95rem;font-weight:bold">Cartagena</div>
+                <div style="font-size:0.7rem;opacity:0.8">15 propiedades</div>
+              </div>
+            </div>
+            <div style="border-radius:10px;overflow:hidden;position:relative;height:90px;background:linear-gradient(to bottom,rgba(45,27,105,0.3),rgba(45,27,105,0.75)),url('https://images.unsplash.com/photo-1586077427416-c4e1d65a06a7?w=400&q=60') center/cover">
+              <div style="position:absolute;bottom:0;left:0;right:0;padding:0.6rem;color:white">
+                <div style="font-family:Georgia,serif;font-size:0.95rem;font-weight:bold">Santa Marta</div>
+                <div style="font-size:0.7rem;opacity:0.8">8 propiedades</div>
+              </div>
+            </div>
+            <div style="border-radius:10px;overflow:hidden;position:relative;height:90px;background:linear-gradient(to bottom,rgba(45,27,105,0.3),rgba(45,27,105,0.75)),url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&q=60') center/cover">
+              <div style="position:absolute;bottom:0;left:0;right:0;padding:0.6rem;color:white">
+                <div style="font-family:Georgia,serif;font-size:0.95rem;font-weight:bold">Medellín</div>
+                <div style="font-size:0.7rem;opacity:0.8">4 propiedades</div>
+              </div>
+            </div>
+          </div>
+          <!-- Filter pills -->
+          <div style="display:flex;gap:0.4rem;justify-content:center;margin-bottom:1rem">
+            <div style="background:#2D1B69;color:white;padding:0.3rem 0.9rem;border-radius:999px;font-size:0.75rem;font-weight:600">Todas</div>
+            <div style="background:white;color:#2D1B69;border:1px solid #e0dcf0;padding:0.3rem 0.9rem;border-radius:999px;font-size:0.75rem">Cartagena</div>
+            <div style="background:white;color:#2D1B69;border:1px solid #e0dcf0;padding:0.3rem 0.9rem;border-radius:999px;font-size:0.75rem">Santa Marta</div>
+            <div style="background:white;color:#2D1B69;border:1px solid #e0dcf0;padding:0.3rem 0.9rem;border-radius:999px;font-size:0.75rem">Medellín</div>
+          </div>
+          <!-- Property cards preview -->
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem">
+            <div style="border-radius:8px;overflow:hidden;background:white;border:1px solid #eee;box-shadow:0 1px 4px rgba(0,0,0,0.06)">
+              <div style="height:60px;background:url('https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=300&q=60') center/cover"></div>
+              <div style="padding:0.5rem"><div style="font-size:0.75rem;font-weight:600;color:#2D1B69">VillaBaru Casa</div><div style="font-size:0.65rem;color:#888">Cartagena · $180/noche</div></div>
+            </div>
+            <div style="border-radius:8px;overflow:hidden;background:white;border:1px solid #eee;box-shadow:0 1px 4px rgba(0,0,0,0.06)">
+              <div style="height:60px;background:url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=300&q=60') center/cover"></div>
+              <div style="padding:0.5rem"><div style="font-size:0.75rem;font-weight:600;color:#2D1B69">707 Chess Loft</div><div style="font-size:0.65rem;color:#888">Santa Marta · $90/noche</div></div>
+            </div>
+            <div style="border-radius:8px;overflow:hidden;background:white;border:1px solid #eee;box-shadow:0 1px 4px rgba(0,0,0,0.06)">
+              <div style="height:60px;background:linear-gradient(135deg,#e8e4f5,#d4cef0);display:flex;align-items:center;justify-content:center">
+                <div style="font-size:0.6rem;color:#7c6faa;text-align:center">📸 Fotos<br>próximamente</div>
+              </div>
+              <div style="padding:0.5rem"><div style="font-size:0.75rem;font-weight:600;color:#2D1B69">Apt. Bocagrande</div><div style="font-size:0.65rem;color:#888">Cartagena · $65/noche</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>One large featured city + two smaller</h3>
+      <p>Cartagena (your biggest city) gets a tall hero tile, Santa Marta and Medellín stack beside it. More editorial, like a magazine spread.</p>
+      <div class="mockup" style="margin-top:0.75rem">
+        <div class="mockup-header">Properties section</div>
+        <div class="mockup-body" style="background:#f8f7ff;padding:1.5rem;border-radius:8px">
+          <div style="text-align:center;margin-bottom:1rem">
+            <div style="color:#D4A843;font-size:0.7rem;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:0.25rem">DESTINOS</div>
+            <div style="color:#2D1B69;font-family:Georgia,serif;font-size:1.3rem;font-weight:bold">Nuestras Propiedades</div>
+          </div>
+          <div style="display:grid;grid-template-columns:1.6fr 1fr;gap:0.5rem;margin-bottom:1rem">
+            <!-- Big Cartagena -->
+            <div style="border-radius:10px;overflow:hidden;position:relative;height:130px;background:linear-gradient(to bottom,rgba(45,27,105,0.2),rgba(45,27,105,0.8)),url('https://images.unsplash.com/photo-1583417319070-4a69db38a482?w=500&q=60') center/cover">
+              <div style="position:absolute;bottom:0;left:0;right:0;padding:0.75rem">
+                <div style="font-family:Georgia,serif;font-size:1.15rem;font-weight:bold;color:white">Cartagena</div>
+                <div style="font-size:0.7rem;color:rgba(255,255,255,0.8)">15 propiedades</div>
+              </div>
+              <div style="position:absolute;top:0.5rem;right:0.5rem;background:#D4A843;color:#2D1B69;font-size:0.6rem;font-weight:700;padding:0.2rem 0.5rem;border-radius:999px">DESTACADO</div>
+            </div>
+            <!-- Santa Marta + Medellin stacked -->
+            <div style="display:flex;flex-direction:column;gap:0.5rem">
+              <div style="border-radius:10px;overflow:hidden;position:relative;height:60px;background:linear-gradient(to bottom,rgba(45,27,105,0.2),rgba(45,27,105,0.8)),url('https://images.unsplash.com/photo-1586077427416-c4e1d65a06a7?w=300&q=60') center/cover">
+                <div style="position:absolute;bottom:0;left:0;right:0;padding:0.5rem">
+                  <div style="font-family:Georgia,serif;font-size:0.85rem;font-weight:bold;color:white">Santa Marta</div>
+                  <div style="font-size:0.65rem;color:rgba(255,255,255,0.8)">8 propiedades</div>
+                </div>
+              </div>
+              <div style="border-radius:10px;overflow:hidden;position:relative;height:60px;background:linear-gradient(to bottom,rgba(45,27,105,0.2),rgba(45,27,105,0.8)),url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300&q=60') center/cover">
+                <div style="position:absolute;bottom:0;left:0;right:0;padding:0.5rem">
+                  <div style="font-family:Georgia,serif;font-size:0.85rem;font-weight:bold;color:white">Medellín</div>
+                  <div style="font-size:0.65rem;color:rgba(255,255,255,0.8)">4 propiedades</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Filter pills -->
+          <div style="display:flex;gap:0.4rem;justify-content:center;margin-bottom:1rem">
+            <div style="background:#2D1B69;color:white;padding:0.3rem 0.9rem;border-radius:999px;font-size:0.75rem;font-weight:600">Todas</div>
+            <div style="background:white;color:#2D1B69;border:1px solid #e0dcf0;padding:0.3rem 0.9rem;border-radius:999px;font-size:0.75rem">Cartagena</div>
+            <div style="background:white;color:#2D1B69;border:1px solid #e0dcf0;padding:0.3rem 0.9rem;border-radius:999px;font-size:0.75rem">Santa Marta</div>
+            <div style="background:white;color:#2D1B69;border:1px solid #e0dcf0;padding:0.3rem 0.9rem;border-radius:999px;font-size:0.75rem">Medellín</div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem">
+            <div style="border-radius:8px;overflow:hidden;background:white;border:1px solid #eee"><div style="height:55px;background:url('https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=300&q=60') center/cover"></div><div style="padding:0.4rem"><div style="font-size:0.7rem;font-weight:600;color:#2D1B69">VillaBaru Casa</div><div style="font-size:0.6rem;color:#888">$180/noche</div></div></div>
+            <div style="border-radius:8px;overflow:hidden;background:white;border:1px solid #eee"><div style="height:55px;background:url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=300&q=60') center/cover"></div><div style="padding:0.4rem"><div style="font-size:0.7rem;font-weight:600;color:#2D1B69">707 Chess Loft</div><div style="font-size:0.6rem;color:#888">$90/noche</div></div></div>
+            <div style="border-radius:8px;overflow:hidden;background:white;border:1px solid #eee"><div style="height:55px;background:linear-gradient(135deg,#e8e4f5,#d4cef0);display:flex;align-items:center;justify-content:center;font-size:0.6rem;color:#7c6faa;text-align:center">📸 Próximamente</div><div style="padding:0.4rem"><div style="font-size:0.7rem;font-weight:600;color:#2D1B69">Apt. Bocagrande</div><div style="font-size:0.6rem;color:#888">$65/noche</div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>City tabs — no tiles, just a tab switcher</h3>
+      <p>Clean tab bar at the top (All / Cartagena / Santa Marta / Medellín). No city photos needed — property cards fill the full width. Minimal, fast, focuses attention on the properties themselves.</p>
+      <div class="mockup" style="margin-top:0.75rem">
+        <div class="mockup-header">Properties section</div>
+        <div class="mockup-body" style="background:#f8f7ff;padding:1.5rem;border-radius:8px">
+          <div style="text-align:center;margin-bottom:1rem">
+            <div style="color:#D4A843;font-size:0.7rem;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:0.25rem">DESTINOS</div>
+            <div style="color:#2D1B69;font-family:Georgia,serif;font-size:1.3rem;font-weight:bold">Nuestras Propiedades</div>
+          </div>
+          <!-- Tab bar -->
+          <div style="display:flex;gap:0;border-bottom:2px solid #e0dcf0;margin-bottom:1rem">
+            <div style="padding:0.5rem 1rem;font-size:0.8rem;font-weight:700;color:#2D1B69;border-bottom:2px solid #2D1B69;margin-bottom:-2px">Todas (27)</div>
+            <div style="padding:0.5rem 1rem;font-size:0.8rem;color:#888">Cartagena (15)</div>
+            <div style="padding:0.5rem 1rem;font-size:0.8rem;color:#888">Santa Marta (8)</div>
+            <div style="padding:0.5rem 1rem;font-size:0.8rem;color:#888">Medellín (4)</div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem">
+            <div style="border-radius:8px;overflow:hidden;background:white;border:1px solid #eee"><div style="height:60px;background:url('https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=300&q=60') center/cover"></div><div style="padding:0.5rem"><div style="font-size:0.75rem;font-weight:600;color:#2D1B69">VillaBaru Casa</div><div style="font-size:0.65rem;color:#888">Cartagena · $180/noche</div></div></div>
+            <div style="border-radius:8px;overflow:hidden;background:white;border:1px solid #eee"><div style="height:60px;background:url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=300&q=60') center/cover"></div><div style="padding:0.5rem"><div style="font-size:0.75rem;font-weight:600;color:#2D1B69">707 Chess Loft</div><div style="font-size:0.65rem;color:#888">Santa Marta · $90/noche</div></div></div>
+            <div style="border-radius:8px;overflow:hidden;background:white;border:1px solid #eee;opacity:0.7"><div style="height:60px;background:linear-gradient(135deg,#e8e4f5,#d4cef0);display:flex;align-items:center;justify-content:center;font-size:0.65rem;color:#7c6faa">📸 Próximamente</div><div style="padding:0.5rem"><div style="font-size:0.75rem;font-weight:600;color:#2D1B69">Apt. Bocagrande</div><div style="font-size:0.65rem;color:#888">Cartagena · desde $65</div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

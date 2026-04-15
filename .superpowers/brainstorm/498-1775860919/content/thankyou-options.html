@@ -1,0 +1,58 @@
+<h2>After submitting the form — what happens?</h2>
+<p class="subtitle">Two approaches for the "Thank You" experience. Which feels right for 77Rentals?</p>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Inline swap — same section, no page change</h3>
+      <p>The form fades out and a thank-you message fades in right where the form was. User stays on the page, can keep scrolling to see properties, amenities, etc.</p>
+      <div style="margin-top:1rem">
+        <div class="mockup">
+          <div class="mockup-header">Form section — after submit</div>
+          <div class="mockup-body" style="background:linear-gradient(135deg,#2D1B69,#4B0082);padding:2rem;text-align:center;border-radius:8px">
+            <div style="font-size:2.5rem;margin-bottom:0.5rem">✨</div>
+            <div style="color:#D4A843;font-family:Georgia,serif;font-size:1.4rem;font-weight:bold;margin-bottom:0.5rem">¡Gracias!</div>
+            <div style="color:white;font-size:1rem;margin-bottom:0.25rem">Nuestro equipo te contactará pronto.</div>
+            <div style="color:rgba(255,255,255,0.6);font-size:0.85rem">Revisa tu WhatsApp y correo electrónico.</div>
+            <div style="margin-top:1.5rem;display:flex;gap:0.75rem;justify-content:center;flex-wrap:wrap">
+              <div style="background:#D4A843;color:#2D1B69;padding:0.5rem 1.2rem;border-radius:999px;font-weight:bold;font-size:0.85rem">Ver propiedades</div>
+              <div style="background:rgba(255,255,255,0.15);color:white;padding:0.5rem 1.2rem;border-radius:999px;font-size:0.85rem">WhatsApp</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pros-cons" style="margin-top:1rem">
+        <div class="pros"><h4>Pros</h4><ul><li>No navigation — user stays in flow</li><li>Can still scroll down to browse properties</li><li>Simpler to build</li></ul></div>
+        <div class="cons"><h4>Cons</h4><ul><li>Can't share a "Thank you" URL</li><li>Less dramatic impact</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Dedicated page — /gracias route</h3>
+      <p>Submitting the form navigates to a full thank-you page at <code>/gracias</code>. Feels more formal and intentional. Can include CTA buttons to go back or jump to properties.</p>
+      <div style="margin-top:1rem">
+        <div class="mockup">
+          <div class="mockup-header">Full page — /gracias</div>
+          <div class="mockup-body" style="background:linear-gradient(135deg,#1a0f40,#2D1B69);padding:2rem 1.5rem;text-align:center;border-radius:8px;min-height:180px;display:flex;flex-direction:column;align-items:center;justify-content:center">
+            <div style="width:60px;height:60px;border-radius:50%;background:rgba(212,168,67,0.2);border:2px solid #D4A843;display:flex;align-items:center;justify-content:center;font-size:1.8rem;margin:0 auto 1rem">✓</div>
+            <div style="color:#D4A843;font-family:Georgia,serif;font-size:1.6rem;font-weight:bold;margin-bottom:0.5rem">¡Gracias por contactarnos!</div>
+            <div style="color:rgba(255,255,255,0.8);font-size:0.95rem;margin-bottom:0.25rem">Hemos recibido tu mensaje.</div>
+            <div style="color:rgba(255,255,255,0.55);font-size:0.85rem;margin-bottom:1.5rem">Nuestro equipo te contactará en las próximas 24 horas.</div>
+            <div style="display:flex;gap:0.75rem;justify-content:center;flex-wrap:wrap">
+              <div style="background:#D4A843;color:#2D1B69;padding:0.5rem 1.4rem;border-radius:999px;font-weight:bold;font-size:0.85rem">← Volver al inicio</div>
+              <div style="background:rgba(255,255,255,0.1);color:white;padding:0.5rem 1.4rem;border-radius:999px;font-size:0.85rem;border:1px solid rgba(255,255,255,0.2)">Ver propiedades</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pros-cons" style="margin-top:1rem">
+        <div class="pros"><h4>Pros</h4><ul><li>Clean, dedicated moment of confirmation</li><li>Easy to track as conversion in Google Analytics</li><li>Shareable URL</li></ul></div>
+        <div class="cons"><h4>Cons</h4><ul><li>User leaves the main page</li><li>Requires a new route in the app</li></ul></div>
+      </div>
+    </div>
+  </div>
+</div>

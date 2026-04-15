@@ -1,0 +1,70 @@
+<h2>Contact form — right after the Hero</h2>
+<p class="subtitle">Two layout options for the form fields. Which feels cleaner to you?</p>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>2-column grid (compact)</h3>
+      <p>Fields sit side by side on desktop. More space-efficient, feels professional.</p>
+      <div class="mockup" style="margin-top:0.75rem">
+        <div class="mockup-header">Contact Form — Layout A</div>
+        <div class="mockup-body" style="background:linear-gradient(135deg,#2D1B69,#4B0082);padding:2rem;border-radius:8px">
+          <div style="color:#D4A843;font-family:Georgia,serif;font-size:1.1rem;font-weight:bold;text-align:center;margin-bottom:0.25rem;letter-spacing:0.05em;font-size:0.75rem;text-transform:uppercase">¿Listo para tu próxima aventura?</div>
+          <div style="color:white;font-family:Georgia,serif;font-size:1.4rem;font-weight:bold;text-align:center;margin-bottom:1.25rem">Contáctanos</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;margin-bottom:0.6rem">
+            <input class="mock-input" placeholder="Nombre" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:white;border-radius:6px;padding:0.6rem 0.75rem;font-size:0.875rem;width:100%;box-sizing:border-box" />
+            <input class="mock-input" placeholder="Apellido" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:white;border-radius:6px;padding:0.6rem 0.75rem;font-size:0.875rem;width:100%;box-sizing:border-box" />
+            <input class="mock-input" placeholder="WhatsApp / Teléfono" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:white;border-radius:6px;padding:0.6rem 0.75rem;font-size:0.875rem;width:100%;box-sizing:border-box" />
+            <input class="mock-input" placeholder="Correo electrónico" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:white;border-radius:6px;padding:0.6rem 0.75rem;font-size:0.875rem;width:100%;box-sizing:border-box" />
+          </div>
+          <div style="margin-bottom:0.6rem">
+            <select style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.6);border-radius:6px;padding:0.6rem 0.75rem;font-size:0.875rem;width:100%;box-sizing:border-box">
+              <option>¿A dónde quieres viajar?</option>
+              <option>Cartagena</option>
+              <option>Santa Marta</option>
+              <option>Medellín</option>
+            </select>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;margin-bottom:1rem">
+            <input class="mock-input" placeholder="📅  Fecha llegada" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.6);border-radius:6px;padding:0.6rem 0.75rem;font-size:0.875rem;width:100%;box-sizing:border-box" />
+            <input class="mock-input" placeholder="📅  Fecha salida" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.6);border-radius:6px;padding:0.6rem 0.75rem;font-size:0.875rem;width:100%;box-sizing:border-box" />
+          </div>
+          <button class="mock-button" style="width:100%;background:#D4A843;color:#2D1B69;border:none;border-radius:999px;padding:0.75rem;font-weight:bold;font-size:0.95rem;cursor:pointer">Enviar consulta →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Single column (open, airy)</h3>
+      <p>Each field on its own row. Feels less rushed, more welcoming. Works great on mobile too.</p>
+      <div class="mockup" style="margin-top:0.75rem">
+        <div class="mockup-header">Contact Form — Layout B</div>
+        <div class="mockup-body" style="background:linear-gradient(135deg,#2D1B69,#4B0082);padding:2rem;border-radius:8px">
+          <div style="color:#D4A843;font-family:Georgia,serif;font-size:0.75rem;font-weight:bold;text-align:center;margin-bottom:0.25rem;letter-spacing:0.05em;text-transform:uppercase">¿Listo para tu próxima aventura?</div>
+          <div style="color:white;font-family:Georgia,serif;font-size:1.4rem;font-weight:bold;text-align:center;margin-bottom:1.25rem">Contáctanos</div>
+          <div style="display:flex;gap:0.6rem;margin-bottom:0.6rem">
+            <input class="mock-input" placeholder="Nombre" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:white;border-radius:6px;padding:0.6rem 0.75rem;font-size:0.875rem;flex:1;box-sizing:border-box" />
+            <input class="mock-input" placeholder="Apellido" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:white;border-radius:6px;padding:0.6rem 0.75rem;font-size:0.875rem;flex:1;box-sizing:border-box" />
+          </div>
+          <input class="mock-input" placeholder="WhatsApp / Teléfono" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:white;border-radius:6px;padding:0.65rem 0.75rem;font-size:0.875rem;width:100%;box-sizing:border-box;margin-bottom:0.6rem;display:block" />
+          <input class="mock-input" placeholder="Correo electrónico" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:white;border-radius:6px;padding:0.65rem 0.75rem;font-size:0.875rem;width:100%;box-sizing:border-box;margin-bottom:0.6rem;display:block" />
+          <select style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.6);border-radius:6px;padding:0.65rem 0.75rem;font-size:0.875rem;width:100%;box-sizing:border-box;margin-bottom:0.6rem;display:block">
+            <option>¿A dónde quieres viajar?</option>
+            <option>Cartagena</option>
+            <option>Santa Marta</option>
+            <option>Medellín</option>
+          </select>
+          <div style="display:flex;gap:0.6rem;margin-bottom:1rem">
+            <input class="mock-input" placeholder="📅  Llegada" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.6);border-radius:6px;padding:0.65rem 0.75rem;font-size:0.875rem;flex:1;box-sizing:border-box" />
+            <input class="mock-input" placeholder="📅  Salida" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.6);border-radius:6px;padding:0.65rem 0.75rem;font-size:0.875rem;flex:1;box-sizing:border-box" />
+          </div>
+          <button class="mock-button" style="width:100%;background:#D4A843;color:#2D1B69;border:none;border-radius:999px;padding:0.75rem;font-weight:bold;font-size:0.95rem;cursor:pointer">Enviar consulta →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
