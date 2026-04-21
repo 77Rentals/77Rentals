@@ -1,12 +1,28 @@
 import { useState } from 'react';
 import { usePartnerHub } from '@/hooks/usePartnerHub';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ChevronDown, ChevronUp, Check, X } from 'lucide-react';
-import { formatDate } from '@/lib/utils';
+
+const MONTHS_ES = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+const MONTHS_EN = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+function formatDateDisplay(dateString: string, language: string): string {
+  if (!dateString) return '';
+  const [year, month, day] = dateString.split('-');
+  const monthIndex = parseInt(month, 10) - 1;
+  const monthName = language === 'es' ? MONTHS_ES[monthIndex] : MONTHS_EN[monthIndex];
+  return `${parseInt(day, 10)} ${monthName} ${year}`;
+}
+
+function formatCOP(amount: number): string {
+  return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(amount);
+}
 
 export function AdminRequirementsList() {
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const { language } = useLanguage();
   const { getRequirements, getResponses, updateRequirement, updateResponse } =
     usePartnerHub();
 
@@ -30,7 +46,9 @@ export function AdminRequirementsList() {
     return (
       <Card className="p-12 text-center">
         <p className="text-gray-600">
-          No requirements yet. Post your first guest requirement to get started.
+          {language === 'es'
+            ? 'Sin requisitos aún. Publica tu primer requisito para comenzar.'
+            : 'No requirements yet. Post your first guest requirement to get started.'}
         </p>
       </Card>
     );
@@ -71,7 +89,7 @@ export function AdminRequirementsList() {
                 <div className="flex-1 text-left">
                   <div className="flex items-center gap-3 mb-1">
                     <div className="font-semibold text-gray-900">
-                      {requirement.checkInDate} → {requirement.checkOutDate}
+                      {formatDateDisplay(requirement.checkInDate, language)} → {formatDateDisplay(requirement.checkOutDate, language)}
                     </div>
                     <span
                       className={`px-2 py-1 rounded text-xs font-medium ${
@@ -80,11 +98,13 @@ export function AdminRequirementsList() {
                           : 'bg-gray-100 text-gray-800'
                       }`}
                     >
-                      {requirement.status === 'open' ? 'Open' : 'Closed'}
+                      {requirement.status === 'open'
+                        ? (language === 'es' ? 'Abierto' : 'Open')
+                        : (language === 'es' ? 'Cerrado' : 'Closed')}
                     </span>
                   </div>
                   <div className="text-sm text-gray-600">
-                    {requirement.guestCount} guests • ${requirement.budget}/night
+                    {requirement.guestCount} {language === 'es' ? 'huéspedes' : 'guests'} • {formatCOP(requirement.budget)}/{language === 'es' ? 'noche' : 'night'}
                   </div>
                 </div>
 
@@ -92,7 +112,7 @@ export function AdminRequirementsList() {
                   <div className="font-semibold text-gray-900">
                     {requirementResponses.length}
                   </div>
-                  <div className="text-xs text-gray-600">responses</div>
+                  <div className="text-xs text-gray-600">{language === 'es' ? 'respuestas' : 'responses'}</div>
                 </div>
               </div>
             </button>
@@ -103,7 +123,7 @@ export function AdminRequirementsList() {
                 {/* Requirement Details */}
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div>
-                    <p className="text-gray-600">Admin Contact</p>
+                    <p className="text-gray-600">{language === 'es' ? 'Contacto' : 'Admin Contact'}</p>
                     <p className="font-medium text-gray-900">
                       {requirement.adminContact.name}
                     </p>
@@ -115,8 +135,8 @@ export function AdminRequirementsList() {
                     </p>
                   </div>
                   <div>
-                    <p className="text-gray-600">Notes</p>
-                    <p className="text-gray-900">{requirement.notes || 'None'}</p>
+                    <p className="text-gray-600">{language === 'es' ? 'Notas' : 'Notes'}</p>
+                    <p className="text-gray-900">{requirement.notes || (language === 'es' ? 'Ninguna' : 'None')}</p>
                   </div>
                 </div>
 
@@ -124,7 +144,7 @@ export function AdminRequirementsList() {
                 {requirementResponses.length > 0 && (
                   <div className="pt-4 border-t">
                     <h4 className="font-semibold text-gray-900 mb-3">
-                      Responses ({requirementResponses.length})
+                      {language === 'es' ? 'Respuestas' : 'Responses'} ({requirementResponses.length})
                     </h4>
                     <div className="space-y-2">
                       {requirementResponses.map((response) => (
@@ -138,7 +158,7 @@ export function AdminRequirementsList() {
                                 {response.propertyName}
                               </div>
                               <div className="text-sm text-gray-600 mt-1">
-                                ${response.proposedPrice}/night •{' '}
+                                {formatCOP(response.proposedPrice)}/{language === 'es' ? 'noche' : 'night'} •{' '}
                                 <span
                                   className={`inline-block px-2 py-0.5 rounded text-xs font-medium ${
                                     response.status === 'pending'
@@ -149,18 +169,18 @@ export function AdminRequirementsList() {
                                   }`}
                                 >
                                   {response.status === 'pending'
-                                    ? 'Pending'
+                                    ? (language === 'es' ? 'Pendiente' : 'Pending')
                                     : response.status === 'accepted'
-                                      ? 'Accepted'
-                                      : 'Rejected'}
+                                      ? (language === 'es' ? 'Aceptada' : 'Accepted')
+                                      : (language === 'es' ? 'Rechazada' : 'Rejected')}
                                 </span>
                               </div>
                               <div className="text-xs text-gray-600 mt-1">
                                 {response.commissionPercent === 10
-                                  ? '10% commission'
-                                  : `$${response.commissionAmount} markup`}
+                                  ? (language === 'es' ? '10% comisión' : '10% commission')
+                                  : `${formatCOP(response.commissionAmount)} markup`}
                                 {' • '}
-                                Final: ${response.finalPrice}/night
+                                {language === 'es' ? 'Final' : 'Final'}: {formatCOP(response.finalPrice)}/{language === 'es' ? 'noche' : 'night'}
                               </div>
                               <div className="text-xs text-gray-600 mt-2">
                                 <strong>{response.ownerContact.name}</strong> •{' '}
@@ -197,7 +217,7 @@ export function AdminRequirementsList() {
 
                 {requirementResponses.length === 0 && (
                   <div className="text-center py-6 text-gray-600">
-                    <p className="text-sm">No responses yet</p>
+                    <p className="text-sm">{language === 'es' ? 'Sin respuestas aún' : 'No responses yet'}</p>
                   </div>
                 )}
               </div>
