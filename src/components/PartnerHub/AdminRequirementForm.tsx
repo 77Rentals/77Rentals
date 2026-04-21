@@ -15,15 +15,24 @@ import type { ApartmentType } from '@/data/partnerHub';
 const APARTMENT_TYPES: ApartmentType[] = ['Tipo A', 'Tipo B', 'Tipo C', 'Tipo D'];
 
 const requirementSchema = z.object({
-  guestCount: z.number().min(1, 'Guest count must be at least 1').max(20),
-  checkInDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format'),
-  checkOutDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format'),
-  budget: z.number().min(10000, 'Budget must be at least ₡10,000').max(10000000),
+  guestCount: z.preprocess(
+    (v) => (v === '' || v === null || isNaN(Number(v)) ? undefined : Number(v)),
+    z.number({ required_error: 'Guest count is required' }).min(1, 'Guest count must be at least 1').max(20)
+  ),
+  checkInDate: z.string().min(1, 'Check-in date is required'),
+  checkOutDate: z.string().min(1, 'Check-out date is required'),
+  budget: z.preprocess(
+    (v) => (v === '' || v === null || isNaN(Number(v)) ? undefined : Number(v)),
+    z.number({ required_error: 'Budget is required' }).min(10000, 'Budget must be at least $10,000').max(10000000)
+  ),
   city: z.string().min(1, 'City is required'),
-  notes: z.string().max(500, 'Notes must be less than 500 characters'),
+  notes: z.string().max(500, 'Notes must be less than 500 characters').optional().default(''),
   allowedApartmentTypes: z.array(z.string()).min(1, 'Select at least one apartment type'),
   commissionType: z.enum(['fixed', 'markup'], { errorMap: () => ({ message: 'Select a commission type' }) }),
-  commissionValue: z.number().min(0).optional(),
+  commissionValue: z.preprocess(
+    (v) => (v === '' || v === null || v === undefined || isNaN(Number(v)) ? undefined : Number(v)),
+    z.number().min(0).optional()
+  ),
 });
 
 type RequirementFormData = z.infer<typeof requirementSchema>;
@@ -154,7 +163,7 @@ export function AdminRequirementForm({ onClose, onSubmit }: AdminRequirementForm
                 type="number"
                 min="1"
                 max="20"
-                {...register('guestCount', { valueAsNumber: true })}
+                {...register('guestCount')}
                 placeholder="2"
               />
               {errors.guestCount && (
@@ -212,7 +221,7 @@ export function AdminRequirementForm({ onClose, onSubmit }: AdminRequirementForm
                 type="number"
                 min="10000"
                 step="10000"
-                {...register('budget', { valueAsNumber: true })}
+                {...register('budget')}
                 placeholder="150000"
               />
               {errors.budget && (
@@ -274,7 +283,7 @@ export function AdminRequirementForm({ onClose, onSubmit }: AdminRequirementForm
                       type="number"
                       min="0"
                       step="5000"
-                      {...register('commissionValue', { valueAsNumber: true })}
+                      {...register('commissionValue')}
                       placeholder={t('form.markupAmount', language)}
                       className="text-sm"
                       disabled={watchCommissionType !== 'markup'}

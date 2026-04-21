@@ -21,9 +21,15 @@ const googleDriveLinkRegex = /^https:\/\/drive\.google\.com\//;
 
 const responseSchema = z.object({
   propertyId: z.string().min(1, 'Please select a property'),
-  proposedPrice: z.number().min(10000, 'Proposed price must be at least ₡10,000').max(10000000),
+  proposedPrice: z.preprocess(
+    (v) => (v === '' || v === null || isNaN(Number(v)) ? undefined : Number(v)),
+    z.number({ required_error: 'Price is required' }).min(10000, 'Proposed price must be at least $10,000').max(10000000)
+  ),
   commissionType: z.enum(['10percent', 'markup']),
-  markupAmount: z.number().min(0).optional(),
+  markupAmount: z.preprocess(
+    (v) => (v === '' || v === null || v === undefined || isNaN(Number(v)) ? undefined : Number(v)),
+    z.number().min(0).optional()
+  ),
   apartmentType: z.enum(['Tipo A', 'Tipo B', 'Tipo C', 'Tipo D'], { errorMap: () => ({ message: 'Please select apartment type' }) }),
   torreApartamento: z.string().min(1, 'Tower and apartment number is required'),
   googleDriveLink: z.string().url('Invalid URL').refine(
@@ -314,7 +320,7 @@ export function OwnerResponseForm({
                 type="number"
                 min="10000"
                 step="10000"
-                {...register('proposedPrice', { valueAsNumber: true })}
+                {...register('proposedPrice')}
                 placeholder="150000"
               />
               {errors.proposedPrice && (
@@ -358,7 +364,7 @@ export function OwnerResponseForm({
                       type="number"
                       min="0"
                       step="5000"
-                      {...register('markupAmount', { valueAsNumber: true })}
+                      {...register('markupAmount')}
                       placeholder="Markup amount in COP"
                       className="text-sm"
                       disabled={watchCommissionType !== 'markup'}
