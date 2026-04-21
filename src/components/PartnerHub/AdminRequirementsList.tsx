@@ -3,7 +3,9 @@ import { usePartnerHub } from '@/hooks/usePartnerHub';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ChevronDown, ChevronUp, Check, X } from 'lucide-react';
+import { ChevronDown, ChevronUp, Check, X, Edit2, Trash2, CheckCircle } from 'lucide-react';
+import { EditRequirementForm } from './EditRequirementForm';
+import type { GuestRequirement } from '@/data/partnerHub';
 
 const MONTHS_ES = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
 const MONTHS_EN = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -22,8 +24,9 @@ function formatCOP(amount: number): string {
 
 export function AdminRequirementsList() {
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const { language } = useLanguage();
-  const { getRequirements, getResponses, updateRequirement, updateResponse } =
+  const { getRequirements, getResponses, updateRequirement, updateResponse, deleteRequirement } =
     usePartnerHub();
 
   const requirements = getRequirements();
@@ -31,15 +34,44 @@ export function AdminRequirementsList() {
 
   const handleAcceptResponse = (responseId: string, requirementId: string) => {
     updateResponse(responseId, { status: 'accepted' });
-    // Mark requirement as closed when first response is accepted
+    // Mark requirement as successful when first response is accepted
     const req = requirements.find((r) => r.id === requirementId);
     if (req?.status === 'open') {
-      updateRequirement(requirementId, { status: 'closed' });
+      updateRequirement(requirementId, { status: 'successful' });
     }
   };
 
   const handleRejectResponse = (responseId: string) => {
     updateResponse(responseId, { status: 'rejected' });
+  };
+
+  const handleMarkSuccessful = (requirementId: string) => {
+    if (window.confirm(language === 'es'
+      ? '¿Marcar como exitoso?'
+      : 'Mark as successful?')) {
+      updateRequirement(requirementId, { status: 'successful' });
+    }
+  };
+
+  const handleCancel = (requirementId: string) => {
+    if (window.confirm(language === 'es'
+      ? '¿Cancelar este requisito?'
+      : 'Cancel this requirement?')) {
+      updateRequirement(requirementId, { status: 'cancelled' });
+    }
+  };
+
+  const handleDelete = (requirementId: string) => {
+    if (window.confirm(language === 'es'
+      ? '¿Eliminar este requisito permanentemente?'
+      : 'Permanently delete this requirement?')) {
+      deleteRequirement(requirementId);
+    }
+  };
+
+  const handleEditSave = (requirementId: string, updates: Partial<GuestRequirement>) => {
+    updateRequirement(requirementId, updates);
+    setEditingId(null);
   };
 
   if (requirements.length === 0) {
@@ -95,12 +127,16 @@ export function AdminRequirementsList() {
                       className={`px-2 py-1 rounded text-xs font-medium ${
                         requirement.status === 'open'
                           ? 'bg-green-100 text-green-800'
-                          : 'bg-gray-100 text-gray-800'
+                          : requirement.status === 'successful'
+                          ? 'bg-blue-100 text-blue-800'
+                          : 'bg-red-100 text-red-800'
                       }`}
                     >
                       {requirement.status === 'open'
                         ? (language === 'es' ? 'Abierto' : 'Open')
-                        : (language === 'es' ? 'Cerrado' : 'Closed')}
+                        : requirement.status === 'successful'
+                        ? (language === 'es' ? 'Exitoso' : 'Successful')
+                        : (language === 'es' ? 'Cancelado' : 'Cancelled')}
                     </span>
                   </div>
                   <div className="text-sm text-gray-600">
@@ -119,9 +155,17 @@ export function AdminRequirementsList() {
 
             {/* Expanded Content */}
             {isExpanded && (
-              <div className="border-t bg-gray-50 p-4 space-y-4">
-                {/* Requirement Details */}
-                <div className="grid grid-cols-2 gap-4 text-sm">
+              <>
+                {editingId === requirement.id ? (
+                  <EditRequirementForm
+                    requirement={requirement}
+                    onSave={(updates) => handleEditSave(requirement.id, updates)}
+                    onCancel={() => setEditingId(null)}
+                  />
+                ) : (
+                  <div className="border-t bg-gray-50 p-4 space-y-4">
+                    {/* Requirement Details */}
+                    <div className="grid grid-cols-2 gap-4 text-sm">
                   <div>
                     <p className="text-gray-600">{language === 'es' ? 'Contacto' : 'Admin Contact'}</p>
                     <p className="font-medium text-gray-900">
@@ -215,12 +259,57 @@ export function AdminRequirementsList() {
                   </div>
                 )}
 
-                {requirementResponses.length === 0 && (
-                  <div className="text-center py-6 text-gray-600">
-                    <p className="text-sm">{language === 'es' ? 'Sin respuestas aún' : 'No responses yet'}</p>
+                    {requirementResponses.length === 0 && (
+                      <div className="text-center py-6 text-gray-600">
+                        <p className="text-sm">{language === 'es' ? 'Sin respuestas aún' : 'No responses yet'}</p>
+                      </div>
+                    )}
+
+                    {/* Action Buttons */}
+                    <div className="pt-4 border-t flex gap-2">
+                      {requirement.status === 'open' && (
+                        <>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => setEditingId(requirement.id)}
+                            className="flex items-center gap-2"
+                          >
+                            <Edit2 size={16} />
+                            {language === 'es' ? 'Editar' : 'Edit'}
+                          </Button>
+                          <Button
+                            size="sm"
+                            className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2"
+                            onClick={() => handleMarkSuccessful(requirement.id)}
+                          >
+                            <CheckCircle size={16} />
+                            {language === 'es' ? 'Marcar Exitoso' : 'Mark Successful'}
+                          </Button>
+                        </>
+                      )}
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleCancel(requirement.id)}
+                        disabled={requirement.status !== 'open'}
+                        className="flex items-center gap-2"
+                      >
+                        {language === 'es' ? 'Cancelar' : 'Cancel'}
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleDelete(requirement.id)}
+                        className="flex items-center gap-2 text-red-600 hover:text-red-700 hover:bg-red-50"
+                      >
+                        <Trash2 size={16} />
+                        {language === 'es' ? 'Eliminar' : 'Delete'}
+                      </Button>
+                    </div>
                   </div>
                 )}
-              </div>
+              </>
             )}
           </Card>
         );

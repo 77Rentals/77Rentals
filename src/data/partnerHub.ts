@@ -13,7 +13,7 @@ export interface GuestRequirement {
   budget: number; // COP per night (estimated/flexible)
   notes: string;
   city: string; // e.g., "Santa Marta, Delventto"
-  status: 'open' | 'closed'; // closed = deal made
+  status: 'open' | 'successful' | 'cancelled'; // open = accepting responses, successful = deal made, cancelled = no longer accepting
   allowedApartmentTypes: ApartmentType[]; // Types admin is accepting (Tipo A, B, C, D)
   commissionType: 'fixed' | 'markup'; // 'fixed' = 10%, 'markup' = admin-set amount
   commissionValue?: number; // For markup type: the markup amount in COP

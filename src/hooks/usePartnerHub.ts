@@ -85,10 +85,20 @@ export function usePartnerHub() {
     return getResponses().filter((r) => r.ownerContact.email === ownerEmail);
   };
 
+  /**
+   * Delete a requirement by ID
+   */
+  const deleteRequirement = (id: string): void => {
+    const reqs = getRequirements();
+    const filtered = reqs.filter((r) => r.id !== id);
+    localStorage.setItem('partnerRequirements', JSON.stringify(filtered));
+  };
+
   return {
     getRequirements,
     addRequirement,
     updateRequirement,
+    deleteRequirement,
     getResponses,
     addResponse,
     updateResponse,
