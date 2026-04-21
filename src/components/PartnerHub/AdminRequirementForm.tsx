@@ -73,7 +73,6 @@ export function AdminRequirementForm({ onClose, onSubmit }: AdminRequirementForm
 
   const onSubmitForm = async (data: RequirementFormData) => {
     try {
-      setIsSubmitting(true);
       setSubmitError(null);
 
       // Validate date range
@@ -87,6 +86,8 @@ export function AdminRequirementForm({ onClose, onSubmit }: AdminRequirementForm
         setSubmitError('Please select at least one apartment type');
         return;
       }
+
+      setIsSubmitting(true);
 
       const requirement = {
         id: generateUUID(),

@@ -95,7 +95,6 @@ export function OwnerResponseForm({
 
   const onSubmitForm = async (data: ResponseFormData) => {
     try {
-      setIsSubmitting(true);
       setSubmitError(null);
 
       const property = delVenttoProperties.find((p) => p.id === data.propertyId);
@@ -106,6 +105,7 @@ export function OwnerResponseForm({
 
       // Type-matching validation: auto-reject if apartment type doesn't match requirement
       if (!requirement.allowedApartmentTypes.includes(data.apartmentType as any)) {
+        setIsSubmitting(true);
         setSubmitError(
           `Your apartment type (${data.apartmentType}) does not match the requirement's accepted types: ${requirement.allowedApartmentTypes.join(', ')}. Your offer will be automatically rejected.`
         );
@@ -138,6 +138,8 @@ export function OwnerResponseForm({
         }, 2000);
         return;
       }
+
+      setIsSubmitting(true);
 
       const response = {
         id: generateUUID(),
