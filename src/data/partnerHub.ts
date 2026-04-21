@@ -1,5 +1,8 @@
 // Partner Hub data types and structures
 
+// Apartment type for matching requirements with responses
+export type ApartmentType = 'Tipo A' | 'Tipo B' | 'Tipo C' | 'Tipo D';
+
 // Partner requirement posted by admin
 export interface GuestRequirement {
   id: string; // UUID
@@ -7,10 +10,13 @@ export interface GuestRequirement {
   guestCount: number;
   checkInDate: string; // YYYY-MM-DD
   checkOutDate: string; // YYYY-MM-DD
-  budget: number; // USD per night
+  budget: number; // COP per night (estimated/flexible)
   notes: string;
-  city: 'Santa Marta'; // Only for MVP
+  city: string; // e.g., "Santa Marta, Delventto"
   status: 'open' | 'closed'; // closed = deal made
+  allowedApartmentTypes: ApartmentType[]; // Types admin is accepting (Tipo A, B, C, D)
+  commissionType: 'fixed' | 'markup'; // 'fixed' = 10%, 'markup' = admin-set amount
+  commissionValue?: number; // For markup type: the markup amount in COP
   adminContact: {
     name: string;
     phone: string;
@@ -24,11 +30,15 @@ export interface PartnershipResponse {
   requirementId: string;
   ownerId: string; // DelVentto property owner identifier
   propertyName: string; // DelVentto property name
-  proposedPrice: number; // USD per night
+  proposedPrice: number; // COP per night
   commissionPercent: number; // 10 or custom
   commissionAmount: number; // Auto-calculated
   finalPrice: number; // proposedPrice - commission (or + markup)
-  notes: string; // Why this property is perfect
+  apartmentType: ApartmentType; // Must match requirement's allowedApartmentTypes
+  torreApartamento: string; // Tower and apartment number (e.g., "A-407")
+  googleDriveLink: string; // Google Drive folder link with photos
+  apartmentBio: string; // Apartment description/bio
+  notes: string; // Additional notes about the property
   ownerContact: {
     name: string;
     phone: string;

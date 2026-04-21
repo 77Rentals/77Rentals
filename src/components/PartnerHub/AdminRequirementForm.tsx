@@ -8,16 +8,20 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 import { X } from 'lucide-react';
+import type { ApartmentType } from '@/data/partnerHub';
+
+const APARTMENT_TYPES: ApartmentType[] = ['Tipo A', 'Tipo B', 'Tipo C', 'Tipo D'];
 
 const requirementSchema = z.object({
   guestCount: z.number().min(1, 'Guest count must be at least 1').max(20),
   checkInDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format'),
   checkOutDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format'),
-  budget: z.number().min(50, 'Budget must be at least $50').max(10000),
+  budget: z.number().min(10000, 'Budget must be at least ₡10,000').max(10000000),
+  city: z.string().min(1, 'City is required'),
   notes: z.string().max(500, 'Notes must be less than 500 characters'),
-  adminName: z.string().min(2, 'Name is required'),
-  adminPhone: z.string().min(5, 'Phone number is required'),
-  adminEmail: z.string().email('Valid email is required'),
+  allowedApartmentTypes: z.array(z.string()).min(1, 'Select at least one apartment type'),
+  commissionType: z.enum(['fixed', 'markup'], { errorMap: () => ({ message: 'Select a commission type' }) }),
+  commissionValue: z.number().min(0).optional(),
 });
 
 type RequirementFormData = z.infer<typeof requirementSchema>;
@@ -27,23 +31,42 @@ interface AdminRequirementFormProps {
   onSubmit: () => void;
 }
 
+// Helper function to format date with month names
+function formatDateForDisplay(dateString: string): string {
+  const date = new Date(dateString + 'T00:00:00');
+  const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  const day = date.getDate();
+  const month = months[date.getMonth()];
+  const year = date.getFullYear();
+  const ordinal = day === 1 || day === 21 || day === 31 ? 'st' : day === 2 || day === 22 ? 'nd' : day === 3 || day === 23 ? 'rd' : 'th';
+  return `${month} ${day}${ordinal} ${year}`;
+}
+
 export function AdminRequirementForm({ onClose, onSubmit }: AdminRequirementFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
+  const [commissionType, setCommissionType] = useState<'fixed' | 'markup'>('fixed');
   const { addRequirement } = usePartnerHub();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
+    watch,
   } = useForm<RequirementFormData>({
     resolver: zodResolver(requirementSchema),
     defaultValues: {
       guestCount: 2,
-      budget: 150,
+      budget: 150000,
       notes: '',
+      city: 'Santa Marta, Delventto',
+      allowedApartmentTypes: [],
+      commissionType: 'fixed',
     },
   });
+
+  const watchCommissionType = watch('commissionType');
 
   const onSubmitForm = async (data: RequirementFormData) => {
     try {
@@ -56,6 +79,12 @@ export function AdminRequirementForm({ onClose, onSubmit }: AdminRequirementForm
         return;
       }
 
+      // Validate apartment types selected
+      if (data.allowedApartmentTypes.length === 0) {
+        setSubmitError('Please select at least one apartment type');
+        return;
+      }
+
       const requirement = {
         id: generateUUID(),
         createdAt: new Date(),
@@ -64,12 +93,15 @@ export function AdminRequirementForm({ onClose, onSubmit }: AdminRequirementForm
         checkOutDate: data.checkOutDate,
         budget: data.budget,
         notes: data.notes,
-        city: 'Santa Marta' as const,
+        city: data.city,
         status: 'open' as const,
+        allowedApartmentTypes: data.allowedApartmentTypes as any,
+        commissionType: data.commissionType,
+        commissionValue: data.commissionValue,
         adminContact: {
-          name: data.adminName,
-          phone: data.adminPhone,
-          email: data.adminEmail,
+          name: 'Claudia Moreno',
+          phone: '+573046736241',
+          email: 'team@77rentals.com',
         },
       };
 
@@ -155,18 +187,97 @@ export function AdminRequirementForm({ onClose, onSubmit }: AdminRequirementForm
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Budget per Night (USD)
+                City
+              </label>
+              <Input
+                type="text"
+                {...register('city')}
+                placeholder="Santa Marta, Delventto"
+                defaultValue="Santa Marta, Delventto"
+              />
+              {errors.city && (
+                <p className="text-red-500 text-sm mt-1">{errors.city.message}</p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Budget per Night (COP) - Estimate
               </label>
               <Input
                 type="number"
-                min="50"
-                step="10"
+                min="10000"
+                step="10000"
                 {...register('budget', { valueAsNumber: true })}
-                placeholder="150"
+                placeholder="150000"
               />
               {errors.budget && (
                 <p className="text-red-500 text-sm mt-1">{errors.budget.message}</p>
               )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Apartment Types Accepted
+              </label>
+              <div className="space-y-2">
+                {APARTMENT_TYPES.map((type) => (
+                  <label key={type} className="flex items-center gap-3 p-2 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+                    <input
+                      type="checkbox"
+                      value={type}
+                      {...register('allowedApartmentTypes')}
+                      className="w-4 h-4"
+                    />
+                    <span className="text-gray-900 font-medium">{type}</span>
+                  </label>
+                ))}
+              </div>
+              {errors.allowedApartmentTypes && (
+                <p className="text-red-500 text-sm mt-1">{errors.allowedApartmentTypes.message}</p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Commission Type
+              </label>
+              <div className="space-y-2">
+                <label className="flex items-center gap-3 p-3 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+                  <input
+                    type="radio"
+                    value="fixed"
+                    {...register('commissionType')}
+                    className="w-4 h-4"
+                  />
+                  <div>
+                    <p className="font-medium text-gray-900">Fixed Commission (10%)</p>
+                    <p className="text-xs text-gray-600">Standard 10% commission deduction</p>
+                  </div>
+                </label>
+
+                <label className="flex items-center gap-3 p-3 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+                  <input
+                    type="radio"
+                    value="markup"
+                    {...register('commissionType')}
+                    className="w-4 h-4"
+                  />
+                  <div className="flex-1">
+                    <p className="font-medium text-gray-900">Markup</p>
+                    <p className="text-xs text-gray-600 mb-2">Custom markup amount added to final price</p>
+                    <Input
+                      type="number"
+                      min="0"
+                      step="5000"
+                      {...register('commissionValue', { valueAsNumber: true })}
+                      placeholder="Markup amount in COP"
+                      className="text-sm"
+                      disabled={watchCommissionType !== 'markup'}
+                    />
+                  </div>
+                </label>
+              </div>
             </div>
 
             <div>
@@ -185,50 +296,23 @@ export function AdminRequirementForm({ onClose, onSubmit }: AdminRequirementForm
             </div>
           </div>
 
-          {/* Contact Info Section */}
-          <div className="space-y-4 pt-4 border-t">
+          {/* Contact Info Section - Hardcoded */}
+          <div className="space-y-4 pt-4 border-t bg-gray-50 p-4 rounded-lg">
             <h3 className="font-semibold text-gray-900">Contact Information</h3>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Name
-              </label>
-              <Input
-                type="text"
-                {...register('adminName')}
-                placeholder="Your name"
-              />
-              {errors.adminName && (
-                <p className="text-red-500 text-sm mt-1">{errors.adminName.message}</p>
-              )}
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Phone
-              </label>
-              <Input
-                type="tel"
-                {...register('adminPhone')}
-                placeholder="+1 (555) 123-4567"
-              />
-              {errors.adminPhone && (
-                <p className="text-red-500 text-sm mt-1">{errors.adminPhone.message}</p>
-              )}
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Email
-              </label>
-              <Input
-                type="email"
-                {...register('adminEmail')}
-                placeholder="you@77rentals.com"
-              />
-              {errors.adminEmail && (
-                <p className="text-red-500 text-sm mt-1">{errors.adminEmail.message}</p>
-              )}
+            <p className="text-sm text-gray-600">Automatically filled</p>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <p className="text-xs text-gray-600">Name</p>
+                <p className="font-medium text-gray-900">Claudia Moreno</p>
+              </div>
+              <div>
+                <p className="text-xs text-gray-600">Email</p>
+                <p className="font-medium text-gray-900">team@77rentals.com</p>
+              </div>
+              <div className="col-span-2">
+                <p className="text-xs text-gray-600">Phone</p>
+                <p className="font-medium text-gray-900">+573046736241</p>
+              </div>
             </div>
           </div>
 

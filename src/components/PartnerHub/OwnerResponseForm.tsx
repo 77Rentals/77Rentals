@@ -9,15 +9,27 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 import { X, AlertCircle } from 'lucide-react';
-import type { GuestRequirement } from '@/data/partnerHub';
+import type { GuestRequirement, ApartmentType } from '@/data/partnerHub';
 import { apartments } from '@/data/apartments';
+
+const APARTMENT_TYPES: ApartmentType[] = ['Tipo A', 'Tipo B', 'Tipo C', 'Tipo D'];
+
+// Validation: Google Drive link format
+const googleDriveLinkRegex = /^https:\/\/drive\.google\.com\//;
 
 const responseSchema = z.object({
   propertyId: z.string().min(1, 'Please select a property'),
-  proposedPrice: z.number().min(50, 'Proposed price must be at least $50').max(10000),
+  proposedPrice: z.number().min(10000, 'Proposed price must be at least ₡10,000').max(10000000),
   commissionType: z.enum(['10percent', 'markup']),
   markupAmount: z.number().min(0).optional(),
-  notes: z.string().max(500, 'Notes must be less than 500 characters'),
+  apartmentType: z.enum(['Tipo A', 'Tipo B', 'Tipo C', 'Tipo D'], { errorMap: () => ({ message: 'Please select apartment type' }) }),
+  torreApartamento: z.string().min(1, 'Tower and apartment number is required'),
+  googleDriveLink: z.string().url('Invalid URL').refine(
+    (url) => googleDriveLinkRegex.test(url),
+    'Must be a valid Google Drive link (https://drive.google.com/...)'
+  ),
+  apartmentBio: z.string().min(10, 'Apartment description must be at least 10 characters').max(1000, 'Description must be less than 1000 characters'),
+  notes: z.string().max(500, 'Additional notes must be less than 500 characters'),
   ownerName: z.string().min(2, 'Name is required'),
   ownerPhone: z.string().min(5, 'Phone number is required'),
   ownerEmail: z.string().email('Valid email is required'),
@@ -59,12 +71,17 @@ export function OwnerResponseForm({
       commissionType: '10percent',
       markupAmount: 0,
       notes: '',
+      apartmentBio: '',
+      apartmentType: 'Tipo A',
+      torreApartamento: '',
+      googleDriveLink: '',
     },
   });
 
   const watchProposedPrice = watch('proposedPrice');
   const watchCommissionType = watch('commissionType');
   const watchMarkupAmount = watch('markupAmount');
+  const watchApartmentType = watch('apartmentType');
 
   // Calculate commission based on inputs
   const commissionCalc = calculateCommission(
@@ -84,6 +101,41 @@ export function OwnerResponseForm({
         return;
       }
 
+      // Type-matching validation: auto-reject if apartment type doesn't match requirement
+      if (!requirement.allowedApartmentTypes.includes(data.apartmentType as any)) {
+        setSubmitError(
+          `Your apartment type (${data.apartmentType}) does not match the requirement's accepted types: ${requirement.allowedApartmentTypes.join(', ')}. Your offer will be automatically rejected.`
+        );
+        // Still submit but with rejected status
+        const response = {
+          id: generateUUID(),
+          requirementId: requirement.id,
+          ownerId: data.ownerId,
+          propertyName: property.name,
+          proposedPrice: data.proposedPrice,
+          commissionPercent: data.commissionType === '10percent' ? 10 : 0,
+          commissionAmount: commissionCalc.commission,
+          finalPrice: commissionCalc.finalPrice,
+          apartmentType: data.apartmentType,
+          torreApartamento: data.torreApartamento,
+          googleDriveLink: data.googleDriveLink,
+          apartmentBio: data.apartmentBio,
+          notes: data.notes,
+          ownerContact: {
+            name: data.ownerName,
+            phone: data.ownerPhone,
+            email: data.ownerEmail,
+          },
+          status: 'rejected' as const,
+          respondedAt: new Date(),
+        };
+        addResponse(response);
+        setTimeout(() => {
+          onSubmit();
+        }, 2000);
+        return;
+      }
+
       const response = {
         id: generateUUID(),
         requirementId: requirement.id,
@@ -93,6 +145,10 @@ export function OwnerResponseForm({
         commissionPercent: data.commissionType === '10percent' ? 10 : 0,
         commissionAmount: commissionCalc.commission,
         finalPrice: commissionCalc.finalPrice,
+        apartmentType: data.apartmentType,
+        torreApartamento: data.torreApartamento,
+        googleDriveLink: data.googleDriveLink,
+        apartmentBio: data.apartmentBio,
         notes: data.notes,
         ownerContact: {
           name: data.ownerName,
@@ -135,7 +191,7 @@ export function OwnerResponseForm({
 
         <form onSubmit={handleSubmit(onSubmitForm)} className="p-6 space-y-6">
           {submitError && (
-            <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm flex gap-2">
+            <div className={`p-4 border rounded-lg text-sm flex gap-2 ${submitError.includes('automatically rejected') ? 'bg-yellow-50 border-yellow-200 text-yellow-700' : 'bg-red-50 border-red-200 text-red-700'}`}>
               <AlertCircle size={20} className="flex-shrink-0" />
               <div>{submitError}</div>
             </div>
@@ -174,20 +230,87 @@ export function OwnerResponseForm({
             )}
           </div>
 
+          {/* Apartment Information Section */}
+          <div className="space-y-4 pt-4 border-t">
+            <h3 className="font-semibold text-gray-900">Apartment Information</h3>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Torre y número de apt
+              </label>
+              <Input
+                type="text"
+                {...register('torreApartamento')}
+                placeholder="e.g., A-407 or Torre Norte, Apt 201"
+              />
+              {errors.torreApartamento && (
+                <p className="text-red-500 text-sm mt-1">{errors.torreApartamento.message}</p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Apartment Type
+              </label>
+              <select
+                {...register('apartmentType')}
+                className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D4A843]"
+              >
+                {APARTMENT_TYPES.map((type) => (
+                  <option key={type} value={type}>
+                    {type}
+                  </option>
+                ))}
+              </select>
+              {errors.apartmentType && (
+                <p className="text-red-500 text-sm mt-1">{errors.apartmentType.message}</p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Google Drive Photos Link
+              </label>
+              <Input
+                type="url"
+                {...register('googleDriveLink')}
+                placeholder="https://drive.google.com/drive/folders/..."
+              />
+              {errors.googleDriveLink && (
+                <p className="text-red-500 text-sm mt-1">{errors.googleDriveLink.message}</p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Apartment Bio / Description
+              </label>
+              <textarea
+                {...register('apartmentBio')}
+                placeholder="Describe your apartment: size, amenities, location highlights, etc."
+                rows={3}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D4A843]"
+              />
+              {errors.apartmentBio && (
+                <p className="text-red-500 text-sm mt-1">{errors.apartmentBio.message}</p>
+              )}
+            </div>
+          </div>
+
           {/* Price & Commission Section */}
           <div className="space-y-4 pt-4 border-t">
             <h3 className="font-semibold text-gray-900">Pricing & Commission</h3>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Proposed Nightly Price (USD)
+                Proposed Nightly Price (COP)
               </label>
               <Input
                 type="number"
-                min="50"
-                step="10"
+                min="10000"
+                step="10000"
                 {...register('proposedPrice', { valueAsNumber: true })}
-                placeholder="150"
+                placeholder="150000"
               />
               {errors.proposedPrice && (
                 <p className="text-red-500 text-sm mt-1">{errors.proposedPrice.message}</p>
@@ -229,9 +352,9 @@ export function OwnerResponseForm({
                     <Input
                       type="number"
                       min="0"
-                      step="10"
+                      step="5000"
                       {...register('markupAmount', { valueAsNumber: true })}
-                      placeholder="Markup amount in USD"
+                      placeholder="Markup amount in COP"
                       className="text-sm"
                       disabled={watchCommissionType !== 'markup'}
                     />
