@@ -31,9 +31,10 @@ export interface PartnershipResponse {
   ownerId: string; // DelVentto property owner identifier
   propertyName: string; // DelVentto property name
   proposedPrice: number; // COP per night
+  cleaningFee: number; // COP cleaning fee (commission NOT applied to this)
   commissionPercent: number; // 10 or custom
-  commissionAmount: number; // Auto-calculated
-  finalPrice: number; // proposedPrice - commission (or + markup)
+  commissionAmount: number; // Auto-calculated (only on proposedPrice, not cleaningFee)
+  finalPrice: number; // (proposedPrice - commission) + cleaningFee (or + markup)
   apartmentType: ApartmentType; // Must match requirement's allowedApartmentTypes
   torreApartamento: string; // Tower and apartment number (e.g., "A-407")
   googleDriveLink: string; // Google Drive folder link with photos

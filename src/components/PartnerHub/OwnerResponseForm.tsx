@@ -5,7 +5,7 @@ import { z } from 'zod';
 import { usePartnerHub } from '@/hooks/usePartnerHub';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { t } from '@/lib/translations';
-import { calculateCommission } from '@/lib/commissionCalculator';
+import { calculateCommission, calculateFinalPriceWithCleaning } from '@/lib/commissionCalculator';
 import { generateUUID } from '@/lib/uuid';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -24,6 +24,10 @@ const responseSchema = z.object({
   proposedPrice: z.preprocess(
     (v) => (v === '' || v === null || isNaN(Number(v)) ? undefined : Number(v)),
     z.number({ required_error: 'Price is required' }).min(10000, 'Proposed price must be at least $10,000').max(10000000)
+  ),
+  cleaningFee: z.preprocess(
+    (v) => (v === '' || v === null || isNaN(Number(v)) ? undefined : Number(v)),
+    z.number({ required_error: 'Cleaning fee is required' }).min(0).optional().default(0)
   ),
   commissionType: z.enum(['10percent', 'markup']),
   markupAmount: z.preprocess(
@@ -63,6 +67,7 @@ export function OwnerResponseForm({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [proposedPrice, setProposedPrice] = useState(requirement.budget);
+  const [cleaningFee, setCleaningFee] = useState(0);
   const [commissionType, setCommissionType] = useState<'10percent' | 'markup'>('10percent');
   const [markupAmount, setMarkupAmount] = useState(0);
   const { addResponse } = usePartnerHub();
@@ -77,6 +82,7 @@ export function OwnerResponseForm({
     resolver: zodResolver(responseSchema),
     defaultValues: {
       proposedPrice: requirement.budget,
+      cleaningFee: 0,
       commissionType: '10percent',
       markupAmount: 0,
       notes: '',
@@ -88,6 +94,7 @@ export function OwnerResponseForm({
   });
 
   const watchProposedPrice = watch('proposedPrice');
+  const watchCleaningFee = watch('cleaningFee');
   const watchCommissionType = watch('commissionType');
   const watchMarkupAmount = watch('markupAmount');
   const watchApartmentType = watch('apartmentType');
@@ -122,9 +129,10 @@ export function OwnerResponseForm({
           ownerId: data.ownerId,
           propertyName: property.name,
           proposedPrice: data.proposedPrice,
+          cleaningFee: data.cleaningFee || 0,
           commissionPercent: data.commissionType === '10percent' ? 10 : 0,
           commissionAmount: commissionCalc.commission,
-          finalPrice: commissionCalc.finalPrice,
+          finalPrice: calculateFinalPriceWithCleaning(commissionCalc.finalPrice, data.cleaningFee || 0),
           apartmentType: data.apartmentType,
           torreApartamento: data.torreApartamento,
           googleDriveLink: data.googleDriveLink,
@@ -153,9 +161,10 @@ export function OwnerResponseForm({
         ownerId: data.ownerId,
         propertyName: property.name,
         proposedPrice: data.proposedPrice,
+        cleaningFee: data.cleaningFee || 0,
         commissionPercent: data.commissionType === '10percent' ? 10 : 0,
         commissionAmount: commissionCalc.commission,
-        finalPrice: commissionCalc.finalPrice,
+        finalPrice: calculateFinalPriceWithCleaning(commissionCalc.finalPrice, data.cleaningFee || 0),
         apartmentType: data.apartmentType,
         torreApartamento: data.torreApartamento,
         googleDriveLink: data.googleDriveLink,
@@ -329,6 +338,25 @@ export function OwnerResponseForm({
             </div>
 
             <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Cleaning Fee (COP) - Optional
+              </label>
+              <Input
+                type="number"
+                min="0"
+                step="10000"
+                {...register('cleaningFee')}
+                placeholder="50000"
+              />
+              {errors.cleaningFee && (
+                <p className="text-red-500 text-sm mt-1">{errors.cleaningFee.message}</p>
+              )}
+              <p className="text-xs text-gray-600 mt-1">
+                Commission is only applied to nightly price, not cleaning fee
+              </p>
+            </div>
+
+            <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Commission Model
               </label>
@@ -376,17 +404,23 @@ export function OwnerResponseForm({
 
             {/* Final Price Summary */}
             <Card className="p-4 bg-blue-50 border-blue-200">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-600">Final Nightly Price</p>
-                  <p className="text-2xl font-bold text-gray-900">
-                    ${commissionCalc.finalPrice.toFixed(2)}/night
-                  </p>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between text-sm">
+                  <p className="text-gray-600">Nightly Price (before commission)</p>
+                  <p className="font-medium text-gray-900">COP {(watchProposedPrice || 0).toLocaleString()}</p>
                 </div>
-                <div className="text-right">
-                  <p className="text-sm text-gray-600">Commission</p>
-                  <p className="text-lg font-semibold text-gray-900">
-                    ${commissionCalc.commission.toFixed(2)}
+                <div className="flex items-center justify-between text-sm border-t pt-2">
+                  <p className="text-gray-600">Commission ({watchCommissionType === '10percent' ? '10%' : 'Markup'})</p>
+                  <p className="font-medium text-gray-900">- COP {commissionCalc.commission.toLocaleString()}</p>
+                </div>
+                <div className="flex items-center justify-between text-sm">
+                  <p className="text-gray-600">Cleaning Fee</p>
+                  <p className="font-medium text-gray-900">+ COP {(watchCleaningFee || 0).toLocaleString()}</p>
+                </div>
+                <div className="flex items-center justify-between text-base border-t pt-2 font-semibold">
+                  <p className="text-gray-900">Total Per Night</p>
+                  <p className="text-lg text-gray-900">
+                    COP {calculateFinalPriceWithCleaning(commissionCalc.finalPrice, watchCleaningFee || 0).toLocaleString()}
                   </p>
                 </div>
               </div>

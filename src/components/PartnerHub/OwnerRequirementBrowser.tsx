@@ -14,7 +14,7 @@ export function OwnerRequirementBrowser() {
 
   // Filter state
   const [minBudget, setMinBudget] = useState(0);
-  const [maxBudget, setMaxBudget] = useState(500);
+  const [maxBudget, setMaxBudget] = useState(10000000); // COP currency
   const [minGuests, setMinGuests] = useState(1);
   const [maxGuests, setMaxGuests] = useState(20);
   const [fromDate, setFromDate] = useState('');
@@ -54,7 +54,7 @@ export function OwnerRequirementBrowser() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Budget Range
+              Budget Range (COP)
             </label>
             <div className="flex gap-2 items-center">
               <Input
@@ -63,20 +63,19 @@ export function OwnerRequirementBrowser() {
                 value={minBudget}
                 onChange={(e) => setMinBudget(Number(e.target.value))}
                 placeholder="Min"
-                className="w-20"
+                className="w-28"
               />
               <span className="text-gray-600">-</span>
               <Input
                 type="number"
-                max="10000"
                 value={maxBudget}
                 onChange={(e) => setMaxBudget(Number(e.target.value))}
                 placeholder="Max"
-                className="w-20"
+                className="w-28"
               />
             </div>
             <p className="text-xs text-gray-600 mt-1">
-              ${minBudget} - ${maxBudget}/night
+              COP {minBudget.toLocaleString()} - {maxBudget.toLocaleString()}/night
             </p>
           </div>
 
@@ -134,7 +133,7 @@ export function OwnerRequirementBrowser() {
         <Button
           onClick={() => {
             setMinBudget(0);
-            setMaxBudget(500);
+            setMaxBudget(10000000);
             setMinGuests(1);
             setMaxGuests(20);
             setFromDate('');
@@ -164,12 +163,19 @@ export function OwnerRequirementBrowser() {
                 className="p-6 border-0 shadow-md hover:shadow-lg transition-all cursor-pointer hover:translate-y-[-2px]"
               >
                 <div className="flex items-start justify-between mb-4">
-                  <div>
-                    <div className="inline-block px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs font-medium">
+                  <div className="flex-1">
+                    <div className="inline-block px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs font-medium mb-2">
                       {requirement.checkInDate} → {requirement.checkOutDate}
                     </div>
+                    <div className="flex gap-1 flex-wrap">
+                      {requirement.allowedApartmentTypes.map((type) => (
+                        <span key={type} className="inline-block px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs font-medium">
+                          {type}
+                        </span>
+                      ))}
+                    </div>
                   </div>
-                  <div className="flex items-center gap-1 text-gray-600 text-sm">
+                  <div className="flex items-center gap-1 text-gray-600 text-sm ml-4">
                     <MessageCircle size={16} />
                     {responseCount}
                   </div>

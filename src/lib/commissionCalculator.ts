@@ -56,3 +56,18 @@ export function calculateTotalCommission(
   const totalBookingAmount = nightlyRate * nights;
   return (totalBookingAmount * commissionPercent) / 100;
 }
+
+/**
+ * Calculate final price including cleaning fee
+ * Commission is ONLY applied to nightly price, not cleaning fee
+ *
+ * @param nightlyPrice - The nightly rate after commission
+ * @param cleaningFee - One-time cleaning fee (no commission applied)
+ * @returns Total price (nightly + cleaning fee)
+ */
+export function calculateFinalPriceWithCleaning(
+  nightlyPrice: number,
+  cleaningFee: number
+): number {
+  return nightlyPrice + cleaningFee;
+}
