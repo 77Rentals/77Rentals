@@ -1,32 +1,36 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { translations, TranslationKey } from '@/data/translations';
-
-type Language = 'es' | 'en';
+import React, { createContext, useState, useContext, ReactNode } from 'react';
+import type { Language } from '@/lib/translations';
 
 interface LanguageContextType {
-  lang: Language;
-  setLang: (lang: Language) => void;
-  t: (key: TranslationKey) => string;
+  language: Language;
+  setLanguage: (lang: Language) => void;
 }
 
-const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
+const LanguageContext = createContext<LanguageContextType | null>(null);
 
-export const LanguageProvider = ({ children }: { children: ReactNode }) => {
-  const [lang, setLang] = useState<Language>('es');
+export function LanguageProvider({ children }: { children: ReactNode }) {
+  const [language, setLanguageState] = useState<Language>(() => {
+    // Default to Spanish, but check localStorage for user preference
+    const stored = localStorage.getItem('partnerHubLanguage');
+    return (stored as Language) || 'es';
+  });
 
-  const t = (key: TranslationKey): string => {
-    return translations[lang][key] || key;
+  const setLanguage = (lang: Language) => {
+    setLanguageState(lang);
+    localStorage.setItem('partnerHubLanguage', lang);
   };
 
   return (
-    <LanguageContext.Provider value={{ lang, setLang, t }}>
+    <LanguageContext.Provider value={{ language, setLanguage }}>
       {children}
     </LanguageContext.Provider>
   );
-};
+}
 
-export const useLanguage = () => {
+export function useLanguage() {
   const context = useContext(LanguageContext);
-  if (!context) throw new Error('useLanguage must be used within LanguageProvider');
+  if (!context) {
+    throw new Error('useLanguage must be used within LanguageProvider');
+  }
   return context;
-};
+}

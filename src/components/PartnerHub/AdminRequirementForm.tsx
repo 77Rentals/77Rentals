@@ -3,6 +3,8 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { usePartnerHub } from '@/hooks/usePartnerHub';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { t } from '@/lib/translations';
 import { generateUUID } from '@/lib/uuid';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -48,6 +50,7 @@ export function AdminRequirementForm({ onClose, onSubmit }: AdminRequirementForm
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
   const [commissionType, setCommissionType] = useState<'fixed' | 'markup'>('fixed');
   const { addRequirement } = usePartnerHub();
+  const { language } = useLanguage();
 
   const {
     register,
@@ -122,7 +125,7 @@ export function AdminRequirementForm({ onClose, onSubmit }: AdminRequirementForm
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
       <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
         <div className="sticky top-0 flex items-center justify-between p-6 border-b bg-white">
-          <h2 className="text-xl font-bold text-gray-900">Post New Requirement</h2>
+          <h2 className="text-xl font-bold text-gray-900">{t('form.postNewRequirement', language)}</h2>
           <button
             onClick={onClose}
             className="p-1 hover:bg-gray-100 rounded-lg transition-colors"
@@ -140,11 +143,11 @@ export function AdminRequirementForm({ onClose, onSubmit }: AdminRequirementForm
 
           {/* Guest Requirement Section */}
           <div className="space-y-4">
-            <h3 className="font-semibold text-gray-900">Guest Information</h3>
+            <h3 className="font-semibold text-gray-900">{t('form.guestInformation', language)}</h3>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Number of Guests
+                {t('form.numberOfGuests', language)}
               </label>
               <Input
                 type="number"
@@ -161,7 +164,7 @@ export function AdminRequirementForm({ onClose, onSubmit }: AdminRequirementForm
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Check-In Date
+                  {t('form.checkInDate', language)}
                 </label>
                 <Input
                   type="date"
@@ -173,7 +176,7 @@ export function AdminRequirementForm({ onClose, onSubmit }: AdminRequirementForm
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Check-Out Date
+                  {t('form.checkOutDate', language)}
                 </label>
                 <Input
                   type="date"
@@ -187,13 +190,13 @@ export function AdminRequirementForm({ onClose, onSubmit }: AdminRequirementForm
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                City
+                {t('form.city', language)}
               </label>
               <Input
                 type="text"
                 {...register('city')}
-                placeholder="Santa Marta, Delventto"
-                defaultValue="Santa Marta, Delventto"
+                placeholder={t('common.santaMartaDelventto', language)}
+                defaultValue={t('common.santaMartaDelventto', language)}
               />
               {errors.city && (
                 <p className="text-red-500 text-sm mt-1">{errors.city.message}</p>
@@ -202,7 +205,7 @@ export function AdminRequirementForm({ onClose, onSubmit }: AdminRequirementForm
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Budget per Night (COP) - Estimate
+                {t('form.budgetPerNight', language)}
               </label>
               <Input
                 type="number"
@@ -218,7 +221,7 @@ export function AdminRequirementForm({ onClose, onSubmit }: AdminRequirementForm
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Apartment Types Accepted
+                {t('form.apartmentTypesAccepted', language)}
               </label>
               <div className="space-y-2">
                 {APARTMENT_TYPES.map((type) => (
@@ -240,7 +243,7 @@ export function AdminRequirementForm({ onClose, onSubmit }: AdminRequirementForm
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Commission Type
+                {t('form.commissionType', language)}
               </label>
               <div className="space-y-2">
                 <label className="flex items-center gap-3 p-3 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
@@ -251,8 +254,8 @@ export function AdminRequirementForm({ onClose, onSubmit }: AdminRequirementForm
                     className="w-4 h-4"
                   />
                   <div>
-                    <p className="font-medium text-gray-900">Fixed Commission (10%)</p>
-                    <p className="text-xs text-gray-600">Standard 10% commission deduction</p>
+                    <p className="font-medium text-gray-900">{t('form.fixedCommission', language)}</p>
+                    <p className="text-xs text-gray-600">{t('form.fixedCommissionDesc', language)}</p>
                   </div>
                 </label>
 
@@ -264,14 +267,14 @@ export function AdminRequirementForm({ onClose, onSubmit }: AdminRequirementForm
                     className="w-4 h-4"
                   />
                   <div className="flex-1">
-                    <p className="font-medium text-gray-900">Markup</p>
-                    <p className="text-xs text-gray-600 mb-2">Custom markup amount added to final price</p>
+                    <p className="font-medium text-gray-900">{t('form.markup', language)}</p>
+                    <p className="text-xs text-gray-600 mb-2">{t('form.markupDesc', language)}</p>
                     <Input
                       type="number"
                       min="0"
                       step="5000"
                       {...register('commissionValue', { valueAsNumber: true })}
-                      placeholder="Markup amount in COP"
+                      placeholder={t('form.markupAmount', language)}
                       className="text-sm"
                       disabled={watchCommissionType !== 'markup'}
                     />
@@ -282,7 +285,7 @@ export function AdminRequirementForm({ onClose, onSubmit }: AdminRequirementForm
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Additional Notes
+                {t('form.additionalNotes', language)}
               </label>
               <textarea
                 {...register('notes')}
@@ -298,8 +301,8 @@ export function AdminRequirementForm({ onClose, onSubmit }: AdminRequirementForm
 
           {/* Contact Info Section - Hardcoded */}
           <div className="space-y-4 pt-4 border-t bg-gray-50 p-4 rounded-lg">
-            <h3 className="font-semibold text-gray-900">Contact Information</h3>
-            <p className="text-sm text-gray-600">Automatically filled</p>
+            <h3 className="font-semibold text-gray-900">{t('form.contactInformation', language)}</h3>
+            <p className="text-sm text-gray-600">{t('form.automaticallyFilled', language)}</p>
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <p className="text-xs text-gray-600">Name</p>
@@ -324,14 +327,14 @@ export function AdminRequirementForm({ onClose, onSubmit }: AdminRequirementForm
               onClick={onClose}
               className="flex-1"
             >
-              Cancel
+              {t('form.cancel', language)}
             </Button>
             <Button
               type="submit"
               disabled={isSubmitting}
               className="flex-1 bg-[#D4A843] hover:bg-[#c9963e] text-black font-bold"
             >
-              {isSubmitting ? 'Posting...' : 'Post Requirement'}
+              {isSubmitting ? t('form.posting', language) : t('form.postRequirement', language)}
             </Button>
           </div>
         </form>

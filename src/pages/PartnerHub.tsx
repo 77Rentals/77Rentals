@@ -1,5 +1,6 @@
 import { useContext } from 'react';
 import { PartnerAuthProvider, PartnerAuthContext } from '@/contexts/PartnerAuthContext';
+import { LanguageProvider } from '@/contexts/LanguageContext';
 import { Login } from '@/components/PartnerHub/Login';
 import { PartnerHubLayout } from '@/components/PartnerHub/Layout';
 import { AdminDashboard } from '@/components/PartnerHub/AdminDashboard';
@@ -21,8 +22,10 @@ function PartnerHubContent() {
 
 export function PartnerHub() {
   return (
-    <PartnerAuthProvider>
-      <PartnerHubContent />
-    </PartnerAuthProvider>
+    <LanguageProvider>
+      <PartnerAuthProvider>
+        <PartnerHubContent />
+      </PartnerAuthProvider>
+    </LanguageProvider>
   );
 }

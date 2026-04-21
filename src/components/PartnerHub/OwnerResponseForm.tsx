@@ -3,6 +3,8 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { usePartnerHub } from '@/hooks/usePartnerHub';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { t } from '@/lib/translations';
 import { calculateCommission } from '@/lib/commissionCalculator';
 import { generateUUID } from '@/lib/uuid';
 import { Button } from '@/components/ui/button';
@@ -58,6 +60,7 @@ export function OwnerResponseForm({
   const [commissionType, setCommissionType] = useState<'10percent' | 'markup'>('10percent');
   const [markupAmount, setMarkupAmount] = useState(0);
   const { addResponse } = usePartnerHub();
+  const { language } = useLanguage();
 
   const {
     register,
@@ -175,7 +178,7 @@ export function OwnerResponseForm({
       <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
         <div className="sticky top-0 flex items-center justify-between p-6 border-b bg-white">
           <div>
-            <h2 className="text-xl font-bold text-gray-900">Submit Property Offer</h2>
+            <h2 className="text-xl font-bold text-gray-900">{t('owner.submitPropertyOffer', language)}</h2>
             <p className="text-sm text-gray-600">
               {requirement.checkInDate} → {requirement.checkOutDate} •{' '}
               {requirement.guestCount} guests • ${requirement.budget}/night budget
