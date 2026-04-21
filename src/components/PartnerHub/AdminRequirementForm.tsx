@@ -3,11 +3,11 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { usePartnerHub } from '@/hooks/usePartnerHub';
+import { generateUUID } from '@/lib/uuid';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 import { X } from 'lucide-react';
-import { v4 as uuidv4 } from 'uuid';
 
 const requirementSchema = z.object({
   guestCount: z.number().min(1, 'Guest count must be at least 1').max(20),
@@ -57,7 +57,7 @@ export function AdminRequirementForm({ onClose, onSubmit }: AdminRequirementForm
       }
 
       const requirement = {
-        id: uuidv4(),
+        id: generateUUID(),
         createdAt: new Date(),
         guestCount: data.guestCount,
         checkInDate: data.checkInDate,

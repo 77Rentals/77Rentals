@@ -2,6 +2,8 @@ import { useContext } from 'react';
 import { PartnerAuthProvider, PartnerAuthContext } from '@/contexts/PartnerAuthContext';
 import { Login } from '@/components/PartnerHub/Login';
 import { PartnerHubLayout } from '@/components/PartnerHub/Layout';
+import { AdminDashboard } from '@/components/PartnerHub/AdminDashboard';
+import { OwnerDashboard } from '@/components/PartnerHub/OwnerDashboard';
 
 function PartnerHubContent() {
   const auth = useContext(PartnerAuthContext);
@@ -12,19 +14,7 @@ function PartnerHubContent() {
 
   return (
     <PartnerHubLayout>
-      <div className="space-y-6">
-        {auth.userRole === 'admin' ? (
-          <div>
-            <h2 className="text-2xl font-bold text-gray-900">Admin Dashboard</h2>
-            <p className="text-gray-600">Coming soon...</p>
-          </div>
-        ) : (
-          <div>
-            <h2 className="text-2xl font-bold text-gray-900">Owner Dashboard</h2>
-            <p className="text-gray-600">Coming soon...</p>
-          </div>
-        )}
-      </div>
+      {auth.userRole === 'admin' ? <AdminDashboard /> : <OwnerDashboard />}
     </PartnerHubLayout>
   );
 }
