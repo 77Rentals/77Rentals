@@ -239,7 +239,7 @@ export function OwnerResponseForm({
                   <option value="">Choose a property...</option>
                   {delVenttoProperties.map((prop) => (
                     <option key={prop.id} value={prop.id}>
-                      {prop.name} - {prop.location.city}
+                      {prop.name} - {prop.city}
                     </option>
                   ))}
                 </select>
