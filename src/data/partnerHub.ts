@@ -3,6 +3,13 @@
 // Apartment type for matching requirements with responses
 export type ApartmentType = 'Tipo A' | 'Tipo B' | 'Tipo C' | 'Tipo D';
 
+// NDA Signature data
+export interface NDASignature {
+  signedBy: 'admin' | 'owner';
+  signerName: string;
+  timestamp: Date;
+}
+
 // Partner requirement posted by admin
 export interface GuestRequirement {
   id: string; // UUID
@@ -47,6 +54,10 @@ export interface PartnershipResponse {
   };
   status: 'pending' | 'accepted' | 'rejected';
   respondedAt: Date;
+  // NDA signing fields
+  ndaStatus: 'not_started' | 'admin_signed' | 'both_signed';
+  adminSignature?: NDASignature;
+  ownerSignature?: NDASignature;
 }
 
 // Partner auth (simple email-based MVP)

@@ -4,7 +4,8 @@ import { useToast } from '@/components/ui/use-toast';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { usePartnerHub } from '@/hooks/usePartnerHub';
 import { X, Check, AlertCircle, ExternalLink } from 'lucide-react';
-import type { GuestRequirement, PartnershipResponse } from '@/data/partnerHub';
+import type { GuestRequirement, PartnershipResponse, NDASignature } from '@/data/partnerHub';
+import { NDASigningSection } from './NDASigningSection';
 
 const MONTHS_ES = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
 const MONTHS_EN = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -60,7 +61,12 @@ export function AdminOfferDetailModal({
 
   const handleAccept = () => {
     try {
-      updateResponse(response.id, { status: 'accepted' });
+      updateResponse(response.id, {
+        status: 'accepted',
+        ndaStatus: 'not_started',
+        adminSignature: undefined,
+        ownerSignature: undefined,
+      });
       toast({
         title: language === 'es' ? 'Éxito' : 'Success',
         description: language === 'es'
@@ -69,7 +75,6 @@ export function AdminOfferDetailModal({
         variant: 'default',
       });
       onStatusChange?.();
-      onClose();
     } catch (error) {
       toast({
         title: language === 'es' ? 'Error' : 'Error',
@@ -332,7 +337,34 @@ export function AdminOfferDetailModal({
             </div>
           )}
 
-          {/* Action Buttons */}
+          {/* NDA Signing Section - Appears after acceptance */}
+          {response.status === 'accepted' && (
+            <NDASigningSection
+              response={response}
+              requirement={requirement}
+              adminName={requirement.adminContact.name}
+              isAdmin={true}
+              onSignatureUpdate={(updates) => {
+                try {
+                  updateResponse(response.id, updates);
+                  toast({
+                    title: language === 'es' ? 'Éxito' : 'Success',
+                    description: language === 'es' ? 'NDA actualizado' : 'NDA updated',
+                    variant: 'default',
+                  });
+                  onStatusChange?.();
+                } catch (error) {
+                  toast({
+                    title: language === 'es' ? 'Error' : 'Error',
+                    description: language === 'es' ? 'No se pudo actualizar NDA' : 'Failed to update NDA',
+                    variant: 'destructive',
+                  });
+                }
+              }}
+            />
+          )}
+
+          {/* Action Buttons - Only if pending */}
           {response.status === 'pending' && (
             <div className="border-t pt-6 flex gap-3">
               <Button
@@ -359,6 +391,7 @@ export function AdminOfferDetailModal({
             </div>
           )}
 
+          {/* Close Button - After NDA signed or if rejected */}
           {response.status !== 'pending' && (
             <div className="border-t pt-6">
               <Button
