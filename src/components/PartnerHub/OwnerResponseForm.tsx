@@ -383,23 +383,62 @@ export function OwnerResponseForm({
 
             {/* Final Price Summary */}
             <Card className="p-4 bg-blue-50 border-blue-200">
+              <h4 className="font-semibold text-gray-900 mb-3">Pricing Breakdown</h4>
               <div className="space-y-3">
                 <div className="flex items-center justify-between text-sm">
-                  <p className="text-gray-600">Nightly Price (before commission)</p>
+                  <p className="text-gray-600">Price Per Night</p>
                   <p className="font-medium text-gray-900">{formatCOP(watchProposedPrice || 0)}</p>
                 </div>
+                <div className="flex items-center justify-between text-sm">
+                  <p className="text-gray-600">Number of Nights</p>
+                  <p className="font-medium text-gray-900">
+                    {Math.ceil(
+                      (new Date(requirement.checkOutDate).getTime() - new Date(requirement.checkInDate).getTime()) /
+                      (1000 * 60 * 60 * 24)
+                    )}
+                  </p>
+                </div>
                 <div className="flex items-center justify-between text-sm border-t pt-2">
-                  <p className="text-gray-600">Commission (10%)</p>
-                  <p className="font-medium text-gray-900">- {formatCOP(commissionCalc.commission)}</p>
+                  <p className="text-gray-600">Subtotal (Lodging)</p>
+                  <p className="font-medium text-gray-900">
+                    {formatCOP(
+                      (watchProposedPrice || 0) *
+                      Math.ceil(
+                        (new Date(requirement.checkOutDate).getTime() - new Date(requirement.checkInDate).getTime()) /
+                        (1000 * 60 * 60 * 24)
+                      )
+                    )}
+                  </p>
                 </div>
                 <div className="flex items-center justify-between text-sm">
-                  <p className="text-gray-600">Cleaning Fee</p>
+                  <p className="text-gray-600">Commission (10% of lodging)</p>
+                  <p className="font-medium text-gray-900">
+                    - {formatCOP(
+                      (watchProposedPrice || 0) *
+                      Math.ceil(
+                        (new Date(requirement.checkOutDate).getTime() - new Date(requirement.checkInDate).getTime()) /
+                        (1000 * 60 * 60 * 24)
+                      ) *
+                      0.1
+                    )}
+                  </p>
+                </div>
+                <div className="flex items-center justify-between text-sm">
+                  <p className="text-gray-600">Cleaning Fee (One-time)</p>
                   <p className="font-medium text-gray-900">+ {formatCOP(watchCleaningFee || 0)}</p>
                 </div>
-                <div className="flex items-center justify-between text-base border-t pt-2 font-semibold">
-                  <p className="text-gray-900">Total Per Night</p>
+                <div className="flex items-center justify-between text-base border-t pt-2 font-semibold bg-white p-2 rounded">
+                  <p className="text-gray-900">Total Amount Due</p>
                   <p className="text-lg text-gray-900">
-                    {formatCOP(calculateFinalPriceWithCleaning(commissionCalc.finalPrice, Number(watchCleaningFee) || 0))}
+                    {formatCOP(
+                      (watchProposedPrice || 0) *
+                      Math.ceil(
+                        (new Date(requirement.checkOutDate).getTime() - new Date(requirement.checkInDate).getTime()) /
+                        (1000 * 60 * 60 * 24)
+                      ) *
+                      0.9 +
+                      (watchCleaningFee || 0)
+                    )}
                   </p>
                 </div>
               </div>

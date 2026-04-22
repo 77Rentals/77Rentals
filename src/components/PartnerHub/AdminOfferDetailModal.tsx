@@ -254,32 +254,44 @@ export function AdminOfferDetailModal({
                   {nightCount}
                 </span>
               </div>
-              <div className="flex justify-between items-center">
+              <div className="flex justify-between items-center border-t pt-2">
                 <span className="text-gray-600">
-                  {language === 'es' ? 'Subtotal' : 'Subtotal'}
+                  {language === 'es' ? 'Subtotal (hospedaje)' : 'Subtotal (lodging)'}
                 </span>
                 <span className="font-medium text-gray-900">
                   {formatCOP(response.proposedPrice * nightCount)}
                 </span>
               </div>
-              <div className="border-t pt-2 flex justify-between items-center">
+              <div className="flex justify-between items-center">
                 <span className="text-gray-600">
                   {response.commissionPercent === 10
-                    ? (language === 'es' ? 'Comisión (10%)' : 'Commission (10%)')
+                    ? (language === 'es' ? 'Comisión (10% del hospedaje)' : 'Commission (10% of lodging)')
                     : (language === 'es' ? 'Recargo' : 'Markup')}
                 </span>
                 <span className="font-medium text-gray-900">
                   {response.commissionPercent === 10
-                    ? `- ${formatCOP(response.commissionAmount)}`
+                    ? `- ${formatCOP(response.proposedPrice * nightCount * 0.1)}`
                     : `+ ${formatCOP(response.commissionAmount)}`}
+                </span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-gray-600">
+                  {language === 'es' ? 'Tarifa de Limpieza (una sola vez)' : 'Cleaning Fee (one-time)'}
+                </span>
+                <span className="font-medium text-gray-900">
+                  + {formatCOP(response.cleaningFee || 0)}
                 </span>
               </div>
               <div className="border-t pt-2 flex justify-between items-center bg-white p-2 rounded">
                 <span className="font-semibold text-gray-900">
-                  {language === 'es' ? 'Precio Final por Noche' : 'Final Price Per Night'}
+                  {language === 'es' ? 'Total a Pagar' : 'Total Amount'}
                 </span>
-                <span className="font-semibold text-gray-900">
-                  {formatCOP(response.finalPrice)}
+                <span className="font-semibold text-lg text-gray-900">
+                  {formatCOP(
+                    (response.commissionPercent === 10
+                      ? response.proposedPrice * nightCount * 0.9
+                      : response.proposedPrice * nightCount + response.commissionAmount) + (response.cleaningFee || 0)
+                  )}
                 </span>
               </div>
             </div>
