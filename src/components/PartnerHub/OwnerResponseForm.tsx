@@ -1,8 +1,10 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { usePartnerHub } from '@/hooks/usePartnerHub';
+import { useOwnerProperties } from '@/hooks/useOwnerProperties';
+import { PartnerAuthContext } from '@/contexts/PartnerAuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { t } from '@/lib/translations';
 import { calculateCommission, calculateFinalPriceWithCleaning } from '@/lib/commissionCalculator';
@@ -56,9 +58,6 @@ interface OwnerResponseFormProps {
   onSubmit: () => void;
 }
 
-// Mock DelVentto properties - in real app would come from database
-const delVenttoProperties = apartments.filter((apt) => apt.isDelVenttoProp);
-
 export function OwnerResponseForm({
   requirement,
   onClose,
@@ -72,6 +71,9 @@ export function OwnerResponseForm({
   const [markupAmount, setMarkupAmount] = useState(0);
   const { addResponse } = usePartnerHub();
   const { language } = useLanguage();
+  const auth = useContext(PartnerAuthContext);
+  const { getProperties } = useOwnerProperties(auth?.userEmail || '');
+  const ownerProperties = getProperties();
 
   const {
     register,
@@ -110,7 +112,7 @@ export function OwnerResponseForm({
     try {
       setSubmitError(null);
 
-      const property = delVenttoProperties.find((p) => p.id === data.propertyId);
+      const property = ownerProperties.find((p) => p.id === data.propertyId);
       if (!property) {
         setSubmitError('Invalid property selected');
         return;
@@ -127,7 +129,7 @@ export function OwnerResponseForm({
           id: generateUUID(),
           requirementId: requirement.id,
           ownerId: data.ownerEmail,
-          propertyName: property.name,
+          propertyName: property.propertyName,
           proposedPrice: data.proposedPrice,
           cleaningFee: data.cleaningFee || 0,
           commissionPercent: data.commissionType === '10percent' ? 10 : 0,
@@ -135,7 +137,7 @@ export function OwnerResponseForm({
           finalPrice: calculateFinalPriceWithCleaning(commissionCalc.finalPrice, data.cleaningFee || 0),
           apartmentType: data.apartmentType,
           torreApartamento: data.torreApartamento,
-          googleDriveLink: data.googleDriveLink,
+          googleDriveLink: property.googleDriveLink,
           apartmentBio: data.apartmentBio,
           notes: data.notes,
           ownerContact: {
@@ -159,7 +161,7 @@ export function OwnerResponseForm({
         id: generateUUID(),
         requirementId: requirement.id,
         ownerId: data.ownerEmail,
-        propertyName: property.name,
+        propertyName: property.propertyName,
         proposedPrice: data.proposedPrice,
         cleaningFee: data.cleaningFee || 0,
         commissionPercent: data.commissionType === '10percent' ? 10 : 0,
@@ -167,7 +169,7 @@ export function OwnerResponseForm({
         finalPrice: calculateFinalPriceWithCleaning(commissionCalc.finalPrice, data.cleaningFee || 0),
         apartmentType: data.apartmentType,
         torreApartamento: data.torreApartamento,
-        googleDriveLink: data.googleDriveLink,
+        googleDriveLink: property.googleDriveLink,
         apartmentBio: data.apartmentBio,
         notes: data.notes,
         ownerContact: {
@@ -221,10 +223,10 @@ export function OwnerResponseForm({
           <div className="space-y-4">
             <h3 className="font-semibold text-gray-900">Your Property</h3>
 
-            {delVenttoProperties.length === 0 ? (
+            {ownerProperties.length === 0 ? (
               <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
                 <p className="text-yellow-800 text-sm">
-                  No DelVentto properties available. Please contact support to register your properties.
+                  No properties created yet. Please go to "My Properties" tab to create one before submitting offers.
                 </p>
               </div>
             ) : (
@@ -237,9 +239,9 @@ export function OwnerResponseForm({
                   className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D4A843]"
                 >
                   <option value="">Choose a property...</option>
-                  {delVenttoProperties.map((prop) => (
+                  {ownerProperties.map((prop) => (
                     <option key={prop.id} value={prop.id}>
-                      {prop.name} - {prop.city}
+                      {prop.propertyName} - {prop.apartmentType}
                     </option>
                   ))}
                 </select>
@@ -484,7 +486,7 @@ export function OwnerResponseForm({
             </Button>
             <Button
               type="submit"
-              disabled={isSubmitting || delVenttoProperties.length === 0}
+              disabled={isSubmitting || ownerProperties.length === 0}
               className="flex-1 bg-[#D4A843] hover:bg-[#c9963e] text-black font-bold"
             >
               {isSubmitting ? 'Submitting...' : 'Submit Offer'}

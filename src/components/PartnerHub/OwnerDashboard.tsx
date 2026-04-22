@@ -5,8 +5,10 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { TrendingUp, MessageSquare, CheckCircle, Clock } from 'lucide-react';
 import { OwnerRequirementBrowser } from './OwnerRequirementBrowser';
+import { OwnerProfileComponent } from './OwnerProfile';
+import { OwnerPropertyManager } from './OwnerPropertyManager';
 
-type TabType = 'browse' | 'responses';
+type TabType = 'browse' | 'responses' | 'profile' | 'properties';
 
 export function OwnerDashboard() {
   const [activeTab, setActiveTab] = useState<TabType>('browse');
@@ -99,7 +101,7 @@ export function OwnerDashboard() {
 
       {/* Tabs */}
       <div className="border-b border-gray-200">
-        <div className="flex gap-4">
+        <div className="flex gap-4 flex-wrap">
           <button
             onClick={() => setActiveTab('browse')}
             className={`px-4 py-3 font-medium border-b-2 transition-colors ${
@@ -120,20 +122,35 @@ export function OwnerDashboard() {
           >
             My Responses ({ownerResponses.length})
           </button>
+          <button
+            onClick={() => setActiveTab('properties')}
+            className={`px-4 py-3 font-medium border-b-2 transition-colors ${
+              activeTab === 'properties'
+                ? 'border-[#D4A843] text-[#D4A843]'
+                : 'border-transparent text-gray-600 hover:text-gray-900'
+            }`}
+          >
+            My Properties
+          </button>
+          <button
+            onClick={() => setActiveTab('profile')}
+            className={`px-4 py-3 font-medium border-b-2 transition-colors ${
+              activeTab === 'profile'
+                ? 'border-[#D4A843] text-[#D4A843]'
+                : 'border-transparent text-gray-600 hover:text-gray-900'
+            }`}
+          >
+            My Profile
+          </button>
         </div>
       </div>
 
       {/* Tab Content */}
       <div>
-        {activeTab === 'browse' ? (
-          <div>
-            <OwnerRequirementBrowser />
-          </div>
-        ) : (
-          <div>
-            <MyResponses responses={ownerResponses} />
-          </div>
-        )}
+        {activeTab === 'browse' && <OwnerRequirementBrowser />}
+        {activeTab === 'responses' && <MyResponses responses={ownerResponses} />}
+        {activeTab === 'properties' && auth?.userEmail && <OwnerPropertyManager ownerId={auth.userEmail} />}
+        {activeTab === 'profile' && auth?.userEmail && <OwnerProfileComponent ownerId={auth.userEmail} />}
       </div>
     </div>
   );
