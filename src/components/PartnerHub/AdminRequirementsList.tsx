@@ -3,9 +3,10 @@ import { usePartnerHub } from '@/hooks/usePartnerHub';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ChevronDown, ChevronUp, Check, X, Edit2, Trash2, CheckCircle } from 'lucide-react';
+import { ChevronDown, ChevronUp, Check, X, Edit2, Trash2, CheckCircle, Eye } from 'lucide-react';
 import { EditRequirementForm } from './EditRequirementForm';
-import type { GuestRequirement } from '@/data/partnerHub';
+import { AdminOfferDetailModal } from './AdminOfferDetailModal';
+import type { GuestRequirement, PartnershipResponse } from '@/data/partnerHub';
 
 const MONTHS_ES = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
 const MONTHS_EN = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -25,6 +26,8 @@ function formatCOP(amount: number): string {
 export function AdminRequirementsList() {
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [selectedResponse, setSelectedResponse] = useState<PartnershipResponse | null>(null);
+  const [selectedRequirement, setSelectedRequirement] = useState<GuestRequirement | null>(null);
   const { language } = useLanguage();
   const { getRequirements, getResponses, updateRequirement, updateResponse, deleteRequirement } =
     usePartnerHub();
@@ -74,6 +77,16 @@ export function AdminRequirementsList() {
     setEditingId(null);
   };
 
+  const handleViewOfferDetails = (response: PartnershipResponse, requirement: GuestRequirement) => {
+    setSelectedResponse(response);
+    setSelectedRequirement(requirement);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedResponse(null);
+    setSelectedRequirement(null);
+  };
+
   if (requirements.length === 0) {
     return (
       <Card className="p-12 text-center">
@@ -87,8 +100,9 @@ export function AdminRequirementsList() {
   }
 
   return (
-    <div className="space-y-3">
-      {requirements.map((requirement) => {
+    <>
+      <div className="space-y-3">
+        {requirements.map((requirement) => {
         const isExpanded = expandedId === requirement.id;
         const requirementResponses = allResponses.filter(
           (r) => r.requirementId === requirement.id
@@ -232,26 +246,36 @@ export function AdminRequirementsList() {
                               </div>
                             </div>
 
-                            {response.status === 'pending' && (
-                              <div className="flex gap-1">
-                                <Button
-                                  size="sm"
-                                  onClick={() =>
-                                    handleAcceptResponse(response.id, requirement.id)
-                                  }
-                                  className="bg-green-600 hover:bg-green-700 text-white h-8 w-8 p-0"
-                                >
-                                  <Check size={16} />
-                                </Button>
-                                <Button
-                                  size="sm"
-                                  onClick={() => handleRejectResponse(response.id)}
-                                  className="bg-red-600 hover:bg-red-700 text-white h-8 w-8 p-0"
-                                >
-                                  <X size={16} />
-                                </Button>
-                              </div>
-                            )}
+                            <div className="flex gap-1">
+                              <Button
+                                size="sm"
+                                onClick={() => handleViewOfferDetails(response, requirement)}
+                                className="bg-blue-600 hover:bg-blue-700 text-white h-8 w-8 p-0"
+                                title={language === 'es' ? 'Ver detalles' : 'View details'}
+                              >
+                                <Eye size={16} />
+                              </Button>
+                              {response.status === 'pending' && (
+                                <>
+                                  <Button
+                                    size="sm"
+                                    onClick={() =>
+                                      handleAcceptResponse(response.id, requirement.id)
+                                    }
+                                    className="bg-green-600 hover:bg-green-700 text-white h-8 w-8 p-0"
+                                  >
+                                    <Check size={16} />
+                                  </Button>
+                                  <Button
+                                    size="sm"
+                                    onClick={() => handleRejectResponse(response.id)}
+                                    className="bg-red-600 hover:bg-red-700 text-white h-8 w-8 p-0"
+                                  >
+                                    <X size={16} />
+                                  </Button>
+                                </>
+                              )}
+                            </div>
                           </div>
                         </div>
                       ))}
@@ -315,5 +339,18 @@ export function AdminRequirementsList() {
         );
       })}
     </div>
+
+    {selectedResponse && selectedRequirement && (
+      <AdminOfferDetailModal
+        response={selectedResponse}
+        requirement={selectedRequirement}
+        onClose={handleCloseModal}
+        onStatusChange={() => {
+          // Refresh requirements to get latest data
+          handleCloseModal();
+        }}
+      />
+    )}
+    </>
   );
 }
