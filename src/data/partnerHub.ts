@@ -56,6 +56,26 @@ export interface PartnerAuth {
   lastLogin: Date;
 }
 
+// Owner profile (contact info)
+export interface OwnerProfile {
+  name: string;
+  phone: string;
+  email: string;
+  delVenttoId: string;
+}
+
+// Owner property (pre-created properties for quick selection)
+export interface OwnerProperty {
+  id: string; // UUID
+  ownerId: string;
+  propertyName: string;
+  apartmentType: ApartmentType;
+  googleDriveLink: string;
+  iCalLink?: string; // Optional: Google Calendar or iCal link for availability
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 // Mock data for MVP
 export const mockRequirements: GuestRequirement[] = [];
 export const mockResponses: PartnershipResponse[] = [];
