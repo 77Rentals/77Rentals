@@ -6,6 +6,7 @@ import { usePartnerHub } from '@/hooks/usePartnerHub';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { t } from '@/lib/translations';
 import { calculateCommission, calculateFinalPriceWithCleaning } from '@/lib/commissionCalculator';
+import { formatDateRange, formatCOP } from '@/lib/dateFormatter';
 import { generateUUID } from '@/lib/uuid';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -45,7 +46,6 @@ const responseSchema = z.object({
   ownerName: z.string().min(2, 'Name is required'),
   ownerPhone: z.string().min(5, 'Phone number is required'),
   ownerEmail: z.string().email('Valid email is required'),
-  ownerId: z.string().min(1, 'Owner ID is required'),
 });
 
 type ResponseFormData = z.infer<typeof responseSchema>;
@@ -126,7 +126,7 @@ export function OwnerResponseForm({
         const response = {
           id: generateUUID(),
           requirementId: requirement.id,
-          ownerId: data.ownerId,
+          ownerId: data.ownerEmail,
           propertyName: property.name,
           proposedPrice: data.proposedPrice,
           cleaningFee: data.cleaningFee || 0,
@@ -158,7 +158,7 @@ export function OwnerResponseForm({
       const response = {
         id: generateUUID(),
         requirementId: requirement.id,
-        ownerId: data.ownerId,
+        ownerId: data.ownerEmail,
         propertyName: property.name,
         proposedPrice: data.proposedPrice,
         cleaningFee: data.cleaningFee || 0,
@@ -197,8 +197,8 @@ export function OwnerResponseForm({
           <div>
             <h2 className="text-xl font-bold text-gray-900">{t('owner.submitPropertyOffer', language)}</h2>
             <p className="text-sm text-gray-600">
-              {requirement.checkInDate} → {requirement.checkOutDate} •{' '}
-              {requirement.guestCount} guests • ${requirement.budget}/night budget
+              {formatDateRange(requirement.checkInDate, requirement.checkOutDate)} •{' '}
+              {requirement.guestCount} guests • {formatCOP(requirement.budget)}/night budget
             </p>
           </div>
           <button
@@ -371,34 +371,11 @@ export function OwnerResponseForm({
                   <div>
                     <p className="font-medium text-gray-900">10% Deduction</p>
                     <p className="text-xs text-gray-600">
-                      Commission: ${(watchProposedPrice * 0.1).toFixed(2)} • Final: ${(watchProposedPrice * 0.9).toFixed(2)}/night
+                      Commission: {formatCOP((watchProposedPrice || 0) * 0.1)} • Final: {formatCOP((watchProposedPrice || 0) * 0.9)}/night
                     </p>
                   </div>
                 </label>
 
-                <label className="flex items-center gap-2 p-3 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
-                  <input
-                    type="radio"
-                    value="markup"
-                    {...register('commissionType')}
-                    className="w-4 h-4"
-                  />
-                  <div className="flex-1">
-                    <p className="font-medium text-gray-900">Custom Markup</p>
-                    <p className="text-xs text-gray-600 mb-2">
-                      Commission added to base price
-                    </p>
-                    <Input
-                      type="number"
-                      min="0"
-                      step="5000"
-                      {...register('markupAmount')}
-                      placeholder="Markup amount in COP"
-                      className="text-sm"
-                      disabled={watchCommissionType !== 'markup'}
-                    />
-                  </div>
-                </label>
               </div>
             </div>
 
@@ -407,20 +384,20 @@ export function OwnerResponseForm({
               <div className="space-y-3">
                 <div className="flex items-center justify-between text-sm">
                   <p className="text-gray-600">Nightly Price (before commission)</p>
-                  <p className="font-medium text-gray-900">COP {(watchProposedPrice || 0).toLocaleString()}</p>
+                  <p className="font-medium text-gray-900">{formatCOP(watchProposedPrice || 0)}</p>
                 </div>
                 <div className="flex items-center justify-between text-sm border-t pt-2">
-                  <p className="text-gray-600">Commission ({watchCommissionType === '10percent' ? '10%' : 'Markup'})</p>
-                  <p className="font-medium text-gray-900">- COP {commissionCalc.commission.toLocaleString()}</p>
+                  <p className="text-gray-600">Commission (10%)</p>
+                  <p className="font-medium text-gray-900">- {formatCOP(commissionCalc.commission)}</p>
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <p className="text-gray-600">Cleaning Fee</p>
-                  <p className="font-medium text-gray-900">+ COP {(watchCleaningFee || 0).toLocaleString()}</p>
+                  <p className="font-medium text-gray-900">+ {formatCOP(watchCleaningFee || 0)}</p>
                 </div>
                 <div className="flex items-center justify-between text-base border-t pt-2 font-semibold">
                   <p className="text-gray-900">Total Per Night</p>
                   <p className="text-lg text-gray-900">
-                    COP {calculateFinalPriceWithCleaning(commissionCalc.finalPrice, watchCleaningFee || 0).toLocaleString()}
+                    {formatCOP(calculateFinalPriceWithCleaning(commissionCalc.finalPrice, Number(watchCleaningFee) || 0))}
                   </p>
                 </div>
               </div>
@@ -493,19 +470,6 @@ export function OwnerResponseForm({
               )}
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                DelVentto Owner ID
-              </label>
-              <Input
-                type="text"
-                {...register('ownerId')}
-                placeholder="Your DelVentto owner ID"
-              />
-              {errors.ownerId && (
-                <p className="text-red-500 text-sm mt-1">{errors.ownerId.message}</p>
-              )}
-            </div>
           </div>
 
           {/* Actions */}
