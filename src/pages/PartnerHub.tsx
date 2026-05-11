@@ -19,10 +19,13 @@ function PartnerHubContent() {
   );
 }
 
-export function PartnerHub() {
+function PartnerHub() {
+  console.log('PartnerHub component rendering');
   return (
     <PartnerAuthProvider>
       <PartnerHubContent />
     </PartnerAuthProvider>
   );
 }
+
+export default PartnerHub;

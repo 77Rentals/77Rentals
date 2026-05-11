@@ -8,9 +8,10 @@ import MagicCursor from "@/components/MagicCursor";
 import Index from "./pages/Index.tsx";
 import Gracias from "./pages/Gracias.tsx";
 import PropertyDetail from "./pages/PropertyDetail.tsx";
-import { PartnerHub } from "./pages/PartnerHub.tsx";
+import PartnerHub from "./pages/PartnerHub";
 import NotFound from "./pages/NotFound.tsx";
 
+// Partner Hub route enabled
 const queryClient = new QueryClient();
 
 const App = () => (
