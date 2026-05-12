@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { usePartnerHub } from '@/hooks/usePartnerHub';
 import { useOwnerProperties } from '@/hooks/useOwnerProperties';
+import { useOwnerProfile } from '@/hooks/useOwnerProfile';
 import { PartnerAuthContext } from '@/contexts/PartnerAuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { t } from '@/lib/translations';
@@ -74,6 +75,7 @@ export function OwnerResponseForm({
   const auth = useContext(PartnerAuthContext);
   const { getProperties } = useOwnerProperties(auth?.userEmail || '');
   const ownerProperties = getProperties();
+  const { getProfile } = useOwnerProfile(auth?.userEmail || '');
 
   const {
     register,
@@ -113,6 +115,16 @@ export function OwnerResponseForm({
       }
     }
   }, [watchPropertyId, ownerProperties, setValue]);
+
+  // Auto-fill owner contact information from saved profile
+  useEffect(() => {
+    const profile = getProfile();
+    if (profile) {
+      setValue('ownerName', profile.name);
+      setValue('ownerPhone', profile.phone);
+      setValue('ownerEmail', profile.email);
+    }
+  }, [getProfile, setValue]);
 
   // Calculate commission based on inputs
   const commissionCalc = calculateCommission(

@@ -5,7 +5,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { TrendingUp, MessageSquare, CheckCircle, Clock } from 'lucide-react';
 import { OwnerRequirementBrowser } from './OwnerRequirementBrowser';
-import { OwnerProfileComponent } from './OwnerProfile';
+import { OwnerProfile } from './OwnerProfile';
 import { OwnerPropertyManager } from './OwnerPropertyManager';
 
 type TabType = 'browse' | 'responses' | 'profile' | 'properties';
@@ -150,7 +150,7 @@ export function OwnerDashboard() {
         {activeTab === 'browse' && <OwnerRequirementBrowser />}
         {activeTab === 'responses' && <MyResponses responses={ownerResponses} />}
         {activeTab === 'properties' && auth?.userEmail && <OwnerPropertyManager ownerId={auth.userEmail} />}
-        {activeTab === 'profile' && auth?.userEmail && <OwnerProfileComponent ownerId={auth.userEmail} />}
+        {activeTab === 'profile' && auth?.userEmail && <OwnerProfile ownerId={auth.userEmail} />}
       </div>
     </div>
   );
