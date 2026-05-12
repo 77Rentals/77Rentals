@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -30,7 +30,7 @@ const responseSchema = z.object({
   ),
   cleaningFee: z.preprocess(
     (v) => (v === '' || v === null || isNaN(Number(v)) ? undefined : Number(v)),
-    z.number({ required_error: 'Cleaning fee is required' }).min(0).optional().default(0)
+    z.number({ required_error: 'Cleaning fee is required' }).min(0, 'Cleaning fee must be 0 or greater')
   ),
   commissionType: z.enum(['10percent', 'markup']),
   markupAmount: z.preprocess(
@@ -80,6 +80,7 @@ export function OwnerResponseForm({
     handleSubmit,
     formState: { errors },
     watch,
+    setValue,
   } = useForm<ResponseFormData>({
     resolver: zodResolver(responseSchema),
     defaultValues: {
@@ -100,6 +101,18 @@ export function OwnerResponseForm({
   const watchCommissionType = watch('commissionType');
   const watchMarkupAmount = watch('markupAmount');
   const watchApartmentType = watch('apartmentType');
+  const watchPropertyId = watch('propertyId');
+
+  // Auto-fill apartment information when property is selected
+  useEffect(() => {
+    if (watchPropertyId) {
+      const selectedProperty = ownerProperties.find((p) => p.id === watchPropertyId);
+      if (selectedProperty) {
+        setValue('apartmentType', selectedProperty.apartmentType);
+        setValue('googleDriveLink', selectedProperty.googleDriveLink);
+      }
+    }
+  }, [watchPropertyId, ownerProperties, setValue]);
 
   // Calculate commission based on inputs
   const commissionCalc = calculateCommission(
@@ -221,24 +234,24 @@ export function OwnerResponseForm({
 
           {/* Property Selection Section */}
           <div className="space-y-4">
-            <h3 className="font-semibold text-gray-900">Your Property</h3>
+            <h3 className="font-semibold text-gray-900">{t('owner.yourProperty', language)}</h3>
 
             {ownerProperties.length === 0 ? (
               <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
                 <p className="text-yellow-800 text-sm">
-                  No properties created yet. Please go to "My Properties" tab to create one before submitting offers.
+                  {t('owner.noPropertiesMessage', language)}
                 </p>
               </div>
             ) : (
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Select Property
+                  {t('owner.selectProperty', language)}
                 </label>
                 <select
                   {...register('propertyId')}
                   className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D4A843]"
                 >
-                  <option value="">Choose a property...</option>
+                  <option value="">{t('owner.chooseProperty', language)}</option>
                   {ownerProperties.map((prop) => (
                     <option key={prop.id} value={prop.id}>
                       {prop.propertyName} - {prop.apartmentType}
@@ -254,11 +267,11 @@ export function OwnerResponseForm({
 
           {/* Apartment Information Section */}
           <div className="space-y-4 pt-4 border-t">
-            <h3 className="font-semibold text-gray-900">Apartment Information</h3>
+            <h3 className="font-semibold text-gray-900">{t('owner.apartmentInformation', language)}</h3>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Torre y número de apt
+                {t('owner.torreApartamento', language)}
               </label>
               <Input
                 type="text"
@@ -272,7 +285,7 @@ export function OwnerResponseForm({
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Apartment Type
+                {t('owner.apartmentType', language)}
               </label>
               <select
                 {...register('apartmentType')}
@@ -291,12 +304,12 @@ export function OwnerResponseForm({
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Google Drive Photos Link
+                {t('owner.googleDrivePhotos', language)}
               </label>
               <Input
                 type="url"
                 {...register('googleDriveLink')}
-                placeholder="https://drive.google.com/drive/folders/..."
+                placeholder={t('owner.googleDrivePhotosPlaceholder', language)}
               />
               {errors.googleDriveLink && (
                 <p className="text-red-500 text-sm mt-1">{errors.googleDriveLink.message}</p>
@@ -305,11 +318,11 @@ export function OwnerResponseForm({
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Apartment Bio / Description
+                {t('owner.apartmentBio', language)}
               </label>
               <textarea
                 {...register('apartmentBio')}
-                placeholder="Describe your apartment: size, amenities, location highlights, etc."
+                placeholder={t('owner.apartmentBioPlaceholder', language)}
                 rows={3}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D4A843]"
               />
@@ -321,11 +334,11 @@ export function OwnerResponseForm({
 
           {/* Price & Commission Section */}
           <div className="space-y-4 pt-4 border-t">
-            <h3 className="font-semibold text-gray-900">Pricing & Commission</h3>
+            <h3 className="font-semibold text-gray-900">{t('owner.pricingCommission', language)}</h3>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Proposed Nightly Price (COP)
+                {t('owner.proposedNightlyPrice', language)}
               </label>
               <Input
                 type="number"
@@ -341,7 +354,7 @@ export function OwnerResponseForm({
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Cleaning Fee (COP) - Optional
+                {t('owner.cleaningFee', language)}
               </label>
               <Input
                 type="number"
@@ -354,13 +367,13 @@ export function OwnerResponseForm({
                 <p className="text-red-500 text-sm mt-1">{errors.cleaningFee.message}</p>
               )}
               <p className="text-xs text-gray-600 mt-1">
-                Commission is only applied to nightly price, not cleaning fee
+                {t('owner.cleaningFeeNote', language)}
               </p>
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Commission Model
+                {t('owner.commissionModel', language)}
               </label>
               <div className="space-y-2">
                 <label className="flex items-center gap-2 p-3 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
@@ -371,9 +384,9 @@ export function OwnerResponseForm({
                     className="w-4 h-4"
                   />
                   <div>
-                    <p className="font-medium text-gray-900">10% Deduction</p>
+                    <p className="font-medium text-gray-900">{t('owner.tenPercentDeduction', language)}</p>
                     <p className="text-xs text-gray-600">
-                      Commission: {formatCOP((watchProposedPrice || 0) * 0.1)} • Final: {formatCOP((watchProposedPrice || 0) * 0.9)}/night
+                      {t('owner.commission', language)}: {formatCOP((Number(watchProposedPrice) || 0) * 0.1)} • {t('owner.finalPrice', language)}: {formatCOP((Number(watchProposedPrice) || 0) * 0.9)}/night
                     </p>
                   </div>
                 </label>
@@ -383,14 +396,14 @@ export function OwnerResponseForm({
 
             {/* Final Price Summary */}
             <Card className="p-4 bg-blue-50 border-blue-200">
-              <h4 className="font-semibold text-gray-900 mb-3">Pricing Breakdown</h4>
+              <h4 className="font-semibold text-gray-900 mb-3">{t('owner.pricingBreakdown', language)}</h4>
               <div className="space-y-3">
                 <div className="flex items-center justify-between text-sm">
-                  <p className="text-gray-600">Price Per Night</p>
-                  <p className="font-medium text-gray-900">{formatCOP(watchProposedPrice || 0)}</p>
+                  <p className="text-gray-600">{t('owner.pricePerNight', language)}</p>
+                  <p className="font-medium text-gray-900">{formatCOP(Number(watchProposedPrice) || 0)}</p>
                 </div>
                 <div className="flex items-center justify-between text-sm">
-                  <p className="text-gray-600">Number of Nights</p>
+                  <p className="text-gray-600">{t('owner.numberOfNights', language)}</p>
                   <p className="font-medium text-gray-900">
                     {Math.ceil(
                       (new Date(requirement.checkOutDate).getTime() - new Date(requirement.checkInDate).getTime()) /
@@ -399,10 +412,10 @@ export function OwnerResponseForm({
                   </p>
                 </div>
                 <div className="flex items-center justify-between text-sm border-t pt-2">
-                  <p className="text-gray-600">Subtotal (Lodging)</p>
+                  <p className="text-gray-600">{t('owner.subtotal', language)}</p>
                   <p className="font-medium text-gray-900">
                     {formatCOP(
-                      (watchProposedPrice || 0) *
+                      (Number(watchProposedPrice) || 0) *
                       Math.ceil(
                         (new Date(requirement.checkOutDate).getTime() - new Date(requirement.checkInDate).getTime()) /
                         (1000 * 60 * 60 * 24)
@@ -411,10 +424,10 @@ export function OwnerResponseForm({
                   </p>
                 </div>
                 <div className="flex items-center justify-between text-sm">
-                  <p className="text-gray-600">Commission (10% of lodging)</p>
+                  <p className="text-gray-600">{t('owner.commissionPercentage', language)}</p>
                   <p className="font-medium text-gray-900">
                     - {formatCOP(
-                      (watchProposedPrice || 0) *
+                      (Number(watchProposedPrice) || 0) *
                       Math.ceil(
                         (new Date(requirement.checkOutDate).getTime() - new Date(requirement.checkInDate).getTime()) /
                         (1000 * 60 * 60 * 24)
@@ -424,20 +437,20 @@ export function OwnerResponseForm({
                   </p>
                 </div>
                 <div className="flex items-center justify-between text-sm">
-                  <p className="text-gray-600">Cleaning Fee (One-time)</p>
-                  <p className="font-medium text-gray-900">+ {formatCOP(watchCleaningFee || 0)}</p>
+                  <p className="text-gray-600">{t('owner.cleaningFeeOneTime', language)}</p>
+                  <p className="font-medium text-gray-900">+ {formatCOP(Number(watchCleaningFee) || 0)}</p>
                 </div>
                 <div className="flex items-center justify-between text-base border-t pt-2 font-semibold bg-white p-2 rounded">
-                  <p className="text-gray-900">Total Amount Due</p>
+                  <p className="text-gray-900">{t('owner.totalAmountDue', language)}</p>
                   <p className="text-lg text-gray-900">
                     {formatCOP(
-                      (watchProposedPrice || 0) *
+                      (Number(watchProposedPrice) || 0) *
                       Math.ceil(
                         (new Date(requirement.checkOutDate).getTime() - new Date(requirement.checkInDate).getTime()) /
                         (1000 * 60 * 60 * 24)
                       ) *
                       0.9 +
-                      (watchCleaningFee || 0)
+                      (Number(watchCleaningFee) || 0)
                     )}
                   </p>
                 </div>
@@ -447,15 +460,15 @@ export function OwnerResponseForm({
 
           {/* Notes Section */}
           <div className="space-y-4 pt-4 border-t">
-            <h3 className="font-semibold text-gray-900">Additional Information</h3>
+            <h3 className="font-semibold text-gray-900">{t('owner.additionalInformation', language)}</h3>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Notes (Why This Property is Perfect)
+                {t('owner.notes', language)}
               </label>
               <textarea
                 {...register('notes')}
-                placeholder="E.g., Great beach access, modern kitchen, spacious living area, etc."
+                placeholder={t('owner.notesPlaceholder', language)}
                 rows={3}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D4A843]"
               />
@@ -467,16 +480,16 @@ export function OwnerResponseForm({
 
           {/* Contact Info Section */}
           <div className="space-y-4 pt-4 border-t">
-            <h3 className="font-semibold text-gray-900">Your Contact Information</h3>
+            <h3 className="font-semibold text-gray-900">{t('owner.yourContactInformation', language)}</h3>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Name
+                {t('form.name', language)}
               </label>
               <Input
                 type="text"
                 {...register('ownerName')}
-                placeholder="Your name"
+                placeholder={t('form.name', language)}
               />
               {errors.ownerName && (
                 <p className="text-red-500 text-sm mt-1">{errors.ownerName.message}</p>
@@ -485,7 +498,7 @@ export function OwnerResponseForm({
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Phone
+                {t('form.phone', language)}
               </label>
               <Input
                 type="tel"
@@ -499,7 +512,7 @@ export function OwnerResponseForm({
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Email
+                {t('form.email', language)}
               </label>
               <Input
                 type="email"
