@@ -137,6 +137,7 @@ export function AdminRequirementForm({ onClose, onSubmit }: AdminRequirementForm
         <div className="sticky top-0 flex items-center justify-between p-6 border-b bg-white">
           <h2 className="text-xl font-bold text-gray-900">{t('form.postNewRequirement', language)}</h2>
           <button
+            type="button"
             onClick={onClose}
             className="p-1 hover:bg-gray-100 rounded-lg transition-colors"
           >
