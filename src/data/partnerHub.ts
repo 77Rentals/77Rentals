@@ -52,6 +52,7 @@ export interface PartnershipResponse {
     phone: string;
     email: string;
   };
+  iCalLink?: string; // Optional: iCal availability link from property
   status: 'pending' | 'accepted' | 'rejected';
   respondedAt: Date;
   // NDA signing fields

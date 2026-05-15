@@ -1,19 +1,24 @@
 import { useContext, useState } from 'react';
 import { usePartnerHub } from '@/hooks/usePartnerHub';
 import { PartnerAuthContext } from '@/contexts/PartnerAuthContext';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useToast } from '@/components/ui/use-toast';
 import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { TrendingUp, MessageSquare, CheckCircle, Clock } from 'lucide-react';
 import { OwnerRequirementBrowser } from './OwnerRequirementBrowser';
 import { OwnerProfile } from './OwnerProfile';
 import { OwnerPropertyManager } from './OwnerPropertyManager';
+import { NDASigningSection } from './NDASigningSection';
+import type { PartnershipResponse, GuestRequirement } from '@/data/partnerHub';
+import { generateNDATemplate } from '@/lib/ndaGenerator';
 
 type TabType = 'browse' | 'responses' | 'profile' | 'properties';
 
 export function OwnerDashboard() {
   const [activeTab, setActiveTab] = useState<TabType>('browse');
+  const [responseRefreshKey, setResponseRefreshKey] = useState(0);
   const auth = useContext(PartnerAuthContext);
-  const { getRequirements, getResponses } = usePartnerHub();
+  const { getRequirements, getResponses, updateResponse } = usePartnerHub();
 
   const requirements = getRequirements();
   const allResponses = getResponses();
@@ -148,7 +153,17 @@ export function OwnerDashboard() {
       {/* Tab Content */}
       <div>
         {activeTab === 'browse' && <OwnerRequirementBrowser />}
-        {activeTab === 'responses' && <MyResponses responses={ownerResponses} />}
+        {activeTab === 'responses' && (
+          <MyResponses
+            key={responseRefreshKey}
+            responses={ownerResponses}
+            requirements={requirements}
+            onNDAUpdate={(responseId, updates) => {
+              updateResponse(responseId, updates);
+              setResponseRefreshKey((k) => k + 1);
+            }}
+          />
+        )}
         {activeTab === 'properties' && auth?.userEmail && <OwnerPropertyManager ownerId={auth.userEmail} />}
         {activeTab === 'profile' && auth?.userEmail && <OwnerProfile ownerId={auth.userEmail} />}
       </div>
@@ -156,67 +171,162 @@ export function OwnerDashboard() {
   );
 }
 
+function formatCOP(amount: number): string {
+  return new Intl.NumberFormat('es-CO', {
+    style: 'currency',
+    currency: 'COP',
+    maximumFractionDigits: 0,
+  }).format(amount);
+}
+
 function MyResponses({
   responses,
+  requirements,
+  onNDAUpdate,
 }: {
-  responses: Array<{
-    id: string;
-    requirementId: string;
-    propertyName: string;
-    proposedPrice: number;
-    commissionPercent: number;
-    commissionAmount: number;
-    finalPrice: number;
-    status: string;
-    respondedAt: Date;
-  }>;
+  responses: PartnershipResponse[];
+  requirements: GuestRequirement[];
+  onNDAUpdate: (responseId: string, updates: Partial<PartnershipResponse>) => void;
 }) {
+  const { language } = useLanguage();
+  const { toast } = useToast();
+
   if (responses.length === 0) {
     return (
       <Card className="p-12 text-center">
         <p className="text-gray-600">
-          You haven't submitted any responses yet. Browse requirements to get started!
+          {language === 'es'
+            ? 'Aún no has enviado ninguna respuesta. ¡Explora requisitos para comenzar!'
+            : "You haven't submitted any responses yet. Browse requirements to get started!"}
         </p>
       </Card>
     );
   }
 
   return (
-    <div className="grid grid-cols-1 gap-4">
-      {responses.map((response) => (
-        <Card key={response.id} className="p-6 border-0 shadow-md hover:shadow-lg transition-shadow">
-          <div className="flex items-start justify-between">
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900">
-                {response.propertyName}
-              </h3>
-              <div className="mt-2 space-y-1 text-sm text-gray-600">
-                <p>Proposed Price: ${response.proposedPrice}/night</p>
-                <p>
-                  Commission: {response.commissionPercent === 10 ? '10%' : `$${response.commissionAmount}`} •
-                  {' '}
-                  Final Price: ${response.finalPrice}/night
-                </p>
+    <div className="space-y-4">
+      {responses.map((response) => {
+        const requirement = requirements.find((r) => r.id === response.requirementId);
+        const ndaStatus = response.ndaStatus || 'not_started';
+        const adminHasSigned = !!response.adminSignature;
+        const ownerHasSigned = !!response.ownerSignature;
+        const needsOwnerSignature = response.status === 'accepted' && adminHasSigned && !ownerHasSigned;
+        const bothSigned = ndaStatus === 'both_signed';
+
+        return (
+          <Card key={response.id} className="border-0 shadow-md overflow-hidden">
+            <div className="p-6">
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <h3 className="text-lg font-semibold text-gray-900">
+                    {response.propertyName}
+                  </h3>
+                  <div className="mt-2 space-y-1 text-sm text-gray-600">
+                    <p>
+                      {language === 'es' ? 'Precio propuesto' : 'Proposed Price'}:{' '}
+                      {formatCOP(response.proposedPrice)}/{language === 'es' ? 'noche' : 'night'}
+                    </p>
+                    <p>
+                      {language === 'es' ? 'Comisión' : 'Commission'}:{' '}
+                      {response.commissionPercent === 10 ? '10%' : formatCOP(response.commissionAmount)} •{' '}
+                      {language === 'es' ? 'Precio final' : 'Final Price'}:{' '}
+                      {formatCOP(response.finalPrice)}/{language === 'es' ? 'noche' : 'night'}
+                    </p>
+                  </div>
+
+                  {/* NDA status indicator for accepted offers */}
+                  {response.status === 'accepted' && (
+                    <div className="mt-3">
+                      {bothSigned ? (
+                        <span className="inline-flex items-center gap-1 px-2 py-1 bg-green-100 text-green-800 rounded text-xs font-medium">
+                          ✓ {language === 'es' ? 'NDA Firmado' : 'NDA Signed'}
+                        </span>
+                      ) : needsOwnerSignature ? (
+                        <span className="inline-flex items-center gap-1 px-2 py-1 bg-orange-100 text-orange-800 rounded text-xs font-medium animate-pulse">
+                          ⚠ {language === 'es' ? 'Tu firma requerida' : 'Your signature required'}
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 px-2 py-1 bg-gray-100 text-gray-600 rounded text-xs font-medium">
+                          📄 {language === 'es' ? 'Esperando firma del admin' : 'Awaiting admin signature'}
+                        </span>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                <span
+                  className={`px-3 py-1 rounded-full text-sm font-medium flex-shrink-0 ${
+                    response.status === 'pending'
+                      ? 'bg-yellow-100 text-yellow-800'
+                      : response.status === 'accepted'
+                      ? 'bg-green-100 text-green-800'
+                      : 'bg-red-100 text-red-800'
+                  }`}
+                >
+                  {response.status === 'pending'
+                    ? language === 'es' ? 'Pendiente' : 'Pending'
+                    : response.status === 'accepted'
+                    ? language === 'es' ? 'Aceptada ✓' : 'Accepted ✓'
+                    : language === 'es' ? 'Rechazada' : 'Rejected'}
+                </span>
               </div>
             </div>
-            <span
-              className={`px-3 py-1 rounded-full text-sm font-medium ${
-                response.status === 'pending'
-                  ? 'bg-yellow-100 text-yellow-800'
-                  : response.status === 'accepted'
-                    ? 'bg-green-100 text-green-800'
-                    : 'bg-red-100 text-red-800'
-              }`}
-            >
-              {response.status === 'pending'
-                ? 'Pending'
-                : response.status === 'accepted'
-                  ? 'Accepted ✓'
-                  : 'Rejected'}
-            </span>
-          </div>
-        </Card>
-      ))}
+
+            {/* NDA Signing Section for owner — appears when admin has signed */}
+            {response.status === 'accepted' && requirement && needsOwnerSignature && (
+              <div className="border-t">
+                <NDASigningSection
+                  response={response}
+                  requirement={requirement}
+                  isAdmin={false}
+                  onSignatureUpdate={(updates) => {
+                    try {
+                      onNDAUpdate(response.id, updates);
+                      toast({
+                        title: language === 'es' ? 'Éxito' : 'Success',
+                        description: language === 'es' ? 'NDA firmado correctamente' : 'NDA signed successfully',
+                        variant: 'default',
+                      });
+                    } catch {
+                      toast({
+                        title: language === 'es' ? 'Error' : 'Error',
+                        description: language === 'es' ? 'No se pudo firmar el NDA' : 'Failed to sign NDA',
+                        variant: 'destructive',
+                      });
+                    }
+                  }}
+                />
+              </div>
+            )}
+
+            {/* Both signed — show contact confirmation + download */}
+            {response.status === 'accepted' && bothSigned && requirement && (
+              <div className="border-t p-4 bg-green-50 space-y-3">
+                <p className="text-green-800 font-medium text-sm">
+                  ✓ {language === 'es'
+                    ? 'NDA completamente firmado. El equipo de 77Rentals se pondrá en contacto contigo.'
+                    : 'NDA fully signed. The 77Rentals team will be in touch with you.'}
+                </p>
+                <button
+                  onClick={() => {
+                    const ndaText = generateNDATemplate(requirement, response);
+                    const blob = new Blob([ndaText], { type: 'text/plain;charset=utf-8' });
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = `NDA_Firmado_${response.propertyName.replace(/\s+/g, '_')}_${Date.now()}.txt`;
+                    link.click();
+                    URL.revokeObjectURL(url);
+                  }}
+                  className="text-sm font-medium text-green-800 underline hover:text-green-900"
+                >
+                  📄 {language === 'es' ? 'Descargar NDA Firmado' : 'Download Signed NDA'}
+                </button>
+              </div>
+            )}
+          </Card>
+        );
+      })}
     </div>
   );
 }

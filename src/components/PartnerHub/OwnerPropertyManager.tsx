@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -61,6 +61,25 @@ export function OwnerPropertyManager({ ownerId }: OwnerPropertyManagerProps) {
           iCalLink: '',
         },
   });
+
+  // Sync form values when switching to edit mode
+  useEffect(() => {
+    if (editingId && editingProperty) {
+      reset({
+        propertyName: editingProperty.propertyName,
+        apartmentType: editingProperty.apartmentType,
+        googleDriveLink: editingProperty.googleDriveLink,
+        iCalLink: editingProperty.iCalLink || '',
+      });
+    } else if (!editingId) {
+      reset({
+        propertyName: '',
+        apartmentType: 'Tipo A',
+        googleDriveLink: '',
+        iCalLink: '',
+      });
+    }
+  }, [editingId, editingProperty, reset]);
 
   const onSubmit = async (data: PropertyFormData) => {
     try {

@@ -346,8 +346,12 @@ export function AdminRequirementsList() {
         requirement={selectedRequirement}
         onClose={handleCloseModal}
         onStatusChange={() => {
-          // Refresh requirements to get latest data
-          handleCloseModal();
+          // Re-read fresh from localStorage so modal reflects updated status/NDA immediately
+          const freshResponses = getResponses();
+          const latestResponse = freshResponses.find((r) => r.id === selectedResponse.id);
+          if (latestResponse) {
+            setSelectedResponse({ ...latestResponse });
+          }
         }}
       />
     )}

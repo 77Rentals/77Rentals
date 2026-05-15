@@ -163,6 +163,7 @@ export function OwnerResponseForm({
           apartmentType: data.apartmentType,
           torreApartamento: data.torreApartamento,
           googleDriveLink: property.googleDriveLink,
+          iCalLink: property.iCalLink,
           apartmentBio: data.apartmentBio,
           notes: data.notes,
           ownerContact: {
@@ -172,6 +173,7 @@ export function OwnerResponseForm({
           },
           status: 'rejected' as const,
           respondedAt: new Date(),
+          ndaStatus: 'not_started' as const,
         };
         addResponse(response);
         setTimeout(() => {
@@ -195,6 +197,7 @@ export function OwnerResponseForm({
         apartmentType: data.apartmentType,
         torreApartamento: data.torreApartamento,
         googleDriveLink: property.googleDriveLink,
+        iCalLink: property.iCalLink,
         apartmentBio: data.apartmentBio,
         notes: data.notes,
         ownerContact: {
@@ -204,6 +207,7 @@ export function OwnerResponseForm({
         },
         status: 'pending' as const,
         respondedAt: new Date(),
+        ndaStatus: 'not_started' as const,
       };
 
       addResponse(response);
