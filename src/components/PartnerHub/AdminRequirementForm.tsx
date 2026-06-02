@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { createPortal } from 'react-dom';
+import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -38,8 +40,8 @@ const requirementSchema = z.object({
 type RequirementFormData = z.infer<typeof requirementSchema>;
 
 interface AdminRequirementFormProps {
-  onClose: () => void;
-  onSubmit: () => void;
+  onClose?: () => void;
+  onSubmit?: () => void;
 }
 
 // Helper function to format date with month names
@@ -54,6 +56,10 @@ function formatDateForDisplay(dateString: string): string {
 }
 
 export function AdminRequirementForm({ onClose, onSubmit }: AdminRequirementFormProps) {
+  const navigate = useNavigate();
+  const handleClose = () => { if (onClose) onClose(); else navigate('/partner-hub'); };
+  const handleSubmitDone = () => { if (onSubmit) onSubmit(); else navigate('/partner-hub'); };
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
@@ -122,7 +128,7 @@ export function AdminRequirementForm({ onClose, onSubmit }: AdminRequirementForm
 
       // Show success (in real app would be toast)
       console.log('Requirement posted successfully');
-      onSubmit();
+      handleSubmitDone();
     } catch (error) {
       setSubmitError('Failed to post requirement. Please try again.');
       console.error('Error posting requirement:', error);
@@ -131,14 +137,14 @@ export function AdminRequirementForm({ onClose, onSubmit }: AdminRequirementForm
     }
   };
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
       <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
         <div className="sticky top-0 flex items-center justify-between p-6 border-b bg-white">
           <h2 className="text-xl font-bold text-gray-900">{t('form.postNewRequirement', language)}</h2>
           <button
             type="button"
-            onClick={onClose}
+            onClick={handleClose}
             className="p-1 hover:bg-gray-100 rounded-lg transition-colors"
           >
             <X size={24} />
@@ -335,7 +341,7 @@ export function AdminRequirementForm({ onClose, onSubmit }: AdminRequirementForm
             <Button
               type="button"
               variant="outline"
-              onClick={onClose}
+              onClick={handleClose}
               className="flex-1"
             >
               {t('form.cancel', language)}
@@ -350,6 +356,7 @@ export function AdminRequirementForm({ onClose, onSubmit }: AdminRequirementForm
           </div>
         </form>
       </Card>
-    </div>
+    </div>,
+    document.body
   );
 }

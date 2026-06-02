@@ -5,8 +5,8 @@ export function generateNDATemplate(
   response: PartnershipResponse,
   adminName?: string
 ): string {
-  const checkInDate = new Date(requirement.checkInDate).toLocaleDateString('es-CO');
-  const checkOutDate = new Date(requirement.checkOutDate).toLocaleDateString('es-CO');
+  const checkInDate = new Date(requirement.checkInDate + 'T00:00:00').toLocaleDateString('es-CO');
+  const checkOutDate = new Date(requirement.checkOutDate + 'T00:00:00').toLocaleDateString('es-CO');
   const today = new Date().toLocaleDateString('es-CO');
   const nightCount = Math.ceil(
     (new Date(requirement.checkOutDate).getTime() - new Date(requirement.checkInDate).getTime()) /

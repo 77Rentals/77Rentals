@@ -54,6 +54,7 @@ export interface PartnershipResponse {
   };
   iCalLink?: string; // Optional: iCal availability link from property
   status: 'pending' | 'accepted' | 'rejected';
+  rejectionNote?: string; // Optional note from admin explaining why offer was rejected
   respondedAt: Date;
   // NDA signing fields
   ndaStatus: 'not_started' | 'admin_signed' | 'both_signed';

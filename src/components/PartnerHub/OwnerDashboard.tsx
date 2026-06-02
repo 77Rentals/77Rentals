@@ -13,9 +13,11 @@ import type { PartnershipResponse, GuestRequirement } from '@/data/partnerHub';
 import { generateNDATemplate } from '@/lib/ndaGenerator';
 
 type TabType = 'browse' | 'responses' | 'profile' | 'properties';
+type ResponseFilter = 'all' | 'pending' | 'accepted' | 'rejected';
 
 export function OwnerDashboard() {
   const [activeTab, setActiveTab] = useState<TabType>('browse');
+  const [responseFilter, setResponseFilter] = useState<ResponseFilter>('all');
   const [responseRefreshKey, setResponseRefreshKey] = useState(0);
   const auth = useContext(PartnerAuthContext);
   const { getRequirements, getResponses, updateResponse } = usePartnerHub();
@@ -79,12 +81,15 @@ export function OwnerDashboard() {
               onClick={() => {
                 if (stat.label === 'Open Requirements') {
                   setActiveTab('browse');
-                } else if (
-                  stat.label === 'Pending Responses' ||
-                  stat.label === 'Accepted' ||
-                  stat.label === 'Total Responses'
-                ) {
+                } else if (stat.label === 'Pending Responses') {
                   setActiveTab('responses');
+                  setResponseFilter('pending');
+                } else if (stat.label === 'Accepted') {
+                  setActiveTab('responses');
+                  setResponseFilter('accepted');
+                } else if (stat.label === 'Total Responses') {
+                  setActiveTab('responses');
+                  setResponseFilter('all');
                 }
               }}
             >
@@ -158,6 +163,7 @@ export function OwnerDashboard() {
             key={responseRefreshKey}
             responses={ownerResponses}
             requirements={requirements}
+            initialFilter={responseFilter}
             onNDAUpdate={(responseId, updates) => {
               updateResponse(responseId, updates);
               setResponseRefreshKey((k) => k + 1);
@@ -182,14 +188,26 @@ function formatCOP(amount: number): string {
 function MyResponses({
   responses,
   requirements,
+  initialFilter = 'all',
   onNDAUpdate,
 }: {
   responses: PartnershipResponse[];
   requirements: GuestRequirement[];
+  initialFilter?: 'all' | 'pending' | 'accepted' | 'rejected';
   onNDAUpdate: (responseId: string, updates: Partial<PartnershipResponse>) => void;
 }) {
   const { language } = useLanguage();
   const { toast } = useToast();
+  const [filter, setFilter] = useState<'all' | 'pending' | 'accepted' | 'rejected'>(initialFilter);
+
+  const visible = filter === 'all' ? responses : responses.filter((r) => r.status === filter);
+
+  const filterLabels: Record<typeof filter, string> = {
+    all: language === 'es' ? 'Todas' : 'All',
+    pending: language === 'es' ? 'Pendientes' : 'Pending',
+    accepted: language === 'es' ? 'Aceptadas' : 'Accepted',
+    rejected: language === 'es' ? 'Rechazadas' : 'Rejected',
+  };
 
   if (responses.length === 0) {
     return (
@@ -205,7 +223,45 @@ function MyResponses({
 
   return (
     <div className="space-y-4">
-      {responses.map((response) => {
+      {/* Filter pills */}
+      <div className="flex gap-2 flex-wrap">
+        {(['all', 'pending', 'accepted', 'rejected'] as const).map((f) => (
+          <button
+            key={f}
+            onClick={() => setFilter(f)}
+            className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
+              filter === f
+                ? f === 'accepted'
+                  ? 'bg-green-600 text-white'
+                  : f === 'rejected'
+                  ? 'bg-red-600 text-white'
+                  : f === 'pending'
+                  ? 'bg-yellow-500 text-white'
+                  : 'bg-gray-800 text-white'
+                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+            }`}
+          >
+            {filterLabels[f]}
+            {f !== 'all' && (
+              <span className="ml-1 opacity-75">
+                ({responses.filter((r) => r.status === f).length})
+              </span>
+            )}
+          </button>
+        ))}
+      </div>
+
+      {visible.length === 0 && (
+        <Card className="p-8 text-center">
+          <p className="text-gray-500 text-sm">
+            {language === 'es'
+              ? `No hay respuestas ${filterLabels[filter].toLowerCase()}.`
+              : `No ${filterLabels[filter].toLowerCase()} responses.`}
+          </p>
+        </Card>
+      )}
+
+      {visible.map((response) => {
         const requirement = requirements.find((r) => r.id === response.requirementId);
         const ndaStatus = response.ndaStatus || 'not_started';
         const adminHasSigned = !!response.adminSignature;
@@ -271,6 +327,18 @@ function MyResponses({
                 </span>
               </div>
             </div>
+
+            {/* Rejection note — shown to owner when offer was rejected with a note */}
+            {response.status === 'rejected' && response.rejectionNote && (
+              <div className="px-6 pb-4">
+                <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+                  <p className="text-xs font-medium text-red-700 mb-0.5">
+                    {language === 'es' ? 'Razón del rechazo:' : 'Rejection reason:'}
+                  </p>
+                  <p className="text-sm text-red-800 italic">"{response.rejectionNote}"</p>
+                </div>
+              </div>
+            )}
 
             {/* NDA Signing Section for owner — appears when admin has signed */}
             {response.status === 'accepted' && requirement && needsOwnerSignature && (

@@ -1,4 +1,5 @@
 import { useState, useContext, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -221,7 +222,7 @@ export function OwnerResponseForm({
     }
   };
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
       <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
         <div className="sticky top-0 flex items-center justify-between p-6 border-b bg-white">
@@ -563,6 +564,7 @@ export function OwnerResponseForm({
           </div>
         </form>
       </Card>
-    </div>
+    </div>,
+    document.body
   );
 }

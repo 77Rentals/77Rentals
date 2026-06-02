@@ -1,3 +1,5 @@
+import { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useToast } from '@/components/ui/use-toast';
@@ -55,6 +57,7 @@ export function AdminOfferDetailModal({
   onClose,
   onStatusChange,
 }: AdminOfferDetailModalProps) {
+  const [rejectionNote, setRejectionNote] = useState('');
   const { language } = useLanguage();
   const { updateResponse } = usePartnerHub();
   const { toast } = useToast();
@@ -88,7 +91,10 @@ export function AdminOfferDetailModal({
 
   const handleReject = () => {
     try {
-      updateResponse(response.id, { status: 'rejected' });
+      updateResponse(response.id, {
+        status: 'rejected',
+        ...(rejectionNote.trim() ? { rejectionNote: rejectionNote.trim() } : {}),
+      });
       toast({
         title: language === 'es' ? 'Éxito' : 'Success',
         description: language === 'es'
@@ -114,7 +120,7 @@ export function AdminOfferDetailModal({
     (1000 * 60 * 60 * 24)
   );
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
       <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
         {/* Header */}
@@ -123,6 +129,7 @@ export function AdminOfferDetailModal({
             {language === 'es' ? 'Detalles de la Oferta' : 'Offer Details'}
           </h2>
           <button
+            type="button"
             onClick={onClose}
             className="p-1 hover:bg-gray-100 rounded-lg transition-colors"
           >
@@ -366,28 +373,57 @@ export function AdminOfferDetailModal({
 
           {/* Action Buttons - Only if pending */}
           {response.status === 'pending' && (
-            <div className="border-t pt-6 flex gap-3">
-              <Button
-                onClick={handleAccept}
-                className="flex-1 bg-green-600 hover:bg-green-700 text-white flex items-center justify-center gap-2"
-              >
-                <Check size={18} />
-                {language === 'es' ? 'Aceptar Oferta' : 'Accept Offer'}
-              </Button>
-              <Button
-                onClick={handleReject}
-                variant="outline"
-                className="flex-1 border-red-600 text-red-600 hover:bg-red-50"
-              >
-                {language === 'es' ? 'Rechazar' : 'Reject'}
-              </Button>
-              <Button
-                onClick={onClose}
-                variant="outline"
-                className="flex-1"
-              >
-                {language === 'es' ? 'Cerrar' : 'Close'}
-              </Button>
+            <div className="border-t pt-6 space-y-4">
+              {/* Optional rejection note */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {language === 'es' ? 'Razón del rechazo (opcional)' : 'Rejection reason (optional)'}
+                </label>
+                <textarea
+                  value={rejectionNote}
+                  onChange={(e) => setRejectionNote(e.target.value)}
+                  placeholder={language === 'es'
+                    ? 'Explica por qué rechazas esta oferta...'
+                    : 'Explain why you are rejecting this offer...'}
+                  rows={3}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-red-300"
+                />
+              </div>
+              <div className="flex gap-3">
+                <Button
+                  onClick={handleAccept}
+                  className="flex-1 bg-green-600 hover:bg-green-700 text-white flex items-center justify-center gap-2"
+                >
+                  <Check size={18} />
+                  {language === 'es' ? 'Aceptar Oferta' : 'Accept Offer'}
+                </Button>
+                <Button
+                  onClick={handleReject}
+                  variant="outline"
+                  className="flex-1 border-red-600 text-red-600 hover:bg-red-50"
+                >
+                  {language === 'es' ? 'Rechazar' : 'Reject'}
+                </Button>
+                <Button
+                  onClick={onClose}
+                  variant="outline"
+                  className="flex-1"
+                >
+                  {language === 'es' ? 'Cerrar' : 'Close'}
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {/* Rejection note display - when viewing a rejected offer */}
+          {response.status === 'rejected' && response.rejectionNote && (
+            <div className="border-t pt-6">
+              <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+                <p className="text-sm font-medium text-red-800 mb-1">
+                  {language === 'es' ? 'Razón del rechazo:' : 'Rejection reason:'}
+                </p>
+                <p className="text-sm text-red-700">{response.rejectionNote}</p>
+              </div>
             </div>
           )}
 
@@ -405,6 +441,7 @@ export function AdminOfferDetailModal({
           )}
         </div>
       </Card>
-    </div>
+    </div>,
+    document.body
   );
 }
