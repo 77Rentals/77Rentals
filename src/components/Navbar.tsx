@@ -20,6 +20,7 @@ const Navbar = () => {
     { href: '#about', label: t('nav.about') },
     { href: '#management', label: t('nav.management') },
     { href: '#contact', label: t('nav.contact') },
+    { href: '/partner-hub', label: 'Partner Hub' },
   ];
 
   return (
