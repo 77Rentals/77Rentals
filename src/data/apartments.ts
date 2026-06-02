@@ -116,6 +116,10 @@ export interface Apartment {
   isNewListing?: boolean;
   showMorePhotosComingSoon?: boolean;
   whatsappContactMessage?: string;
+
+  // Partner Hub fields
+  isDelVenttoProp?: boolean; // marks DelVentto properties for Partner Hub filtering
+  delVenttoOwnerId?: string; // links property to owner
 }
 
 export const apartments: Apartment[] = [
@@ -247,6 +251,8 @@ export const apartments: Apartment[] = [
       services: ['Recepción 24 horas', 'WiFi gratis'],
       other: ['Aire acondicionado', 'Ascensor', 'No fumar'],
     },
+    isDelVenttoProp: true,
+    delVenttoOwnerId: 'owner-fragata-1',
     houseRules: {
       checkIn: '15:00 – 23:00',
       checkOut: '01:00 – 12:00',

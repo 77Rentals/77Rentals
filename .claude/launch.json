@@ -5,7 +5,7 @@
       "name": "Rentals77 Dev Server",
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev"],
-      "port": 8080
+      "port": 5174
     }
   ]
 }
