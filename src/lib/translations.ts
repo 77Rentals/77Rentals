@@ -73,7 +73,7 @@ export const translations: Record<Language, Record<string, string>> = {
     // Owner form
     'owner.submitPropertyOffer': 'Enviar oferta de propiedad',
     'owner.yourProperty': 'Tu propiedad',
-    'owner.selectProperty': 'Selecciona tu propiedad',
+    'owner.selectPropertyBasic': 'Selecciona tu propiedad',
     'owner.chooseProperty': 'Elige una propiedad...',
     'owner.noPropertiesMessage': 'No hay propiedades creadas aún. Ve a la pestaña "Mis propiedades" para crear una antes de enviar ofertas.',
     'owner.apartmentInformation': 'Información del apartamento',
