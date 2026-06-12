@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Macondo 717 · Welcome Guide · 77Rentals</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="three.min.js"></script>
+<style>
+:root{
+  --purple:#8B3FA1;
+  --purple-deep:#5E2370;
+  --purple-dark:#3A1248;
+  --gold:#E3B23C;
+  --gold-soft:#F2D58A;
+  --cream:#FBF7F0;
+  --ink:#2A1633;
+  --sea:#1B7F8E;
+  --coral:#E86A4F;
+  --white:#FFFFFF;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:'Outfit',sans-serif;
+  background:var(--cream);
+  color:var(--ink);
+  line-height:1.6;
+  overflow-x:hidden;
+}
+h1,h2,h3,.display{font-family:'Cormorant Garamond',serif;}
+
+/* ───── Passcode gate ───── */
+.site{display:none;}
+.gate{
+  min-height:100svh;display:flex;align-items:center;justify-content:center;
+  text-align:center;padding:24px;
+  background:linear-gradient(165deg,#3A1248 0%,#5E2370 38%,#8B3FA1 68%,#C0639B 88%,#E8927C 100%);
+  color:var(--cream);
+}
+.gate-card{max-width:380px;width:100%;}
+.gate-eyebrow{letter-spacing:.35em;font-size:.72rem;font-weight:600;color:var(--gold-soft);text-transform:uppercase;margin-bottom:10px;}
+.gate-title{font-size:clamp(2.4rem,8vw,3.4rem);font-weight:600;margin-bottom:14px;}
+.gate-title em{font-style:italic;color:var(--gold-soft);}
+.gate-sub{font-weight:300;font-size:.95rem;color:rgba(251,247,240,.92);margin-bottom:26px;}
+.gate-input{
+  width:100%;padding:14px 18px;border-radius:999px;border:1px solid rgba(243,213,138,.5);
+  background:rgba(58,18,72,.3);color:var(--cream);font-family:'Outfit';font-size:1rem;
+  text-align:center;letter-spacing:.2em;outline:none;margin-bottom:14px;
+}
+.gate-input::placeholder{color:rgba(251,247,240,.5);}
+.gate-input:focus{border-color:var(--gold);}
+.gate-btn{
+  width:100%;padding:14px 18px;border-radius:999px;border:none;cursor:pointer;
+  background:var(--gold);color:var(--purple-dark);font-family:'Outfit';font-weight:700;
+  font-size:.95rem;letter-spacing:.08em;transition:background .2s;
+}
+.gate-btn:hover{background:var(--gold-soft);}
+.gate-error{margin-top:14px;font-size:.85rem;color:#F2D58A;opacity:0;transition:opacity .2s;}
+.gate-error.show{opacity:1;}
+
+/* ───── Top bar ───── */
+.topbar{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 24px;
+  background:rgba(58,18,72,.85);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+}
+.brand{display:flex;align-items:center;gap:10px;color:var(--gold-soft);}
+.brand svg{width:30px;height:30px;}
+.brand-name{font-weight:600;letter-spacing:.14em;font-size:.8rem;color:var(--cream);}
+.brand-name span{color:var(--gold);}
+.lang-toggle{
+  display:flex;border:1px solid rgba(243,213,138,.5);border-radius:999px;overflow:hidden;
+}
+.lang-toggle button{
+  background:transparent;border:none;color:var(--cream);
+  padding:7px 16px;font-family:'Outfit';font-size:.78rem;font-weight:600;
+  letter-spacing:.08em;cursor:pointer;transition:all .25s;
+}
+.lang-toggle button.active{background:var(--gold);color:var(--purple-dark);}
+
+/* ───── Hero ───── */
+.hero{
+  min-height:100svh;
+  display:flex;flex-direction:column;justify-content:center;align-items:center;
+  text-align:center;position:relative;
+  background:linear-gradient(165deg,#3A1248 0%,#5E2370 38%,#8B3FA1 68%,#C0639B 88%,#E8927C 100%);
+  color:var(--cream);
+  padding:110px 24px 80px;
+  overflow:hidden;
+}
+.hero::after{
+  content:"";position:absolute;left:0;right:0;bottom:0;height:140px;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 140' preserveAspectRatio='none'%3E%3Cpath d='M0,80 C240,140 480,20 720,60 C960,100 1200,40 1440,90 L1440,140 L0,140 Z' fill='%23FBF7F0'/%3E%3C/svg%3E") no-repeat bottom/cover;
+}
+.hero-eyebrow{
+  letter-spacing:.35em;font-size:.72rem;font-weight:600;color:var(--gold-soft);
+  text-transform:uppercase;margin-bottom:18px;
+}
+.hero h1{
+  font-size:clamp(3.2rem,9vw,6.5rem);
+  font-weight:600;line-height:1.02;letter-spacing:.01em;
+}
+.hero h1 em{font-style:italic;color:var(--gold-soft);}
+.hero-sub{
+  max-width:560px;margin:22px auto 0;font-weight:300;
+  font-size:clamp(1rem,2.4vw,1.15rem);color:rgba(251,247,240,.92);
+}
+.hero-badges{display:flex;gap:14px;margin-top:34px;flex-wrap:wrap;justify-content:center;}
+.badge{
+  border:1px solid rgba(243,213,138,.45);border-radius:999px;
+  padding:8px 18px;font-size:.78rem;letter-spacing:.06em;color:var(--gold-soft);
+  background:rgba(58,18,72,.3);
+}
+.butterflies{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
+.bf{position:absolute;opacity:.6;animation:float 14s ease-in-out infinite;}
+.bf svg{width:100%;height:100%;}
+@keyframes float{
+  0%,100%{transform:translate(0,0) rotate(-4deg);}
+  25%{transform:translate(26px,-40px) rotate(7deg);}
+  50%{transform:translate(-14px,-78px) rotate(-6deg);}
+  75%{transform:translate(20px,-34px) rotate(5deg);}
+}
+@media (prefers-reduced-motion:reduce){.bf{animation:none;} *{scroll-behavior:auto!important;}}
+.scroll-hint{
+  position:absolute;bottom:26px;left:50%;transform:translateX(-50%);
+  font-size:.7rem;letter-spacing:.3em;text-transform:uppercase;color:rgba(251,247,240,.7);
+  z-index:2;
+}
+
+/* ───── Sections ───── */
+section{padding:80px 24px;max-width:1080px;margin:0 auto;}
+.sec-eyebrow{
+  letter-spacing:.3em;font-size:.7rem;font-weight:600;color:var(--purple);
+  text-transform:uppercase;display:block;margin-bottom:10px;
+}
+.sec-title{font-size:clamp(2rem,5vw,3rem);font-weight:600;line-height:1.1;margin-bottom:14px;}
+.sec-title em{font-style:italic;color:var(--purple);}
+.sec-lead{max-width:640px;font-weight:300;color:#5a4666;margin-bottom:40px;}
+
+/* Countdown */
+.count-wrap{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px;
+}
+.count-card{
+  background:var(--white);border-radius:22px;padding:30px 26px;
+  border:1px solid #efe6db;
+  box-shadow:0 18px 40px -28px rgba(58,18,72,.35);
+}
+.count-card h3{font-size:1.5rem;color:var(--purple-deep);margin-bottom:4px;}
+.count-time{font-family:'Outfit';font-size:2.1rem;font-weight:700;color:var(--ink);}
+.count-note{font-size:.85rem;color:#7a6a85;margin-top:8px;}
+.count-card.gold{background:linear-gradient(140deg,var(--purple-deep),var(--purple));color:var(--cream);border:none;}
+.count-card.gold h3{color:var(--gold-soft);}
+.count-card.gold .count-time{color:var(--white);}
+.count-card.gold .count-note{color:rgba(251,247,240,.8);}
+.steps{margin-top:36px;display:grid;gap:14px;}
+.step{
+  display:flex;gap:16px;background:var(--white);border-radius:16px;padding:18px 20px;
+  border:1px solid #efe6db;align-items:flex-start;
+}
+.step-num{
+  flex:0 0 34px;height:34px;border-radius:50%;
+  background:var(--gold);color:var(--purple-dark);
+  display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:.9rem;
+}
+.step strong{display:block;color:var(--purple-deep);}
+.step p{font-size:.92rem;color:#5a4666;}
+
+/* 3D */
+.three-wrap{
+  background:linear-gradient(160deg,#2c0e38,#4d1d5e);
+  border-radius:26px;overflow:hidden;position:relative;
+  box-shadow:0 30px 60px -30px rgba(58,18,72,.55);
+}
+#three-canvas{width:100%;height:440px;display:block;touch-action:none;cursor:grab;}
+#three-canvas:active{cursor:grabbing;}
+.three-hint{
+  position:absolute;bottom:14px;left:50%;transform:translateX(-50%);
+  background:rgba(58,18,72,.7);color:var(--gold-soft);
+  font-size:.72rem;letter-spacing:.12em;padding:7px 16px;border-radius:999px;
+  pointer-events:none;white-space:nowrap;
+}
+.legend{display:flex;gap:18px;flex-wrap:wrap;margin-top:18px;}
+.legend span{display:flex;align-items:center;gap:8px;font-size:.82rem;color:#5a4666;}
+.dot{width:12px;height:12px;border-radius:4px;display:inline-block;}
+
+/* Page-wide floating butterflies (fixed, behind content) */
+.bf-page{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+.bf-page .bf{opacity:.3;}
+section,header,footer,.topbar{position:relative;z-index:1;}
+
+/* Gallery */
+.gal-tabs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px;}
+.gal-tabs button{
+  border:1px solid var(--purple);background:transparent;color:var(--purple);
+  border-radius:999px;padding:9px 20px;font-family:'Outfit';font-weight:600;font-size:.82rem;
+  cursor:pointer;transition:all .25s;
+}
+.gal-tabs button.active{background:var(--purple);color:var(--cream);}
+.gal-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;}
+.gal-item{
+  border-radius:18px;overflow:hidden;cursor:zoom-in;position:relative;
+  aspect-ratio:4/3;background:#e0cfe8;
+}
+.gal-item img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .35s;}
+.gal-item:hover img{transform:scale(1.04);}
+.gal-item-label{
+  position:absolute;bottom:0;left:0;right:0;
+  background:linear-gradient(transparent,rgba(58,18,72,.75));
+  color:var(--cream);font-size:.82rem;font-weight:600;padding:22px 14px 10px;
+  opacity:0;transition:opacity .25s;
+}
+.gal-item:hover .gal-item-label{opacity:1;}
+.gal-ph{
+  aspect-ratio:4/3;border-radius:18px;
+  background:linear-gradient(140deg,#efe2f3,#e0cfe8);
+  border:2px dashed #c49ed3;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
+  color:var(--purple);font-size:.82rem;font-weight:500;text-align:center;padding:14px;
+}
+.gal-ph svg{width:34px;height:34px;opacity:.7;}
+.gal-drive{
+  margin-top:22px;display:flex;align-items:center;justify-content:center;
+}
+.gal-drive a{
+  display:inline-flex;align-items:center;gap:10px;
+  background:var(--purple);color:var(--cream);
+  padding:13px 28px;border-radius:999px;text-decoration:none;
+  font-weight:600;font-size:.88rem;letter-spacing:.04em;
+  transition:background .2s,transform .2s;
+}
+.gal-drive a:hover{background:var(--purple-deep);transform:translateY(-2px);}
+/* Lightbox */
+.lb{
+  display:none;position:fixed;inset:0;z-index:1000;
+  background:rgba(18,4,28,.92);align-items:center;justify-content:center;
+  padding:16px;
+}
+.lb.open{display:flex;}
+.lb img{max-width:100%;max-height:90svh;border-radius:14px;object-fit:contain;
+  box-shadow:0 30px 80px rgba(0,0,0,.6);}
+.lb-close{
+  position:fixed;top:18px;right:22px;color:var(--cream);
+  font-size:2rem;cursor:pointer;line-height:1;background:none;border:none;
+  z-index:1001;opacity:.8;transition:opacity .2s;
+}
+.lb-close:hover{opacity:1;}
+
+/* Map */
+.map-card{
+  background:var(--white);border-radius:26px;padding:22px;
+  border:1px solid #efe6db;box-shadow:0 22px 48px -32px rgba(58,18,72,.4);
+}
+.map-svg{width:100%;height:auto;border-radius:16px;display:block;}
+.map-filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px;}
+.map-filters button{
+  border:none;border-radius:999px;padding:8px 18px;font-family:'Outfit';
+  font-weight:600;font-size:.8rem;cursor:pointer;transition:all .25s;color:var(--white);
+  opacity:.45;
+}
+.map-filters button.active{opacity:1;}
+.mf-all{background:var(--ink);}
+.mf-food{background:var(--coral);}
+.mf-med{background:var(--sea);}
+.mf-fun{background:var(--purple);}
+.map-pop{
+  margin-top:16px;background:var(--cream);border-radius:14px;padding:16px 18px;
+  border-left:4px solid var(--gold);min-height:70px;font-size:.92rem;color:#4a3a55;
+}
+.map-pop strong{color:var(--purple-deep);display:block;font-size:1rem;}
+.poi{cursor:pointer;transition:transform .2s;}
+.poi:hover{transform:scale(1.12);}
+.poi.hidden{display:none;}
+
+/* Places cards */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;}
+.place{
+  background:var(--white);border-radius:20px;padding:24px;
+  border:1px solid #efe6db;position:relative;overflow:hidden;
+  transition:transform .25s, box-shadow .25s;
+}
+.place:hover{transform:translateY(-4px);box-shadow:0 24px 44px -28px rgba(58,18,72,.4);}
+.place-tag{
+  display:inline-block;font-size:.68rem;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;border-radius:999px;padding:4px 12px;margin-bottom:12px;color:var(--white);
+}
+.tag-food{background:var(--coral);}
+.tag-fun{background:var(--purple);}
+.place h3{font-size:1.45rem;color:var(--purple-deep);margin-bottom:6px;}
+.place-meta{font-size:.78rem;font-weight:600;color:var(--gold);letter-spacing:.05em;margin-bottom:10px;}
+.place p{font-size:.92rem;color:#5a4666;}
+
+/* Hosts */
+.hosts{
+  background:linear-gradient(150deg,var(--purple-dark),var(--purple-deep));
+  border-radius:30px;color:var(--cream);padding:50px 40px;
+  display:grid;grid-template-columns:200px 1fr;gap:40px;align-items:center;
+}
+.host-photo{
+  width:200px;height:200px;border-radius:50%;
+  background:linear-gradient(140deg,#7a3492,#a85cc0);
+  border:3px dashed rgba(243,213,138,.6);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  color:var(--gold-soft);font-size:.78rem;text-align:center;gap:6px;padding:14px;
+}
+.hosts h2{font-size:2.3rem;color:var(--gold-soft);margin-bottom:12px;}
+.hosts p{font-weight:300;color:rgba(251,247,240,.92);margin-bottom:14px;}
+.host-stats{display:flex;gap:22px;flex-wrap:wrap;margin-top:8px;}
+.hstat{font-size:.8rem;letter-spacing:.05em;}
+.hstat b{display:block;font-size:1.25rem;color:var(--gold);font-family:'Cormorant Garamond';}
+.host-sign{font-family:'Cormorant Garamond';font-style:italic;font-size:1.6rem;color:var(--gold-soft);margin-top:10px;}
+
+/* Amenities */
+.amen{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;}
+.amen div{
+  background:var(--white);border:1px solid #efe6db;border-radius:16px;
+  padding:20px 16px;text-align:center;font-size:.85rem;font-weight:500;color:var(--purple-deep);
+}
+.amen div span{display:block;font-size:1.6rem;margin-bottom:6px;}
+.wifi-box{
+  margin-top:22px;background:var(--gold-soft);border-radius:18px;padding:22px 26px;
+  display:flex;gap:30px;flex-wrap:wrap;align-items:center;
+}
+.wifi-box b{color:var(--purple-dark);font-size:1.05rem;}
+.wifi-box small{display:block;letter-spacing:.15em;text-transform:uppercase;font-size:.65rem;color:#7d5f17;font-weight:700;}
+
+/* Emergency */
+.sos{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px;}
+.sos a{
+  text-decoration:none;background:var(--white);border-radius:18px;padding:22px;
+  border:1px solid #efe6db;display:flex;align-items:center;gap:16px;
+  color:var(--ink);transition:transform .2s, box-shadow .2s;
+}
+.sos a:hover{transform:translateY(-3px);box-shadow:0 18px 36px -26px rgba(58,18,72,.4);}
+.sos-icon{
+  flex:0 0 48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;
+  font-size:1.3rem;color:var(--white);
+}
+.sos strong{display:block;color:var(--purple-deep);}
+.sos small{color:#7a6a85;}
+.sos .num{font-weight:700;color:var(--sea);}
+
+/* Video */
+.video-wrap{
+  border-radius:26px;overflow:hidden;
+  box-shadow:0 30px 60px -30px rgba(58,18,72,.55);
+  background:#2c0e38;line-height:0;
+}
+.video-wrap video{width:100%;max-height:72vh;display:block;}
+
+/* Weather */
+.weather{
+  margin-top:26px;
+  background:linear-gradient(135deg,#1B7F8E,#2aa3b4);
+  border-radius:22px;padding:26px 28px;color:var(--cream);
+  display:flex;gap:26px;align-items:center;flex-wrap:wrap;
+  box-shadow:0 22px 44px -30px rgba(27,127,142,.7);
+}
+.weather-now{display:flex;align-items:center;gap:14px;}
+.weather-icon{font-size:3rem;line-height:1;}
+.weather-temp{font-family:'Cormorant Garamond';font-size:3rem;font-weight:600;line-height:1;}
+.weather-desc{font-size:.85rem;opacity:.9;}
+.weather-days{display:flex;gap:18px;margin-left:auto;flex-wrap:wrap;}
+.wday{text-align:center;font-size:.78rem;}
+.wday b{display:block;font-size:1.05rem;}
+.wday span{font-size:1.4rem;display:block;}
+.weather-loading{font-size:.9rem;opacity:.85;}
+@media(max-width:640px){.weather-days{margin-left:0;}}
+
+/* Footer */
+footer{
+  background:var(--purple-dark);color:rgba(251,247,240,.8);
+  text-align:center;padding:50px 24px 40px;margin-top:40px;
+}
+footer .display{font-size:1.9rem;color:var(--gold-soft);font-style:italic;margin-bottom:10px;}
+footer a{color:var(--gold);text-decoration:none;}
+.foot-links{display:flex;gap:18px;justify-content:center;margin-top:16px;flex-wrap:wrap;font-size:.85rem;}
+
+@media(max-width:720px){
+  .hosts{grid-template-columns:1fr;text-align:center;justify-items:center;}
+  #three-canvas{height:340px;}
+  section{padding:60px 18px;}
+}
+</style>
+</head>
+<body>
+
+<!-- PASSCODE GATE -->
+<div class="gate" id="gate">
+  <div class="gate-card">
+    <div class="gate-eyebrow" data-es="Bienvenido a" data-en="Welcome to">Bienvenido a</div>
+    <h1 class="gate-title">Macondo <em>717</em></h1>
+    <p class="gate-sub" data-es="Ingresa el código que te enviamos para ver tu guía de bienvenida." data-en="Enter the code we sent you to view your welcome guide.">Ingresa el código que te enviamos para ver tu guía de bienvenida.</p>
+    <input type="text" id="gate-input" class="gate-input" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="••••••">
+    <button class="gate-btn" onclick="checkGate()" data-es="Ingresar" data-en="Enter">Ingresar</button>
+    <p class="gate-error" id="gate-error" data-es="Código incorrecto, intenta de nuevo." data-en="Incorrect code, please try again.">Código incorrecto, intenta de nuevo.</p>
+  </div>
+</div>
+
+<div class="site" id="site">
+
+<div class="topbar">
+  <div class="brand">
+    <svg viewBox="0 0 40 40" fill="none"><path d="M6 20 L20 8 L34 20" stroke="#E3B23C" stroke-width="3" stroke-linecap="round"/><rect x="11" y="20" width="18" height="13" rx="2" fill="#E3B23C"/><rect x="17" y="25" width="6" height="8" rx="1" fill="#3A1248"/></svg>
+    <div class="brand-name">77<span>RENTALS</span> · MACONDO 717</div>
+  </div>
+  <div class="lang-toggle">
+    <button id="btn-es" class="active" onclick="setLang('es')">ES</button>
+    <button id="btn-en" onclick="setLang('en')">EN</button>
+  </div>
+</div>
+
+<!-- PAGE-WIDE BUTTERFLIES (fixed, behind all content) -->
+<div class="bf-page" id="bf-page"></div>
+
+<!-- LIGHTBOX -->
+<div class="lb" id="lightbox" onclick="closeLB()">
+  <button class="lb-close" onclick="closeLB()">✕</button>
+  <img id="lb-img" src="" alt="">
+</div>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="butterflies" id="butterflies"></div>
+  <div class="hero-eyebrow" data-es="Pozos Colorados · Santa Marta · Colombia" data-en="Pozos Colorados · Santa Marta · Colombia">Pozos Colorados · Santa Marta · Colombia</div>
+  <h1><span data-es="Bienvenido a" data-en="Welcome to">Bienvenido a</span> <em>Macondo</em></h1>
+  <p class="hero-sub" data-es="Un refugio de realismo mágico frente al Caribe, donde cada atardecer escribe una página nueva de tu historia." data-en="A magical realism retreat facing the Caribbean, where every sunset writes a new page of your story.">Un refugio de realismo mágico frente al Caribe, donde cada atardecer escribe una página nueva de tu historia.</p>
+  <div class="hero-badges">
+    <span class="badge" data-es="Suite con vista al mar" data-en="Ocean view suite">Suite con vista al mar</span>
+    <span class="badge">Superhost · 500+ ⭐</span>
+    <span class="badge" data-es="Edificio Del Ventto · Apto 717" data-en="Del Ventto Building · Apt 717">Edificio Del Ventto · Apto 717</span>
+  </div>
+  <div class="scroll-hint" data-es="Desliza para explorar" data-en="Scroll to explore">Desliza para explorar</div>
+</header>
+
+<!-- DESCRIPTION -->
+<section id="description">
+  <span class="sec-eyebrow" data-es="Bienvenida" data-en="Welcome">Bienvenida</span>
+  <h2 class="sec-title"><span data-es="Tu refugio en" data-en="Your retreat in">Tu refugio en</span> <em>Macondo</em></h2>
+  <p class="sec-lead" data-es="Bienvenido a Macondo, un refugio diseñado para quienes buscan desconectarse del mundo y sumergirse en la mística y la exuberancia de nuestra tierra. Inspirado en el realismo mágico y la exuberancia de nuestra tierra, este espacio combina el confort moderno con detalles que celebran el espíritu del Caribe, creando el escenario perfecto para que escribas tu propia historia frente al mar." data-en="Welcome to Macondo, a retreat designed for those looking to disconnect from the world and immerse themselves in the mystique and lushness of our land. Inspired by magical realism, this space combines modern comfort with details that celebrate the spirit of the Caribbean, creating the perfect setting for you to write your own story facing the sea.">Bienvenido a Macondo, un refugio diseñado para quienes buscan desconectarse del mundo y sumergirse en la mística y la exuberancia de nuestra tierra. Inspirado en el realismo mágico y la exuberancia de nuestra tierra, este espacio combina el confort moderno con detalles que celebran el espíritu del Caribe, creando el escenario perfecto para que escribas tu propia historia frente al mar.</p>
+  <h3 style="font-size:1.3rem;color:var(--purple-deep);margin-bottom:10px;" data-es="Un rincón de realismo mágico" data-en="A corner of magical realism">Un rincón de realismo mágico</h3>
+  <p style="color:#5a4666;margin-bottom:14px;" data-es="Ubicado en el exclusivo Edificio Del Ventto, Macondo no es solo un lugar para dormir; es una experiencia para los sentidos. Desde la suavidad de la brisa hasta la calidez de su decoración, cada detalle ha sido pensado para ofrecerte un descanso profundo y reparador. Contempla el atardecer sobre el horizonte de Santa Marta." data-en="Located in the exclusive Del Ventto Building, Macondo isn't just a place to sleep; it's an experience for the senses. From the softness of the breeze to the warmth of its decor, every detail has been designed to give you a deep, restorative rest. Watch the sunset over the Santa Marta horizon.">Ubicado en el exclusivo Edificio Del Ventto, Macondo no es solo un lugar para dormir; es una experiencia para los sentidos. Desde la suavidad de la brisa hasta la calidez de su decoración, cada detalle ha sido pensado para ofrecerte un descanso profundo y reparador. Contempla el atardecer sobre el horizonte de Santa Marta.</p>
+  <p style="color:#5a4666;" data-es="Deseamos que tu estadía sea tan inolvidable como los amaneceres que estamos a punto de regalarte. Ponte cómodo y deja que la magia comience." data-en="We hope your stay is as unforgettable as the sunrises we're about to give you. Make yourself at home and let the magic begin.">Deseamos que tu estadía sea tan inolvidable como los amaneceres que estamos a punto de regalarte. Ponte cómodo y deja que la magia comience.</p>
+</section>
+
+<!-- CHECK-IN -->
+<section id="checkin">
+  <span class="sec-eyebrow" data-es="Tu llegada" data-en="Your arrival">Tu llegada</span>
+  <h2 class="sec-title"><span data-es="Check-in y" data-en="Check-in &">Check-in y</span> <em>check-out</em></h2>
+  <p class="sec-lead" data-es="Desde el aeropuerto estás a solo 10-12 minutos en carro. Un taxi te costará entre $20-25 mil COP hasta Del Ventto." data-en="The airport is just a 10-12 minute drive away. A taxi costs about $20-25k COP to Del Ventto.">Desde el aeropuerto estás a solo 10-12 minutos en carro. Un taxi te costará entre $20-25 mil COP hasta Del Ventto.</p>
+
+  <div class="count-wrap">
+    <div class="count-card gold">
+      <h3>Check-in</h3>
+      <div class="count-time">3:00 PM</div>
+      <p class="count-note" data-es="Disponible desde las 3 de la tarde" data-en="Available from 3 in the afternoon">Disponible desde las 3 de la tarde</p>
+    </div>
+    <div class="count-card">
+      <h3>Check-out</h3>
+      <div class="count-time">11:30 AM</div>
+      <p class="count-note" data-es="Pasa tu palma sobre el teclado digital para asegurar la puerta e informa en el lobby." data-en="Wave your palm over the digital keypad to lock the door and let the lobby know.">Pasa tu palma sobre el teclado digital para asegurar la puerta e informa en el lobby.</p>
+    </div>
+    <div class="count-card">
+      <h3 data-es="Hora local" data-en="Local time">Hora local</h3>
+      <div class="count-time" id="local-clock">--:--</div>
+      <p class="count-note">Santa Marta (GMT-5)</p>
+    </div>
+  </div>
+
+  <div class="steps">
+    <div class="step"><div class="step-num">1</div><div><strong data-es="Registro" data-en="Registration">Registro</strong><p data-es="Al llegar al Edificio Del Ventto, dirígete a la recepción." data-en="When you arrive at the Del Ventto Building, head to reception.">Al llegar al Edificio Del Ventto, dirígete a la recepción.</p></div></div>
+    <div class="step"><div class="step-num">2</div><div><strong data-es="Identificación" data-en="Identification">Identificación</strong><p data-es="Presenta los documentos de identidad de todos los huéspedes y tu confirmación de reserva para el Apto 1-717." data-en="Present ID for all guests along with your booking confirmation for Apt 1-717.">Presenta los documentos de identidad de todos los huéspedes y tu confirmación de reserva para el Apto 1-717.</p></div></div>
+    <div class="step"><div class="step-num">3</div><div><strong data-es="Acceso" data-en="Access">Acceso</strong><p data-es="Te enviaremos la clave digital de la cerradura por WhatsApp. Solo digítala para entrar a tu refugio en Macondo." data-en="We'll send your digital lock code via WhatsApp. Just type it in to enter your Macondo retreat.">Te enviaremos la clave digital de la cerradura por WhatsApp. Solo digítala para entrar a tu refugio en Macondo.</p></div></div>
+  </div>
+  <div class="weather" id="weather">
+    <div class="weather-loading" data-es="Cargando el clima de Santa Marta..." data-en="Loading Santa Marta weather...">Cargando el clima de Santa Marta...</div>
+  </div>
+</section>
+
+<!-- VIDEO TOUR -->
+<section id="tour">
+  <span class="sec-eyebrow" data-es="Recorrido en video" data-en="Video tour">Recorrido en video</span>
+  <h2 class="sec-title"><span data-es="Camina por" data-en="Walk through">Camina por</span> <em>Macondo</em></h2>
+  <p class="sec-lead" data-es="Un recorrido real por tu suite: la cocina completa, el espacio de trabajo, la cama junto al ventanal y el balcón con vista a la Sierra." data-en="A real walkthrough of your suite: the full kitchen, the work space, the bed by the window, and the balcony facing the Sierra.">Un recorrido real por tu suite: la cocina completa, el espacio de trabajo, la cama junto al ventanal y el balcón con vista a la Sierra.</p>
+  <div class="video-wrap">
+    <video controls playsinline preload="metadata">
+      <source src="macondo-tour.mp4" type="video/mp4">
+      <p data-es="Coloca macondo-tour.mp4 en la misma carpeta que este archivo." data-en="Place macondo-tour.mp4 in the same folder as this file.">Coloca macondo-tour.mp4 en la misma carpeta que este archivo.</p>
+    </video>
+  </div>
+</section>
+
+<!-- 3D -->
+<section id="suite3d">
+  <span class="sec-eyebrow" data-es="Explora antes de llegar" data-en="Explore before you arrive">Explora antes de llegar</span>
+  <h2 class="sec-title"><span data-es="Tu suite en" data-en="Your suite in">Tu suite en</span> <em>3D</em></h2>
+  <p class="sec-lead" data-es="Basado en el espacio real: cocina completa con lavavajillas, escritorio para trabajar, cama junto al ventanal, silla teal y balcón con mesa para dos frente a la Sierra." data-en="Based on the real space: full kitchen with dishwasher, a work desk, the bed by the floor-to-ceiling window, the teal chair, and a balcony table for two facing the Sierra.">Basado en el espacio real: cocina completa con lavavajillas, escritorio para trabajar, cama junto al ventanal, silla teal y balcón con mesa para dos frente a la Sierra.</p>
+  <div class="three-wrap">
+    <canvas id="three-canvas"></canvas>
+    <div class="three-hint" data-es="Arrastra para girar · Pellizca o usa la rueda para zoom" data-en="Drag to rotate · Pinch or scroll to zoom">Arrastra para girar · Pellizca o usa la rueda para zoom</div>
+  </div>
+  <div class="legend">
+    <span><i class="dot" style="background:#FFFFFF;border:1px solid #ccc"></i><span data-es="Cama queen y baño" data-en="Queen bed & bath">Cama queen y baño</span></span>
+    <span><i class="dot" style="background:#1F6F6F"></i><span data-es="Sofá y silla teal" data-en="Sofa & teal chair">Sofá y silla teal</span></span>
+    <span><i class="dot" style="background:#F3EDE2"></i><span data-es="Cocina, escritorio, TV" data-en="Kitchen, desk, TV">Cocina, escritorio, TV</span></span>
+    <span><i class="dot" style="background:#9DD6E3"></i><span data-es="Balcón con vista" data-en="View balcony">Balcón con vista</span></span>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section id="gallery">
+  <span class="sec-eyebrow" data-es="Galería" data-en="Gallery">Galería</span>
+  <h2 class="sec-title"><span data-es="Imágenes de tu" data-en="Glimpses of your">Imágenes de tu</span> <em data-es="estadía" data-en="stay">estadía</em></h2>
+  <div class="gal-tabs">
+    <button class="active" onclick="setGal(this,'prop')" data-es="La propiedad" data-en="The property">La propiedad</button>
+  </div>
+  <div class="gal-grid" id="gal-grid"></div>
+  <div class="gal-drive">
+    <a href="https://drive.google.com/drive/folders/1KjhZGj8j77-KEc8S8TT-kvSHNmHOT9hC?usp=drive_link" target="_blank" rel="noopener">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      <span data-es="Click to see all pictures" data-en="Click to see all pictures">Click to see all pictures</span>
+    </a>
+  </div>
+</section>
+
+<!-- MAP -->
+<section id="map">
+  <span class="sec-eyebrow" data-es="Tu mapa de Macondo" data-en="Your Macondo map">Tu mapa de Macondo</span>
+  <h2 class="sec-title"><span data-es="Todo está" data-en="Everything is">Todo está</span> <em data-es="cerca" data-en="close by">cerca</em></h2>
+  <div class="map-card">
+    <div class="gal-ph" style="aspect-ratio:16/9">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 20l-5.447-2.724A1 1 0 0 1 3 16.382V5.618a1 1 0 0 1 1.447-.894L9 7m0 13l6-3m-6 3V7m6 10l5.447 2.724A1 1 0 0 0 21 18.382V7.618a1 1 0 0 0-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>
+      <span data-es="Mapa próximamente" data-en="Map coming soon">Mapa próximamente</span>
+    </div>
+  </div>
+</section>
+
+<!-- PLACES -->
+<section id="places">
+  <span class="sec-eyebrow" data-es="Recomendaciones de tus anfitriones" data-en="Your hosts' picks">Recomendaciones de tus anfitriones</span>
+  <h2 class="sec-title"><span data-es="Cosas por" data-en="Things to">Cosas por</span> <em data-es="hacer y ver" data-en="do and see">hacer y ver</em></h2>
+  <div class="cards">
+    <div class="place"><span class="place-tag tag-food" data-es="Comida y playa" data-en="Food & beach">Comida y playa</span><h3>Playa del Ritmo</h3><div class="place-meta" data-es="4 MIN CAMINANDO · DESDE $17K COP" data-en="4 MIN WALK · FROM $17K COP">4 MIN CAMINANDO · DESDE $17K COP</div><p data-es="Nuestro favorito. Gran variedad de comida y platos del día, con playa y servicio de ducha." data-en="Our favorite. Great variety of food and daily specials, with beach access and shower service.">Nuestro favorito. Gran variedad de comida y platos del día, con playa y servicio de ducha.</p></div>
+    <div class="place"><span class="place-tag tag-food" data-es="Compras y comida" data-en="Shopping & food">Compras y comida</span><h3>C.C. Zazué</h3><div class="place-meta" data-es="5 MIN CAMINANDO" data-en="5 MIN WALK">5 MIN CAMINANDO</div><p data-es="El centro comercial del sector: restaurantes, tiendas y todo lo que necesites a la mano." data-en="The neighborhood mall: restaurants, shops, and everything you need close at hand.">El centro comercial del sector: restaurantes, tiendas y todo lo que necesites a la mano.</p></div>
+    <div class="place"><span class="place-tag tag-food" data-es="Leyenda local" data-en="Local legend">Leyenda local</span><h3>Pizza El Vómito</h3><div class="place-meta" data-es="EL RODADERO / GAIRA" data-en="EL RODADERO / GAIRA">EL RODADERO / GAIRA</div><p data-es="No dejes que el nombre te engañe. Es legendaria por la generosa (y caótica) cantidad de ingredientes y queso en cada porción." data-en="Don't let the name fool you. It's legendary for the generous (and chaotic) amount of toppings and cheese on every slice.">No dejes que el nombre te engañe. Es legendaria por la generosa (y caótica) cantidad de ingredientes y queso en cada porción.</p></div>
+    <div class="place"><span class="place-tag tag-fun" data-es="Cultura y vida nocturna" data-en="Culture & nightlife">Cultura y vida nocturna</span><h3 data-es="Centro Histórico y Parque de los Novios" data-en="Historic Center & Parque de los Novios">Centro Histórico y Parque de los Novios</h3><div class="place-meta" data-es="15-20 MIN EN CARRO" data-en="15-20 MIN BY CAR">15-20 MIN EN CARRO</div><p data-es="El corazón vibrante de la ciudad: casas coloniales, arte urbano y música en vivo en las plazas." data-en="The vibrant heart of the city: colonial houses, street art, and live music in the plazas.">El corazón vibrante de la ciudad: casas coloniales, arte urbano y música en vivo en las plazas.</p></div>
+    <div class="place"><span class="place-tag tag-fun" data-es="Historia" data-en="History">Historia</span><h3>Quinta de San Pedro Alejandrino</h3><div class="place-meta" data-es="HACIENDA DEL SIGLO XVII" data-en="17TH CENTURY HACIENDA">HACIENDA DEL SIGLO XVII</div><p data-es="Rodeada de árboles centenarios, aquí murió Simón Bolívar. Un oasis de cultura, arte y jardines botánicos." data-en="Surrounded by century-old trees, this is where Simón Bolívar died. An oasis of culture, art, and botanical gardens.">Rodeada de árboles centenarios, aquí murió Simón Bolívar. Un oasis de cultura, arte y jardines botánicos.</p></div>
+  </div>
+</section>
+
+<!-- AMENITIES -->
+<section id="amenities">
+  <span class="sec-eyebrow" data-es="Tu suite" data-en="Your suite">Tu suite</span>
+  <h2 class="sec-title"><span data-es="Todo lo que" data-en="Everything you">Todo lo que</span> <em data-es="necesitas" data-en="need">necesitas</em></h2>
+  <div class="amen">
+    <div><span>🛏</span><span data-es="Cama queen" data-en="Queen bed">Cama queen</span></div>
+    <div><span>🛋</span><span data-es="Sofá cama" data-en="Sofa bed">Sofá cama</span></div>
+    <div><span>❄️</span><span data-es="Aire acondicionado" data-en="Air conditioning">Aire acondicionado</span></div>
+    <div><span>🚿</span><span data-es="Ducha caliente" data-en="Hot shower">Ducha caliente</span></div>
+    <div><span>📶</span><span>WiFi</span></div>
+    <div><span>🌅</span><span data-es="Atardeceres" data-en="Sunsets">Atardeceres</span></div>
+  </div>
+  <div class="wifi-box">
+    <div><small data-es="Red WiFi" data-en="WiFi network">Red WiFi</small><b>717 Vela Mare</b></div>
+    <div><small data-es="Clave" data-en="Password">Clave</small><b>77Rentals*</b></div>
+    <div><small data-es="Antes de salir" data-en="Before heading out">Antes de salir</small><b data-es="Apaga el TV y los aires 🙏" data-en="Turn off TV & AC 🙏">Apaga el TV y los aires 🙏</b></div>
+  </div>
+</section>
+
+<!-- HOSTS -->
+<section id="hosts-sec">
+  <div class="hosts">
+    <div class="host-photo"><span>📷</span><span data-es="Foto de Claudia y Sebastián aquí" data-en="Photo of Claudia & Sebastián here">Foto de Claudia y Sebastián aquí</span></div>
+    <div>
+      <h2 data-es="Sobre nosotros" data-en="About us">Sobre nosotros</h2>
+      <p data-es="Somos Claudia y Sebastián, madre e hijo, unidos por una pasión por los viajes, la hospitalidad y las buenas historias. Después de 25 años como profesora, Claudia abrió las puertas de nuestros hogares a viajeros del mundo. Sebastián, amante del turismo, busca que cada experiencia sea única y memorable." data-en="We're Claudia and Sebastián, mother and son, united by a passion for travel, hospitality, and good stories. After 25 years as a teacher, Claudia opened the doors of our homes to travelers from around the world. Sebastián, a travel lover, makes sure every experience is unique and memorable.">Somos Claudia y Sebastián, madre e hijo, unidos por una pasión por los viajes, la hospitalidad y las buenas historias. Después de 25 años como profesora, Claudia abrió las puertas de nuestros hogares a viajeros del mundo. Sebastián, amante del turismo, busca que cada experiencia sea única y memorable.</p>
+      <div class="host-stats">
+        <div class="hstat"><b>500+</b><span data-es="Reseñas 5 estrellas" data-en="5-star reviews">Reseñas 5 estrellas</span></div>
+        <div class="hstat"><b>100%</b><span data-es="Tasa de respuesta" data-en="Response rate">Tasa de respuesta</span></div>
+        <div class="hstat"><b>1h</b><span data-es="Tiempo de respuesta" data-en="Response time">Tiempo de respuesta</span></div>
+        <div class="hstat"><b>ES/EN</b><span data-es="Idiomas" data-en="Languages">Idiomas</span></div>
+      </div>
+      <div class="host-sign">Claudia y Sebastián</div>
+    </div>
+  </div>
+</section>
+
+<!-- SOS -->
+<section id="sos">
+  <span class="sec-eyebrow" data-es="Siempre a un toque" data-en="One tap away">Siempre a un toque</span>
+  <h2 class="sec-title"><span data-es="Contactos de" data-en="Emergency">Contactos de</span> <em data-es="emergencia" data-en="contacts">emergencia</em></h2>
+  <div class="sos">
+    <a href="https://wa.me/573046736241"><div class="sos-icon" style="background:#25D366">💬</div><div><strong data-es="Tus anfitriones (WhatsApp)" data-en="Your hosts (WhatsApp)">Tus anfitriones (WhatsApp)</strong><span class="num">+57 304 673 6241</span><br><small data-es="Respondemos en menos de 1 hora" data-en="We reply within 1 hour">Respondemos en menos de 1 hora</small></div></a>
+    <a href="tel:+576054219999"><div class="sos-icon" style="background:#1B7F8E">🏥</div><div><strong>Clínica Avidanti</strong><span class="num">(605) 421 9999</span><br><small data-es="Bello Horizonte, cerca de Pozos Colorados" data-en="Bello Horizonte, near Pozos Colorados">Bello Horizonte, cerca de Pozos Colorados</small></div></a>
+    <a href="tel:+573167449954"><div class="sos-icon" style="background:#8B3FA1">💊</div><div><strong>Droguería Andina</strong><span class="num">316 744 9954</span><br><small data-es="Zazué Plaza, muy cerca" data-en="Zazué Plaza, very close">Zazué Plaza, muy cerca</small></div></a>
+    <a href="mailto:team@77rentals.com"><div class="sos-icon" style="background:#E3B23C">✉️</div><div><strong>Email</strong><span class="num">team@77rentals.com</span><br><small data-es="Para temas no urgentes" data-en="For non-urgent matters">Para temas no urgentes</small></div></a>
+  </div>
+</section>
+
+<footer>
+  <div class="display" data-es="Deja que la magia comience" data-en="Let the magic begin">Deja que la magia comience</div>
+  <p data-es="Carrera 4C #70-75, Edificio Del Ventto, Apto 717 · Santa Marta" data-en="Carrera 4C #70-75, Del Ventto Building, Apt 717 · Santa Marta">Carrera 4C #70-75, Edificio Del Ventto, Apto 717 · Santa Marta</p>
+  <div class="foot-links">
+    <a href="https://airbnb.com.co/h/velamare" target="_blank" rel="noopener">Airbnb</a>
+    <a href="https://www.booking.com/hotel/co/77-rentals-717-vela-mare" target="_blank" rel="noopener">Booking.com</a>
+    <a href="https://wa.me/573046736241" target="_blank" rel="noopener">WhatsApp</a>
+  </div>
+  <p style="margin-top:18px;font-size:.78rem;opacity:.6">77Rentals · Macondo 717 · <span data-es="Si disfrutaste tu estancia, una reseña 5 estrellas nos ayuda muchísimo ⭐" data-en="If you enjoyed your stay, a 5-star review helps us so much ⭐">Si disfrutaste tu estancia, una reseña 5 estrellas nos ayuda muchísimo ⭐</span></p>
+</footer>
+
+</div><!-- /.site -->
+
+<script>
+/* ───── Passcode gate ───── */
+const GATE_CODE='MACONDO717';
+const gateInput=document.getElementById('gate-input');
+function unlock(){
+  document.getElementById('gate').style.display='none';
+  document.getElementById('site').style.display='block';
+}
+function checkGate(){
+  const val=gateInput.value.trim().toUpperCase();
+  if(val===GATE_CODE){
+    sessionStorage.setItem('macondoGate','1');
+    unlock();
+  } else {
+    document.getElementById('gate-error').classList.add('show');
+  }
+}
+gateInput.addEventListener('keydown',e=>{if(e.key==='Enter')checkGate();});
+if(sessionStorage.getItem('macondoGate')==='1')unlock();
+
+/* ───── Language ───── */
+let lang='es';
+function setLang(l){
+  lang=l;
+  document.getElementById('btn-es').classList.toggle('active',l==='es');
+  document.getElementById('btn-en').classList.toggle('active',l==='en');
+  document.querySelectorAll('[data-es]').forEach(el=>{
+    el.textContent=el.dataset[l];
+  });
+  document.documentElement.lang=l;
+  renderGal();
+  popInfo(currentPoi,true);
+  if(typeof renderWeather==='function')renderWeather();
+}
+
+/* ───── Clock ───── */
+function tick(){
+  const t=new Date().toLocaleTimeString('en-US',{timeZone:'America/Bogota',hour:'2-digit',minute:'2-digit'});
+  document.getElementById('local-clock').textContent=t;
+}
+tick();setInterval(tick,30000);
+
+/* ───── Butterflies (yellow, García Márquez nod) ───── */
+const bfSvg='<svg viewBox="0 0 40 40"><path d="M20 20 C10 6 0 10 6 20 C0 30 10 34 20 20 C30 34 40 30 34 20 C40 10 30 6 20 20Z" fill="#F2D58A" opacity=".85"/><line x1="20" y1="14" x2="20" y2="27" stroke="#3A1248" stroke-width="1.6"/></svg>';
+const bWrap=document.getElementById('butterflies');
+for(let i=0;i<7;i++){
+  const d=document.createElement('div');
+  d.className='bf';
+  const s=14+Math.random()*22;
+  d.style.cssText=`width:${s}px;height:${s}px;left:${Math.random()*92}%;top:${15+Math.random()*65}%;animation-delay:-${Math.random()*14}s;animation-duration:${11+Math.random()*8}s;`;
+  d.innerHTML=bfSvg;
+  bWrap.appendChild(d);
+}
+
+/* ───── Gallery ───── */
+// Real property photos — {src, es label, en label}
+const propPhotos=[
+  {src:'img_details_sm.jpg',   es:'Detalles Macondo',      en:'Macondo Details'},
+  {src:'img_kitchen_sm.jpg',   es:'Cocina',                en:'Kitchen'},
+  {src:'img_bedroom_sm.jpg',   es:'Habitación principal',  en:'Main Bedroom'},
+  {src:'img_bathroom_sm.jpg',  es:'Baño',                  en:'Bathroom'},
+  {src:'img_balcony_sm.jpg',   es:'Balcón',                en:'Balcony'},
+  {src:'img_living_sm.jpg',    es:'Sala',                  en:'Living Room'},
+];
+const galData={
+  hood:{es:['Vista desde el edificio','Piscina Del Ventto','Pozos Colorados','Atardecer en la playa'],en:['View from the building','Del Ventto pool','Pozos Colorados','Beach sunset']},
+  local:{es:['Playa del Ritmo','C.C. Zazué','Centro Histórico','Quinta de San Pedro'],en:['Playa del Ritmo','Zazué Mall','Historic Center','Quinta de San Pedro']}
+};
+let curGal='prop';
+const camIcon='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="7" width="18" height="13" rx="2"/><circle cx="12" cy="13.5" r="3.5"/><path d="M8 7l1.5-2.5h5L16 7"/></svg>';
+
+/* ── Lightbox ── */
+function openLB(src){
+  document.getElementById('lb-img').src=src;
+  document.getElementById('lightbox').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeLB(){
+  document.getElementById('lightbox').classList.remove('open');
+  document.body.style.overflow='';
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeLB();});
+
+function renderGal(){
+  const g=document.getElementById('gal-grid');
+  g.innerHTML='';
+  if(curGal==='prop'){
+    propPhotos.forEach(p=>{
+      const d=document.createElement('div');
+      d.className='gal-item';
+      d.innerHTML=`<img src="${p.src}" alt="${p[lang]}" loading="lazy"><div class="gal-item-label">${p[lang]}</div>`;
+      d.onclick=()=>openLB(p.src);
+      g.appendChild(d);
+    });
+  } else {
+    galData[curGal][lang].forEach(label=>{
+      const d=document.createElement('div');
+      d.className='gal-ph';
+      d.innerHTML=camIcon+'<span>'+label+'</span><small style="opacity:.65">'+(lang==='es'?'Tu foto aquí':'Your photo here')+'</small>';
+      g.appendChild(d);
+    });
+  }
+}
+function setGal(btn,key){
+  curGal=key;
+  document.querySelectorAll('.gal-tabs button').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderGal();
+}
+renderGal();
+
+/* ── Page-wide butterflies ── */
+const bfSvgStr='<svg viewBox="0 0 40 40"><path d="M20 20 C10 6 0 10 6 20 C0 30 10 34 20 20 C30 34 40 30 34 20 C40 10 30 6 20 20Z" fill="#F2D58A" opacity=".85"/><line x1="20" y1="14" x2="20" y2="27" stroke="#3A1248" stroke-width="1.6"/></svg>';
+const bfPage=document.getElementById('bf-page');
+for(let i=0;i<14;i++){
+  const d=document.createElement('div');
+  d.className='bf';
+  const s=10+Math.random()*18;
+  d.style.cssText=`width:${s}px;height:${s}px;left:${Math.random()*96}%;top:${Math.random()*95}%;animation-delay:-${Math.random()*18}s;animation-duration:${12+Math.random()*10}s;`;
+  d.innerHTML=bfSvgStr;
+  bfPage.appendChild(d);
+}
+
+/* ───── Map ───── */
+const poiData={
+  home:{es:'<strong>Macondo 717 · Edificio Del Ventto</strong>Tu refugio. Carrera 4C #70-75, Apto 717, Pozos Colorados.',en:'<strong>Macondo 717 · Del Ventto Building</strong>Your retreat. Carrera 4C #70-75, Apt 717, Pozos Colorados.'},
+  ritmo:{es:'<strong>Playa del Ritmo 🍽</strong>A 4 minutos caminando. Platos del día desde $17k COP, con playa y duchas.',en:'<strong>Playa del Ritmo 🍽</strong>4-minute walk. Daily specials from $17k COP, with beach and showers.'},
+  zazue:{es:'<strong>Centro Comercial Zazué 🛍</strong>A 5 minutos caminando. Restaurantes, tiendas y droguería.',en:'<strong>Zazué Mall 🛍</strong>5-minute walk. Restaurants, shops, and a pharmacy.'},
+  vomito:{es:'<strong>Pizza El Vómito 🍕</strong>Leyenda local en El Rodadero/Gaira. Porciones gigantes con queso sin límite.',en:'<strong>Pizza El Vómito 🍕</strong>Local legend in El Rodadero/Gaira. Giant slices with unlimited cheese energy.'},
+  clinica:{es:'<strong>Clínica Avidanti 🏥</strong>Vía Alterna al Puerto, Bello Horizonte. Tel: (605) 421 9999.',en:'<strong>Avidanti Clinic 🏥</strong>Vía Alterna al Puerto, Bello Horizonte. Tel: (605) 421 9999.'},
+  drog:{es:'<strong>Droguería Andina 💊</strong>En Zazué Plaza, muy cerca. Cel: 316 744 9954.',en:'<strong>Andina Pharmacy 💊</strong>At Zazué Plaza, very close. Mobile: 316 744 9954.'},
+  centro:{es:'<strong>Centro Histórico y Parque de los Novios 🏛</strong>15-20 min en carro. Casas coloniales, arte urbano y música en vivo.',en:'<strong>Historic Center & Parque de los Novios 🏛</strong>15-20 min by car. Colonial houses, street art, live music.'},
+  quinta:{es:'<strong>Quinta de San Pedro Alejandrino 🌳</strong>Hacienda del siglo XVII donde murió Simón Bolívar. Jardines y museos.',en:'<strong>Quinta de San Pedro Alejandrino 🌳</strong>17th century hacienda where Simón Bolívar died. Gardens and museums.'},
+  aero:{es:'<strong>Aeropuerto Simón Bolívar ✈️</strong>A 10-12 minutos en carro. Taxi: $20-25k COP hasta Del Ventto.',en:'<strong>Simón Bolívar Airport ✈️</strong>10-12 minutes by car. Taxi: $20-25k COP to Del Ventto.'}
+};
+let currentPoi=null;
+function popInfo(key,silent){
+  if(!key)return;
+  currentPoi=key;
+  document.getElementById('map-pop').innerHTML=poiData[key][lang];
+}
+function setMap(btn,cat){
+  document.querySelectorAll('.map-filters button').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.poi').forEach(p=>{
+    const c=p.dataset.cat;
+    p.classList.toggle('hidden',!(cat==='all'||c===cat||c==='home'));
+  });
+}
+
+/* ───── Weather (Open-Meteo, no key needed) ───── */
+const wmoIcon=c=>{
+  if(c===0)return'☀️';if(c<=2)return'🌤';if(c===3)return'☁️';
+  if(c<=48)return'🌫';if(c<=57)return'🌦';if(c<=67)return'🌧';
+  if(c<=77)return'🌨';if(c<=82)return'🌧';if(c<=86)return'🌨';return'⛈';
+};
+const wmoText={es:{0:'Despejado',1:'Mayormente despejado',2:'Parcialmente nublado',3:'Nublado',45:'Neblina',61:'Lluvia ligera',63:'Lluvia',65:'Lluvia fuerte',80:'Chubascos',95:'Tormenta'},
+en:{0:'Clear',1:'Mostly clear',2:'Partly cloudy',3:'Cloudy',45:'Fog',61:'Light rain',63:'Rain',65:'Heavy rain',80:'Showers',95:'Thunderstorm'}};
+let weatherData=null;
+function renderWeather(){
+  const el=document.getElementById('weather');
+  if(!weatherData){return;}
+  const d=weatherData;
+  const code=d.current.weather_code;
+  const desc=(wmoText[lang][code])||(lang==='es'?'Caribe en su punto':'Caribbean vibes');
+  const dayNames=lang==='es'?['Dom','Lun','Mar','Mié','Jue','Vie','Sáb']:['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  let days='';
+  for(let i=1;i<=3;i++){
+    const dt=new Date(d.daily.time[i]+'T12:00:00');
+    days+=`<div class="wday"><span>${wmoIcon(d.daily.weather_code[i])}</span><b>${Math.round(d.daily.temperature_2m_max[i])}°</b>${dayNames[dt.getDay()]}</div>`;
+  }
+  el.innerHTML=`
+    <div class="weather-now">
+      <div class="weather-icon">${wmoIcon(code)}</div>
+      <div>
+        <div class="weather-temp">${Math.round(d.current.temperature_2m)}°C</div>
+        <div class="weather-desc">${desc} · Pozos Colorados</div>
+      </div>
+    </div>
+    <div class="weather-days">${days}</div>`;
+}
+fetch('https://api.open-meteo.com/v1/forecast?latitude=11.2008&longitude=-74.2247&current=temperature_2m,weather_code&daily=weather_code,temperature_2m_max&timezone=America%2FBogota&forecast_days=4')
+  .then(r=>r.json()).then(d=>{weatherData=d;renderWeather();})
+  .catch(()=>{
+    const el=document.getElementById('weather');
+    el.innerHTML='<div class="weather-now"><div class="weather-icon">🌴</div><div><div class="weather-temp">~30°C</div><div class="weather-desc">'+(lang==='es'?'Sol caribeño casi garantizado':'Caribbean sun, almost guaranteed')+'</div></div></div>';
+  });
+
+/* ───── Three.js floor plan ───── */
+(function(){
+  const canvas=document.getElementById('three-canvas');
+  const scene=new THREE.Scene();
+  scene.background=new THREE.Color(0x2c0e38);
+  scene.fog=new THREE.Fog(0x2c0e38,18,42);
+
+  const camera=new THREE.PerspectiveCamera(48,2,0.1,100);
+  const renderer=new THREE.WebGLRenderer({canvas,antialias:true});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+
+  // Lights
+  scene.add(new THREE.AmbientLight(0xffeedd,.55));
+  const sun=new THREE.DirectionalLight(0xffd9a0,.9);
+  sun.position.set(8,12,6);
+  scene.add(sun);
+  const fill=new THREE.PointLight(0xc084d8,.6,30);
+  fill.position.set(-6,6,-4);
+  scene.add(fill);
+
+  const M={
+    floor:new THREE.MeshStandardMaterial({color:0xF2EEE6,roughness:.85}),
+    wall:new THREE.MeshStandardMaterial({color:0xFBF9F4,roughness:.85}),
+    cabinet:new THREE.MeshStandardMaterial({color:0xF3EDE2,roughness:.7}),
+    cabinetUp:new THREE.MeshStandardMaterial({color:0xB5A893,roughness:.7}),
+    counter:new THREE.MeshStandardMaterial({color:0xEDE6D6,roughness:.5}),
+    bedBase:new THREE.MeshStandardMaterial({color:0xFFFFFF,roughness:.7}),
+    bedTeal:new THREE.MeshStandardMaterial({color:0x2E8C8C,roughness:.65}),
+    teal:new THREE.MeshStandardMaterial({color:0x1F6F6F,roughness:.6}),
+    rug:new THREE.MeshStandardMaterial({color:0xC9D4DC,roughness:.95}),
+    wood:new THREE.MeshStandardMaterial({color:0xC49A6C,roughness:.75}),
+    woodDark:new THREE.MeshStandardMaterial({color:0x9A7148,roughness:.75}),
+    steel:new THREE.MeshStandardMaterial({color:0xB9BDC2,roughness:.35,metalness:.6}),
+    black:new THREE.MeshStandardMaterial({color:0x1c1c1c,roughness:.5}),
+    bath:new THREE.MeshStandardMaterial({color:0xFFFFFF,roughness:.4}),
+    glass:new THREE.MeshStandardMaterial({color:0x9DD6E3,transparent:true,opacity:.3,roughness:.1}),
+    plant:new THREE.MeshStandardMaterial({color:0x3e8e57,roughness:.8})
+  };
+  function box(w,h,d,mat,x,y,z){
+    const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat);
+    m.position.set(x,y,z);scene.add(m);return m;
+  }
+
+  // ─── STUDIO matched to floor sketch.
+  // x: -3.5 (left wall) .. +3.5 (right wall)
+  // z: -5.5 (balcony / TOP of sketch) .. +5.5 (entry / BOTTOM of sketch)
+  // LEFT col: closet, queen bed, sofa, then toilet+shower (bottom)
+  // CENTER: sink + closet, open floor
+  // RIGHT wall (top->bottom): TV, desk, kitchen
+  // Balcony across the top; main door bottom-right.
+  const W=7,D=11;
+  box(W,.3,D,M.floor,0,-.15,0);
+  const wh=1.8,wt=.16;
+  // top wall is the glass window itself (built below) — no solid wall here
+  box(wt,wh,D,M.wall,-3.5,wh/2,0);                  // left wall
+  box(wt,wh,D,M.wall,3.5,wh/2,0);                   // right wall
+  box(2.4,wh,wt,M.wall,-2.3,wh/2,5.5);             // bottom wall under bathroom (LEFT)
+  box(1.3,wh,wt,M.wall,2.85,wh/2,5.5);             // bottom wall right of entrance
+  // main entrance gap sits center (x ≈ -1.1 .. 2.2)
+
+  // ── BATHROOM (bottom-LEFT corner): toilet, shower, sink. Door faces the room.
+  box(2.5,wh,wt,M.wall,-2.25,wh/2,2.6);            // bath top wall (black line, pulled down)
+  box(wt,wh,2.9,M.wall,-1.0,wh/2,4.05);            // bath right wall (room-facing), z 2.6..5.5
+  box(.08,wh-.1,1.0,M.woodDark,-1.05,(wh-.1)/2,3.5); // bathroom door slab (red line, mid wall)
+  const toilet=new THREE.Mesh(new THREE.CylinderGeometry(.28,.3,.45,16),M.bath);
+  toilet.position.set(-3.0,.25,3.2);scene.add(toilet);
+  box(1.4,.5,.55,M.counter,-2.5,.45,5.0);          // vanity along bottom wall
+  box(1.5,.08,1.4,M.bath,-2.6,.05,4.6);            // shower tray
+  box(.06,1.5,1.4,M.glass,-1.85,.8,4.6);           // shower glass side
+  box(1.5,1.5,.06,M.glass,-2.6,.8,3.9);            // shower glass front
+
+  // ── QUEEN BED (upper-LEFT, opposite the TV) headboard against left wall
+  box(.18,.9,2.4,M.wood,-3.3,.55,-3.0);            // headboard against left wall (vertical)
+  box(2.4,.4,2.3,M.bedBase,-2.0,.35,-3.0);         // mattress extends right from headboard
+  box(.7,.16,2.1,M.bedBase,-3.0,.62,-3.0);         // pillows along the headboard
+  box(1.0,.1,2.3,M.bedTeal,-1.3,.58,-3.0);         // teal throw at the foot
+
+  // ── SOFA (left wall, between bed and bathroom)
+  box(.7,.45,1.8,M.teal,-3.05,.35,-.4);            // seat
+  box(.22,.85,1.8,M.teal,-3.35,.55,-.4);           // backrest against wall
+  const stbl=new THREE.Mesh(new THREE.CylinderGeometry(.32,.32,.06,16),M.wood);
+  stbl.position.set(-2.2,.5,-.3);scene.add(stbl);  // round side table
+
+  // ── KITCHEN down the RIGHT wall: fridge at bottom (by main door) -> counter -> up
+  box(.7,1.7,.85,M.steel,3.05,.85,4.4);            // FRIDGE at near end, next to main door
+  box(.04,.6,.06,M.black,2.68,1.0,4.4);            // fridge handle
+  box(.7,.55,5.0,M.cabinet,3.1,.45,.9);            // lower cabinets running up the wall
+  box(.75,.06,5.1,M.counter,3.1,.76,.9);           // countertop
+  box(.6,.85,4.6,M.cabinetUp,3.15,1.45,.8);        // upper cabinets
+  box(.55,.5,.7,M.steel,3.0,.4,2.9);               // dishwasher
+  box(.5,.05,.55,M.black,3.1,.8,1.6);              // stove top
+  box(.2,.25,.2,M.black,3.05,.92,.2);              // coffee maker
+  box(.28,.3,.28,M.black,3.05,.95,-.8);            // air fryer
+
+  // ── DESK (far end of kitchen counter, upper-right) small white desk
+  box(.65,.06,1.2,M.counter,3.1,.74,-2.6);         // desk top against right wall
+  box(.06,.7,.06,M.woodDark,2.85,.37,-3.1);
+  box(.06,.7,.06,M.woodDark,2.85,.37,-2.1);
+
+  // ── TV (top-right corner, after the desk) wall-mounted on right wall
+  box(.08,.95,1.6,M.black,3.42,1.15,-4.4);         // TV on right wall, top
+  box(.5,.4,1.3,M.wood,3.2,.2,-4.4);               // console under TV
+
+  // ── Teal accent chair + rug (open living center)
+  const rug=new THREE.Mesh(new THREE.CylinderGeometry(1.0,1.0,.03,24),M.rug);
+  rug.position.set(.2,.02,-1.2);scene.add(rug);
+  box(.75,.45,.75,M.teal,.2,.35,-1.2);             // seat
+  box(.75,.5,.16,M.teal,.2,.75,-1.55);             // backrest
+
+  // ── A/C unit high on top wall
+  box(.9,.3,.22,M.bath,-1.4,1.55,-5.3);
+
+  // ── GLASS WINDOW across the top wall — clear floor-to-ceiling glazing
+  const winGlass=new THREE.MeshStandardMaterial({color:0xA9DCE8,transparent:true,opacity:.32,roughness:.04,metalness:.4});
+  box(W,wh,.05,winGlass,0,wh/2,-5.35);              // glass pane
+  // window frame: posts + rails (white aluminum)
+  const frame=new THREE.MeshStandardMaterial({color:0xF5F5F5,roughness:.4,metalness:.3});
+  box(.1,wh,.12,frame,-W/2+.08,wh/2,-5.33);         // left post
+  box(.1,wh,.12,frame,-W/6,wh/2,-5.33);
+  box(.1,wh,.12,frame,W/6,wh/2,-5.33);
+  box(.1,wh,.12,frame,W/2-.08,wh/2,-5.33);          // right post
+  box(W,.1,.12,frame,0,wh-.04,-5.33);               // top rail
+  box(W,.1,.12,frame,0,.06,-5.33);                  // bottom rail
+  box(W,.08,.1,frame,0,wh*.52,-5.33);               // mid rail
+  box(W,.18,2.4,M.counter,0,.09,-6.7);              // balcony slab
+  box(W,.04,.04,M.steel,0,1,-7.85);                 // railing top
+  box(W,.9,.04,M.glass,0,.5,-7.85);                 // glass railing
+  // round wood balcony table + chairs + teal plates (from video)
+  const tbl=new THREE.Mesh(new THREE.CylinderGeometry(.55,.55,.06,20),M.wood);
+  tbl.position.set(.2,.7,-6.7);scene.add(tbl);
+  const tleg=new THREE.Mesh(new THREE.CylinderGeometry(.06,.06,.7,10),M.woodDark);
+  tleg.position.set(.2,.35,-6.7);scene.add(tleg);
+  const plate1=new THREE.Mesh(new THREE.CylinderGeometry(.14,.14,.02,14),M.bedTeal);
+  plate1.position.set(-.05,.75,-6.55);scene.add(plate1);
+  const plate2=new THREE.Mesh(new THREE.CylinderGeometry(.14,.14,.02,14),M.bedTeal);
+  plate2.position.set(.45,.75,-6.85);scene.add(plate2);
+  box(.5,.45,.5,M.woodDark,-.9,.3,-6.7);            // chair
+  box(.5,.45,.5,M.woodDark,1.3,.3,-6.7);            // chair
+  // balcony plant
+  box(.3,.4,.3,M.woodDark,-2.9,.28,-6.8);
+  const leaves=new THREE.Mesh(new THREE.SphereGeometry(.4,10,10),M.plant);
+  leaves.position.set(-2.9,.78,-6.8);scene.add(leaves);
+
+  // ── MAIN DOOR (bottom-right opening) — leave a gap, add a door slab ajar
+  box(.08,wh-.1,1.4,M.woodDark,1.0,(wh-.1)/2,5.5);  // door slab near bottom
+  // trailing plant near TV/desk corner
+  const p2=new THREE.Mesh(new THREE.SphereGeometry(.28,10,10),M.plant);
+  p2.position.set(3.1,1.7,-2.2);scene.add(p2);
+
+  // "Sea" plane in distance
+  const sea=new THREE.Mesh(new THREE.PlaneGeometry(60,24),new THREE.MeshStandardMaterial({color:0x1B7F8E,roughness:.4,metalness:.2}));
+  sea.rotation.x=-Math.PI/2;sea.position.set(0,-.4,-22);scene.add(sea);
+  // Sun sphere
+  const sunBall=new THREE.Mesh(new THREE.SphereGeometry(1.4,16,16),new THREE.MeshBasicMaterial({color:0xFFB36B}));
+  sunBall.position.set(-2,1.8,-32);scene.add(sunBall);
+
+  // Orbit (custom, no OrbitControls in r128 build)
+  let theta=Math.PI/3.2,phi=1.0,radius=17;
+  let drag=false,px=0,py=0;
+  function updateCam(){
+    phi=Math.max(.35,Math.min(1.35,phi));
+    radius=Math.max(8,Math.min(26,radius));
+    camera.position.set(
+      radius*Math.sin(phi)*Math.sin(theta),
+      radius*Math.cos(phi),
+      radius*Math.sin(phi)*Math.cos(theta)
+    );
+    camera.lookAt(0,.3,0);
+  }
+  canvas.addEventListener('pointerdown',e=>{drag=true;px=e.clientX;py=e.clientY;canvas.setPointerCapture(e.pointerId);});
+  canvas.addEventListener('pointermove',e=>{
+    if(!drag)return;
+    theta-=(e.clientX-px)*.008;
+    phi-=(e.clientY-py)*.006;
+    px=e.clientX;py=e.clientY;updateCam();
+  });
+  canvas.addEventListener('pointerup',()=>drag=false);
+  canvas.addEventListener('wheel',e=>{e.preventDefault();radius+=e.deltaY*.02;updateCam();},{passive:false});
+  // pinch zoom
+  let pinchDist=0;
+  canvas.addEventListener('touchmove',e=>{
+    if(e.touches.length===2){
+      e.preventDefault();
+      const d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);
+      if(pinchDist)radius-=(d-pinchDist)*.04;
+      pinchDist=d;updateCam();
+    }
+  },{passive:false});
+  canvas.addEventListener('touchend',()=>pinchDist=0);
+
+  function resize(){
+    const w=canvas.clientWidth,h=canvas.clientHeight;
+    renderer.setSize(w,h,false);
+    camera.aspect=w/h;camera.updateProjectionMatrix();
+  }
+  window.addEventListener('resize',resize);
+
+  let auto=true;
+  canvas.addEventListener('pointerdown',()=>auto=false);
+  const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function animate(){
+    requestAnimationFrame(animate);
+    if(auto&&!reduced)theta+=.0022;
+    updateCam();
+    renderer.render(scene,camera);
+  }
+  resize();updateCam();animate();
+})();
+</script>
+</body>
+</html>
