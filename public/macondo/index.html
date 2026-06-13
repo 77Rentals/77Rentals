@@ -641,6 +641,7 @@ function unlock(){
   document.getElementById('gate').style.display='none';
   document.getElementById('site').style.display='block';
   applyGuestName();
+  setTimeout(()=>window.dispatchEvent(new Event('resize')),50);
 }
 function checkGate(){
   const val=gateInput.value.trim().toUpperCase();
