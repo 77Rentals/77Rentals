@@ -258,6 +258,15 @@ section,header,footer,.topbar{position:relative;z-index:1;}
   border:1px solid #efe6db;box-shadow:0 22px 48px -32px rgba(58,18,72,.4);
 }
 .map-svg{width:100%;height:auto;border-radius:16px;display:block;}
+.map-embed{width:100%;height:420px;border:0;border-radius:16px;display:block;}
+.map-links{display:flex;gap:12px;flex-wrap:wrap;margin-top:16px;}
+.map-link{
+  display:inline-flex;align-items:center;gap:8px;text-decoration:none;
+  background:var(--cream);border:1px solid #efe6db;border-radius:999px;
+  padding:9px 18px;font-size:.85rem;font-weight:600;color:var(--purple-deep);
+  transition:background .2s;
+}
+.map-link:hover{background:#f2e3f3;}
 .map-filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px;}
 .map-filters button{
   border:none;border-radius:999px;padding:8px 18px;font-family:'Outfit';
@@ -397,6 +406,7 @@ footer a{color:var(--gold);text-decoration:none;}
     <div class="gate-eyebrow" data-es="Bienvenido a" data-en="Welcome to">Bienvenido a</div>
     <h1 class="gate-title">Macondo <em>717</em></h1>
     <p class="gate-sub" data-es="Ingresa el código que te enviamos para ver tu guía de bienvenida." data-en="Enter the code we sent you to view your welcome guide.">Ingresa el código que te enviamos para ver tu guía de bienvenida.</p>
+    <input type="text" id="gate-name" class="gate-input" autocomplete="off" spellcheck="false" data-es-placeholder="Tu nombre" data-en-placeholder="Your name" placeholder="Tu nombre">
     <input type="text" id="gate-input" class="gate-input" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="••••••">
     <button class="gate-btn" onclick="checkGate()" data-es="Ingresar" data-en="Enter">Ingresar</button>
     <p class="gate-error" id="gate-error" data-es="Código incorrecto, intenta de nuevo." data-en="Incorrect code, please try again.">Código incorrecto, intenta de nuevo.</p>
@@ -429,7 +439,7 @@ footer a{color:var(--gold);text-decoration:none;}
 <header class="hero">
   <div class="butterflies" id="butterflies"></div>
   <div class="hero-eyebrow" data-es="Pozos Colorados · Santa Marta · Colombia" data-en="Pozos Colorados · Santa Marta · Colombia">Pozos Colorados · Santa Marta · Colombia</div>
-  <h1><span data-es="Bienvenido a" data-en="Welcome to">Bienvenido a</span> <em>Macondo</em></h1>
+  <h1><span data-es="Bienvenido a" data-en="Welcome to">Bienvenido a</span> <em>Macondo</em><span id="hero-name"></span></h1>
   <p class="hero-sub" data-es="Un refugio de realismo mágico frente al Caribe, donde cada atardecer escribe una página nueva de tu historia." data-en="A magical realism retreat facing the Caribbean, where every sunset writes a new page of your story.">Un refugio de realismo mágico frente al Caribe, donde cada atardecer escribe una página nueva de tu historia.</p>
   <div class="hero-badges">
     <span class="badge" data-es="Suite con vista al mar" data-en="Ocean view suite">Suite con vista al mar</span>
@@ -534,9 +544,11 @@ footer a{color:var(--gold);text-decoration:none;}
   <span class="sec-eyebrow" data-es="Tu mapa de Macondo" data-en="Your Macondo map">Tu mapa de Macondo</span>
   <h2 class="sec-title"><span data-es="Todo está" data-en="Everything is">Todo está</span> <em data-es="cerca" data-en="close by">cerca</em></h2>
   <div class="map-card">
-    <div class="gal-ph" style="aspect-ratio:16/9">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 20l-5.447-2.724A1 1 0 0 1 3 16.382V5.618a1 1 0 0 1 1.447-.894L9 7m0 13l6-3m-6 3V7m6 10l5.447 2.724A1 1 0 0 0 21 18.382V7.618a1 1 0 0 0-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>
-      <span data-es="Mapa próximamente" data-en="Map coming soon">Mapa próximamente</span>
+    <iframe class="map-embed" src="https://www.google.com/maps?q=Edificio+Delventto,+Santa+Marta&z=15&output=embed" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+    <div class="map-links">
+      <a class="map-link" href="https://www.google.com/maps/dir/?api=1&origin=11.1752557,-74.2335392&destination=11.1721217,-74.2343052" target="_blank" rel="noopener">🍽 <span data-es="Playa del Ritmo" data-en="Playa del Ritmo">Playa del Ritmo</span></a>
+      <a class="map-link" href="https://www.google.com/maps/dir/?api=1&origin=11.1752557,-74.2335392&destination=11.1178518,-74.2317948" target="_blank" rel="noopener">✈️ <span data-es="Aeropuerto Santa Marta" data-en="Santa Marta Airport">Aeropuerto Santa Marta</span></a>
+      <a class="map-link" href="https://www.google.com/maps?q=Edificio+Delventto,+Santa+Marta" target="_blank" rel="noopener">🏠 <span data-es="Macondo 717 · Edificio Del Ventto" data-en="Macondo 717 · Del Ventto Building">Macondo 717 · Edificio Del Ventto</span></a>
     </div>
   </div>
 </section>
@@ -620,13 +632,21 @@ footer a{color:var(--gold);text-decoration:none;}
 /* ───── Passcode gate ───── */
 const GATE_CODE='MACONDO717';
 const gateInput=document.getElementById('gate-input');
+const gateName=document.getElementById('gate-name');
+function applyGuestName(){
+  const name=sessionStorage.getItem('macondoGuestName')||'';
+  document.getElementById('hero-name').textContent=name?', '+name:'';
+}
 function unlock(){
   document.getElementById('gate').style.display='none';
   document.getElementById('site').style.display='block';
+  applyGuestName();
 }
 function checkGate(){
   const val=gateInput.value.trim().toUpperCase();
   if(val===GATE_CODE){
+    const name=gateName.value.trim();
+    if(name)sessionStorage.setItem('macondoGuestName',name);
     sessionStorage.setItem('macondoGate','1');
     unlock();
   } else {
@@ -634,6 +654,7 @@ function checkGate(){
   }
 }
 gateInput.addEventListener('keydown',e=>{if(e.key==='Enter')checkGate();});
+gateName.addEventListener('keydown',e=>{if(e.key==='Enter')checkGate();});
 if(sessionStorage.getItem('macondoGate')==='1')unlock();
 
 /* ───── Language ───── */
@@ -644,6 +665,9 @@ function setLang(l){
   document.getElementById('btn-en').classList.toggle('active',l==='en');
   document.querySelectorAll('[data-es]').forEach(el=>{
     el.textContent=el.dataset[l];
+  });
+  document.querySelectorAll('[data-es-placeholder]').forEach(el=>{
+    el.placeholder=el.dataset[l+'Placeholder'];
   });
   document.documentElement.lang=l;
   renderGal();
