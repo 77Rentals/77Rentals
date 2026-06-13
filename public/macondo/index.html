@@ -529,6 +529,7 @@ footer a{color:var(--gold);text-decoration:none;}
   <h2 class="sec-title"><span data-es="Imágenes de tu" data-en="Glimpses of your">Imágenes de tu</span> <em data-es="estadía" data-en="stay">estadía</em></h2>
   <div class="gal-tabs">
     <button class="active" onclick="setGal(this,'prop')" data-es="La propiedad" data-en="The property">La propiedad</button>
+    <button onclick="setGal(this,'amen')" data-es="Amenidades" data-en="Amenities">Amenidades</button>
   </div>
   <div class="gal-grid" id="gal-grid"></div>
   <div class="gal-drive">
@@ -705,6 +706,16 @@ const propPhotos=[
   {src:'img_balcony_sm.jpg',   es:'Balcón',                en:'Balcony'},
   {src:'img_living_sm.jpg',    es:'Sala',                  en:'Living Room'},
 ];
+const amenPhotos=[
+  {src:'amen_lobby.jpg',   es:'Recepción',         en:'Lobby & Reception'},
+  {src:'amen_gym.jpg',     es:'Gimnasio',          en:'Gym'},
+  {src:'amen_pool.jpg',    es:'Piscina',           en:'Pool'},
+  {src:'amen_dining.jpg',  es:'Zona social',       en:'Social Area'},
+  {src:'amen_terrace.jpg', es:'Terraza',           en:'Rooftop Terrace'},
+  {src:'amen_pool2.jpg',   es:'Piscina infinita',  en:'Infinity Pool'},
+  {src:'amen_pool3.jpg',   es:'Piscina y vista',   en:'Pool & Views'},
+  {src:'amen_terrace2.jpg',es:'Zona BBQ',          en:'BBQ Area'},
+];
 const galData={
   hood:{es:['Vista desde el edificio','Piscina Del Ventto','Pozos Colorados','Atardecer en la playa'],en:['View from the building','Del Ventto pool','Pozos Colorados','Beach sunset']},
   local:{es:['Playa del Ritmo','C.C. Zazué','Centro Histórico','Quinta de San Pedro'],en:['Playa del Ritmo','Zazué Mall','Historic Center','Quinta de San Pedro']}
@@ -727,8 +738,8 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeLB();});
 function renderGal(){
   const g=document.getElementById('gal-grid');
   g.innerHTML='';
-  if(curGal==='prop'){
-    propPhotos.forEach(p=>{
+  if(curGal==='prop'||curGal==='amen'){
+    (curGal==='prop'?propPhotos:amenPhotos).forEach(p=>{
       const d=document.createElement('div');
       d.className='gal-item';
       d.innerHTML=`<img src="${p.src}" alt="${p[lang]}" loading="lazy"><div class="gal-item-label">${p[lang]}</div>`;
