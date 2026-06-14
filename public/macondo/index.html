@@ -209,14 +209,20 @@ section{padding:80px 24px;max-width:1080px;margin:0 auto;}
 section,header,footer,.topbar{position:relative;z-index:1;}
 
 /* Gallery */
-.gal-tabs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px;}
-.gal-tabs button{
-  border:1px solid var(--purple);background:transparent;color:var(--purple);
-  border-radius:999px;padding:9px 20px;font-family:'Outfit';font-weight:600;font-size:.82rem;
-  cursor:pointer;transition:all .25s;
-}
-.gal-tabs button.active{background:var(--purple);color:var(--cream);}
 .gal-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;}
+.amen-list{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px;}
+.amen-chip{
+  border:1px solid var(--purple);border-radius:999px;padding:9px 20px;
+  font-family:'Outfit';font-weight:600;font-size:.82rem;color:var(--purple);
+  background:transparent;
+}
+.amen-fee{
+  display:flex;gap:14px;align-items:flex-start;
+  border:1px solid var(--purple);border-radius:16px;
+  padding:18px 20px;margin:24px 0 28px;background:rgba(106,38,128,.06);
+}
+.amen-fee .amen-fee-icon{font-size:1.6rem;line-height:1;}
+.amen-fee p{margin:0;font-size:.92rem;line-height:1.5;}
 .gal-item{
   border-radius:18px;overflow:hidden;cursor:zoom-in;position:relative;
   aspect-ratio:4/3;background:#e0cfe8;
@@ -542,17 +548,36 @@ footer a{color:var(--gold);text-decoration:none;}
 <section id="gallery">
   <span class="sec-eyebrow" data-es="Galería" data-en="Gallery">Galería</span>
   <h2 class="sec-title"><span data-es="Imágenes de tu" data-en="Glimpses of your">Imágenes de tu</span> <em data-es="estadía" data-en="stay">estadía</em></h2>
-  <div class="gal-tabs">
-    <button class="active" onclick="setGal(this,'prop')" data-es="La propiedad" data-en="The property">La propiedad</button>
-    <button onclick="setGal(this,'amen')" data-es="Amenidades" data-en="Amenities">Amenidades</button>
-  </div>
-  <div class="gal-grid" id="gal-grid"></div>
+  <div class="gal-grid" id="gal-grid-prop"></div>
   <div class="gal-drive">
     <a href="https://drive.google.com/drive/folders/1KjhZGj8j77-KEc8S8TT-kvSHNmHOT9hC?usp=drive_link" target="_blank" rel="noopener">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
       <span data-es="Click to see all pictures" data-en="Click to see all pictures">Click to see all pictures</span>
     </a>
   </div>
+</section>
+
+<!-- AMENITIES -->
+<section id="amenities">
+  <span class="sec-eyebrow" data-es="Amenidades" data-en="Amenities">Amenidades</span>
+  <h2 class="sec-title"><span data-es="Amenidades del" data-en="Building">Amenidades del</span> <em data-es="edificio" data-en="amenities">edificio</em></h2>
+  <div class="amen-list">
+    <span class="amen-chip" data-es="Gimnasio" data-en="Gym">Gimnasio</span>
+    <span class="amen-chip" data-es="Piscina para niños" data-en="Kids Pool">Piscina para niños</span>
+    <span class="amen-chip" data-es="Piscina" data-en="Pool">Piscina</span>
+    <span class="amen-chip" data-es="Piscina infinita" data-en="Infinity Pool">Piscina infinita</span>
+    <span class="amen-chip" data-es="Piscina interior" data-en="Indoor Pool">Piscina interior</span>
+    <span class="amen-chip" data-es="Squash" data-en="Squash">Squash</span>
+    <span class="amen-chip" data-es="Sauna" data-en="Sauna">Sauna</span>
+    <span class="amen-chip" data-es="Zona BBQ" data-en="BBQ Zone">Zona BBQ</span>
+    <span class="amen-chip" data-es="Terraza" data-en="Terrace">Terraza</span>
+    <span class="amen-chip" data-es="Sala de reuniones" data-en="Business Meeting Room">Sala de reuniones</span>
+  </div>
+  <div class="amen-fee">
+    <span class="amen-fee-icon">🎟️</span>
+    <p data-es="Costo de manilla: $25.000 COP por persona — incluye acceso a todas las amenidades del edificio. Niños menores de 5 años no pagan." data-en="Wristband fee: $25,000 COP per person — includes access to all building amenities. Children under 5 are free.">Costo de manilla: $25.000 COP por persona — incluye acceso a todas las amenidades del edificio. Niños menores de 5 años no pagan.</p>
+  </div>
+  <div class="gal-grid" id="gal-grid-amen"></div>
 </section>
 
 <!-- MAP -->
@@ -766,13 +791,6 @@ const amenPhotos=[
   {src:'amen_pool3.jpg',   es:'Piscina y vista',   en:'Pool & Views'},
   {src:'amen_terrace2.jpg',es:'Zona BBQ',          en:'BBQ Area'},
 ];
-const galData={
-  hood:{es:['Vista desde el edificio','Piscina Del Ventto','Pozos Colorados','Atardecer en la playa'],en:['View from the building','Del Ventto pool','Pozos Colorados','Beach sunset']},
-  local:{es:['Playa del Ritmo','C.C. Zazué','Centro Histórico','Quinta de San Pedro'],en:['Playa del Ritmo','Zazué Mall','Historic Center','Quinta de San Pedro']}
-};
-let curGal='prop';
-const camIcon='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="7" width="18" height="13" rx="2"/><circle cx="12" cy="13.5" r="3.5"/><path d="M8 7l1.5-2.5h5L16 7"/></svg>';
-
 /* ── Lightbox ── */
 function openLB(src){
   document.getElementById('lb-img').src=src;
@@ -785,31 +803,20 @@ function closeLB(){
 }
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeLB();});
 
-function renderGal(){
-  const g=document.getElementById('gal-grid');
+function renderPhotoGrid(gridId,photos){
+  const g=document.getElementById(gridId);
   g.innerHTML='';
-  if(curGal==='prop'||curGal==='amen'){
-    (curGal==='prop'?propPhotos:amenPhotos).forEach(p=>{
-      const d=document.createElement('div');
-      d.className='gal-item';
-      d.innerHTML=`<img src="${p.src}" alt="${p[lang]}" loading="lazy"><div class="gal-item-label">${p[lang]}</div>`;
-      d.onclick=()=>openLB(p.src);
-      g.appendChild(d);
-    });
-  } else {
-    galData[curGal][lang].forEach(label=>{
-      const d=document.createElement('div');
-      d.className='gal-ph';
-      d.innerHTML=camIcon+'<span>'+label+'</span><small style="opacity:.65">'+(lang==='es'?'Tu foto aquí':'Your photo here')+'</small>';
-      g.appendChild(d);
-    });
-  }
+  photos.forEach(p=>{
+    const d=document.createElement('div');
+    d.className='gal-item';
+    d.innerHTML=`<img src="${p.src}" alt="${p[lang]}" loading="lazy"><div class="gal-item-label">${p[lang]}</div>`;
+    d.onclick=()=>openLB(p.src);
+    g.appendChild(d);
+  });
 }
-function setGal(btn,key){
-  curGal=key;
-  document.querySelectorAll('.gal-tabs button').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  renderGal();
+function renderGal(){
+  renderPhotoGrid('gal-grid-prop',propPhotos);
+  renderPhotoGrid('gal-grid-amen',amenPhotos);
 }
 renderGal();
 
