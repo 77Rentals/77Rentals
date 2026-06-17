@@ -1,4 +1,7 @@
 Options -MultiViews
+
+AddType image/svg+xml .svg
+
 RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
