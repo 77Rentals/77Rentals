@@ -640,7 +640,7 @@ footer a{color:var(--gold);text-decoration:none;}
   <span class="sec-eyebrow" data-es="Para una estadía perfecta" data-en="For a perfect stay">Para una estadía perfecta</span>
   <h2 class="sec-title"><span data-es="Reglas de la" data-en="House">Reglas de la</span> <em data-es="casa" data-en="rules">casa</em></h2>
   <div class="rules-grid">
-    <div class="rule-card"><span class="rc-icon">🤫</span><span data-es="Silencio de 10pm a 8am" data-en="Quiet hours 10pm–8am">Silencio de 10pm a 8am</span></div>
+    <div class="rule-card"><span class="rc-icon">🤫</span><span data-es="Por favor, mantén el volumen bajo entre 10pm y 8am" data-en="Please keep noise to a minimum between 10pm and 8am">Por favor, mantén el volumen bajo entre 10pm y 8am</span></div>
     <div class="rule-card"><span class="rc-icon">👥</span><span data-es="Máximo de huéspedes según lo reservado, sin visitantes no registrados" data-en="Max occupancy as booked — no unregistered guests">Máximo de huéspedes según lo reservado, sin visitantes no registrados</span></div>
     <div class="rule-card"><span class="rc-icon">🎉</span><span data-es="No se permiten fiestas ni eventos" data-en="No parties or events">No se permiten fiestas ni eventos</span></div>
     <div class="rule-card"><span class="rc-icon">🚭</span><span data-es="No fumar dentro del apartamento" data-en="No smoking inside the apartment">No fumar dentro del apartamento</span></div>
@@ -811,6 +811,7 @@ const propPhotos=[
   {src:'img_bathroom_sm.jpg',  es:'Baño',                  en:'Bathroom'},
   {src:'img_balcony_sm.jpg',   es:'Balcón',                en:'Balcony'},
   {src:'img_living_sm.jpg',    es:'Sala',                  en:'Living Room'},
+  {src:'img_balcony2_sm.jpg',  es:'Desayuno en el balcón', en:'Breakfast on the balcony'},
 ];
 const amenPhotos=[
   {src:'amen_lobby.jpg',   es:'Recepción',         en:'Lobby & Reception'},
@@ -821,6 +822,10 @@ const amenPhotos=[
   {src:'amen_pool2.jpg',   es:'Piscina infinita',  en:'Infinity Pool'},
   {src:'amen_pool3.jpg',   es:'Piscina y vista',   en:'Pool & Views'},
   {src:'amen_terrace2.jpg',es:'Zona BBQ',          en:'BBQ Area'},
+  {src:'amen_pool4.jpg',   es:'',                  en:''},
+  {src:'amen_pool5.jpg',   es:'',                  en:''},
+  {src:'amen_pool6.jpg',   es:'',                  en:''},
+  {src:'amen_pool7.jpg',   es:'',                  en:''},
 ];
 /* ── Lightbox ── */
 function openLB(src){
@@ -840,7 +845,7 @@ function renderPhotoGrid(gridId,photos){
   photos.forEach(p=>{
     const d=document.createElement('div');
     d.className='gal-item';
-    d.innerHTML=`<img src="${p.src}" alt="${p[lang]}" loading="lazy"><div class="gal-item-label">${p[lang]}</div>`;
+    d.innerHTML=`<img src="${p.src}" alt="${p[lang]}" loading="lazy">${p[lang]?`<div class="gal-item-label">${p[lang]}</div>`:''}`;
     d.onclick=()=>openLB(p.src);
     g.appendChild(d);
   });
