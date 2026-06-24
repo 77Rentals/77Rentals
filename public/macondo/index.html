@@ -353,6 +353,13 @@ section,header,footer,.topbar{position:relative;z-index:1;}
   padding:20px 16px;text-align:center;font-size:.85rem;font-weight:500;color:var(--purple-deep);
 }
 .amen div span{display:block;font-size:1.6rem;margin-bottom:6px;}
+.rules-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-bottom:24px;}
+.rule-card{
+  background:var(--white);border:1px solid #efe6db;border-radius:16px;
+  padding:18px 18px;font-size:.85rem;font-weight:500;color:var(--purple-deep);
+  display:flex;gap:12px;align-items:flex-start;line-height:1.4;
+}
+.rule-card span.rc-icon{font-size:1.4rem;line-height:1;flex-shrink:0;}
 .wifi-box{
   margin-top:22px;background:var(--gold-soft);border-radius:18px;padding:22px 26px;
   display:flex;gap:30px;flex-wrap:wrap;align-items:center;
@@ -628,6 +635,27 @@ footer a{color:var(--gold);text-decoration:none;}
   </div>
 </section>
 
+<!-- HOUSE RULES -->
+<section id="house-rules">
+  <span class="sec-eyebrow" data-es="Para una estadía perfecta" data-en="For a perfect stay">Para una estadía perfecta</span>
+  <h2 class="sec-title"><span data-es="Reglas de la" data-en="House">Reglas de la</span> <em data-es="casa" data-en="rules">casa</em></h2>
+  <div class="rules-grid">
+    <div class="rule-card"><span class="rc-icon">🤫</span><span data-es="Silencio de 10pm a 8am" data-en="Quiet hours 10pm–8am">Silencio de 10pm a 8am</span></div>
+    <div class="rule-card"><span class="rc-icon">👥</span><span data-es="Máximo de huéspedes según lo reservado, sin visitantes no registrados" data-en="Max occupancy as booked — no unregistered guests">Máximo de huéspedes según lo reservado, sin visitantes no registrados</span></div>
+    <div class="rule-card"><span class="rc-icon">🎉</span><span data-es="No se permiten fiestas ni eventos" data-en="No parties or events">No se permiten fiestas ni eventos</span></div>
+    <div class="rule-card"><span class="rc-icon">🚭</span><span data-es="No fumar dentro del apartamento" data-en="No smoking inside the apartment">No fumar dentro del apartamento</span></div>
+    <div class="rule-card"><span class="rc-icon">🐾</span><span data-es="No mascotas sin aprobación previa" data-en="No pets unless approved in advance">No mascotas sin aprobación previa</span></div>
+    <div class="rule-card"><span class="rc-icon">🪪</span><span data-es="Identificación válida requerida al check-in para todos los huéspedes" data-en="Valid ID required at check-in for all registered guests">Identificación válida requerida al check-in para todos los huéspedes</span></div>
+    <div class="rule-card"><span class="rc-icon">🎟</span><span data-es="El uso de las amenidades del edificio requiere la manilla indicada en la sección de Amenidades" data-en="Using the building amenities requires the wristband noted in the Amenities section">El uso de las amenidades del edificio requiere la manilla indicada en la sección de Amenidades</span></div>
+    <div class="rule-card"><span class="rc-icon">🔑</span><span data-es="Al salir: apaga luces y aires, deja la cerradura como se indicó" data-en="On checkout: turn off lights & AC, leave the lock as instructed">Al salir: apaga luces y aires, deja la cerradura como se indicó</span></div>
+    <div class="rule-card"><span class="rc-icon">🛠</span><span data-es="El huésped es responsable por cualquier daño causado al apartamento o sus bienes durante la estadía" data-en="The guest is liable for any damage caused to the apartment or its contents during the stay">El huésped es responsable por cualquier daño causado al apartamento o sus bienes durante la estadía</span></div>
+  </div>
+  <div class="amen-fee">
+    <span class="amen-fee-icon">📋</span>
+    <p data-es="Al reservar y/o hacer check-in, aceptas estas reglas de la casa. 77Rentals y los anfitriones no se hacen responsables por lesiones, pérdidas o robo de pertenencias personales, salvo negligencia comprobada del anfitrión, en la medida permitida por la ley aplicable. El incumplimiento de estas reglas (fiestas, fumar, huéspedes no registrados, daños a la propiedad) puede resultar en la terminación inmediata de la estadía sin reembolso, conforme a los términos de la plataforma de reserva (Airbnb / Booking.com). Cargos por daños o depósito de seguridad pueden tramitarse a través del Centro de Resolución de la plataforma correspondiente." data-en="By booking and/or checking in, you agree to these house rules. 77Rentals and the hosts are not liable for guest injury, loss, or theft of personal belongings, except where caused by proven host negligence, to the extent permitted by applicable law. Violation of these rules (parties, smoking, unregistered guests, property damage) may result in immediate termination of the stay without refund, per the booking platform's terms (Airbnb / Booking.com). Damage charges or security deposit claims may be processed through the relevant platform's Resolution Center.">Al reservar y/o hacer check-in, aceptas estas reglas de la casa. 77Rentals y los anfitriones no se hacen responsables por lesiones, pérdidas o robo de pertenencias personales, salvo negligencia comprobada del anfitrión, en la medida permitida por la ley aplicable. El incumplimiento de estas reglas (fiestas, fumar, huéspedes no registrados, daños a la propiedad) puede resultar en la terminación inmediata de la estadía sin reembolso, conforme a los términos de la plataforma de reserva (Airbnb / Booking.com). Cargos por daños o depósito de seguridad pueden tramitarse a través del Centro de Resolución de la plataforma correspondiente.</p>
+  </div>
+</section>
+
 <!-- HOSTS -->
 <section id="hosts-sec">
   <div class="hosts">
@@ -665,6 +693,7 @@ footer a{color:var(--gold);text-decoration:none;}
     <a href="https://airbnb.com.co/h/velamare" target="_blank" rel="noopener">Airbnb</a>
     <a href="https://www.booking.com/hotel/co/77-rentals-717-vela-mare" target="_blank" rel="noopener">Booking.com</a>
     <a href="https://wa.me/573046736241" target="_blank" rel="noopener">WhatsApp</a>
+    <a href="#house-rules" data-es="Reglas de la casa" data-en="House Rules">House Rules</a>
   </div>
   <p style="margin-top:18px;font-size:.78rem;opacity:.6">77Rentals · Macondo 717 · <span data-es="Si disfrutaste tu estancia, una reseña 5 estrellas nos ayuda muchísimo ⭐" data-en="If you enjoyed your stay, a 5-star review helps us so much ⭐">Si disfrutaste tu estancia, una reseña 5 estrellas nos ayuda muchísimo ⭐</span></p>
 </footer>
