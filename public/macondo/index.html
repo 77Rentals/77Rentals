@@ -225,6 +225,12 @@ section,header,footer,.topbar{position:relative;z-index:1;}
 }
 .amen-fee .amen-fee-icon{font-size:1.6rem;line-height:1;}
 .amen-fee p{margin:0;font-size:.92rem;line-height:1.5;}
+.amen-hours{border:1px solid #efe6db;border-radius:16px;overflow:hidden;margin-bottom:24px;}
+.amen-hour-row{display:flex;align-items:center;gap:12px;padding:12px 18px;font-size:.88rem;}
+.amen-hour-row:not(:last-child){border-bottom:1px solid #efe6db;}
+.amen-hour-row span:first-child{font-size:1.2rem;flex-shrink:0;}
+.amen-hour-row span:nth-child(2){flex:1;font-weight:600;color:var(--purple-deep);}
+.amen-hour-row span:last-child{color:var(--gold);font-weight:700;white-space:nowrap;}
 .gal-item{
   border-radius:18px;overflow:hidden;cursor:zoom-in;position:relative;
   aspect-ratio:4/3;background:#e0cfe8;
@@ -325,6 +331,14 @@ section,header,footer,.topbar{position:relative;z-index:1;}
 .place h3{font-size:1.45rem;color:var(--purple-deep);margin-bottom:6px;}
 .place-meta{font-size:.78rem;font-weight:600;color:var(--gold);letter-spacing:.05em;margin-bottom:10px;}
 .place p{font-size:.92rem;color:#5a4666;}
+.place-links{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;}
+.place-link{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:.75rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  border:1px solid var(--purple);border-radius:999px;padding:6px 14px;
+  color:var(--purple);text-decoration:none;transition:background .2s,color .2s;
+}
+.place-link:hover{background:var(--purple);color:var(--cream);}
 
 /* Hosts */
 .hosts{
@@ -586,6 +600,11 @@ footer a{color:var(--gold);text-decoration:none;}
     <span class="amen-fee-icon">🎟️</span>
     <p data-es="Costo de manilla: $25.000 COP por persona — incluye acceso a todas las amenidades del edificio. Niños menores de 5 años no pagan." data-en="Wristband fee: $25,000 COP per person — includes access to all building amenities. Children under 5 are free.">Costo de manilla: $25.000 COP por persona — incluye acceso a todas las amenidades del edificio. Niños menores de 5 años no pagan.</p>
   </div>
+  <div class="amen-hours">
+    <div class="amen-hour-row"><span>🏊</span><span data-es="Piscina piso 1" data-en="Pool floor 1">Piscina piso 1</span><span>9:00 am – 6:00 pm</span></div>
+    <div class="amen-hour-row"><span>🌊</span><span data-es="Piscina infinita" data-en="Infinity Pool">Piscina infinita</span><span>9:00 am – 7:00 pm</span></div>
+    <div class="amen-hour-row"><span>🏋️</span><span data-es="Gimnasio" data-en="Gym">Gimnasio</span><span>6:00 am – 10:00 pm</span></div>
+  </div>
   <div class="gal-grid" id="gal-grid-amen"></div>
 </section>
 
@@ -613,6 +632,9 @@ footer a{color:var(--gold);text-decoration:none;}
     <div class="place"><span class="place-tag tag-food" data-es="Leyenda local" data-en="Local legend">Leyenda local</span><h3>Pizza El Vómito</h3><div class="place-meta" data-es="EL RODADERO / GAIRA" data-en="EL RODADERO / GAIRA">EL RODADERO / GAIRA</div><p data-es="No dejes que el nombre te engañe. Es legendaria por la generosa (y caótica) cantidad de ingredientes y queso en cada porción." data-en="Don't let the name fool you. It's legendary for the generous (and chaotic) amount of toppings and cheese on every slice.">No dejes que el nombre te engañe. Es legendaria por la generosa (y caótica) cantidad de ingredientes y queso en cada porción.</p></div>
     <div class="place"><span class="place-tag tag-fun" data-es="Cultura y vida nocturna" data-en="Culture & nightlife">Cultura y vida nocturna</span><h3 data-es="Centro Histórico y Parque de los Novios" data-en="Historic Center & Parque de los Novios">Centro Histórico y Parque de los Novios</h3><div class="place-meta" data-es="15-20 MIN EN CARRO" data-en="15-20 MIN BY CAR">15-20 MIN EN CARRO</div><p data-es="El corazón vibrante de la ciudad: casas coloniales, arte urbano y música en vivo en las plazas." data-en="The vibrant heart of the city: colonial houses, street art, and live music in the plazas.">El corazón vibrante de la ciudad: casas coloniales, arte urbano y música en vivo en las plazas.</p></div>
     <div class="place"><span class="place-tag tag-fun" data-es="Historia" data-en="History">Historia</span><h3>Quinta de San Pedro Alejandrino</h3><div class="place-meta" data-es="HACIENDA DEL SIGLO XVII" data-en="17TH CENTURY HACIENDA">HACIENDA DEL SIGLO XVII</div><p data-es="Rodeada de árboles centenarios, aquí murió Simón Bolívar. Un oasis de cultura, arte y jardines botánicos." data-en="Surrounded by century-old trees, this is where Simón Bolívar died. An oasis of culture, art, and botanical gardens.">Rodeada de árboles centenarios, aquí murió Simón Bolívar. Un oasis de cultura, arte y jardines botánicos.</p></div>
+    <div class="place"><span class="place-tag tag-food" data-es="Restaurante" data-en="Restaurant">Restaurante</span><h3>Harry's Steakhouse</h3><div class="place-meta" data-es="CARNES Y PARRILLA" data-en="STEAKS & GRILL">CARNES Y PARRILLA</div><p data-es="Cortes de carne premium en un ambiente íntimo. Ideal para una noche especial." data-en="Premium cuts in an intimate setting. Perfect for a special night out.">Cortes de carne premium en un ambiente íntimo. Ideal para una noche especial.</p><div class="place-links"><a class="place-link" href="https://www.qodeup.com/harrye039ssteakhouse" target="_blank" rel="noopener" data-es="🍽 Ver menú" data-en="🍽 View menu">🍽 Ver menú</a><a class="place-link" href="https://maps.app.goo.gl/oUi2Tstpj345js6A8" target="_blank" rel="noopener" data-es="📍 Cómo llegar" data-en="📍 Directions">📍 Cómo llegar</a></div></div>
+    <div class="place"><span class="place-tag tag-food" data-es="Restaurante" data-en="Restaurant">Restaurante</span><h3>Cambiante</h3><div class="place-meta" data-es="COCINA DE AUTOR · VISTA AL MAR" data-en="CHEF'S KITCHEN · SEA VIEWS">COCINA DE AUTOR · VISTA AL MAR</div><p data-es="Propuesta gastronómica creativa con ingredientes locales y vistas al mar Caribe." data-en="Creative cuisine with local ingredients and Caribbean sea views.">Propuesta gastronómica creativa con ingredientes locales y vistas al mar Caribe.</p><div class="place-links"><a class="place-link" href="https://www.qodeup.com/cambiantealmar" target="_blank" rel="noopener" data-es="🍽 Ver menú" data-en="🍽 View menu">🍽 Ver menú</a><a class="place-link" href="https://maps.app.goo.gl/1vAeazmEDfQ7PWwy5" target="_blank" rel="noopener" data-es="📍 Cómo llegar" data-en="📍 Directions">📍 Cómo llegar</a></div></div>
+    <div class="place"><span class="place-tag tag-food" data-es="Pizzería" data-en="Pizzeria">Pizzería</span><h3>Holguer Pizza</h3><div class="place-meta" data-es="PIZZA ARTESANAL" data-en="ARTISAN PIZZA">PIZZA ARTESANAL</div><p data-es="Pizza artesanal con personalidad propia. Una opción deliciosa para una noche sin complicaciones." data-en="Artisan pizza with character. A delicious option for a laid-back night in.">Pizza artesanal con personalidad propia. Una opción deliciosa para una noche sin complicaciones.</p><div class="place-links"><a class="place-link" href="https://www.instagram.com/holguerpizza/" target="_blank" rel="noopener">📸 Instagram</a></div></div>
   </div>
 </section>
 
