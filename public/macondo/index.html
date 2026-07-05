@@ -392,6 +392,18 @@ section,header,footer,.topbar{position:relative;z-index:1;}
   flex:0 0 48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;
   font-size:1.3rem;color:var(--white);
 }
+.sos-expand-btn{
+  display:flex;align-items:center;gap:10px;margin:20px auto 0;
+  background:transparent;border:1px solid var(--purple);border-radius:999px;
+  padding:10px 24px;font-family:'Outfit';font-size:.85rem;font-weight:600;
+  color:var(--purple);cursor:pointer;transition:background .2s,color .2s;
+}
+.sos-expand-btn:hover{background:var(--purple);color:var(--cream);}
+.sos-expand{
+  max-height:0;overflow:hidden;transition:max-height .5s ease, opacity .4s ease;
+  opacity:0;margin-top:0;
+}
+.sos-expand.open{max-height:1000px;opacity:1;margin-top:20px;}
 .sos strong{display:block;color:var(--purple-deep);}
 .sos small{color:#7a6a85;}
 .sos .num{font-weight:700;color:var(--sea);}
@@ -704,6 +716,14 @@ footer a{color:var(--gold);text-decoration:none;}
     <a href="tel:+576054219999"><div class="sos-icon" style="background:#1B7F8E">🏥</div><div><strong>Clínica Avidanti</strong><span class="num">(605) 421 9999</span><br><small data-es="Bello Horizonte, cerca de Pozos Colorados" data-en="Bello Horizonte, near Pozos Colorados">Bello Horizonte, cerca de Pozos Colorados</small></div></a>
     <a href="tel:+573167449954"><div class="sos-icon" style="background:#8B3FA1">💊</div><div><strong>Droguería Andina</strong><span class="num">316 744 9954</span><br><small data-es="Zazué Plaza, muy cerca" data-en="Zazué Plaza, very close">Zazué Plaza, muy cerca</small></div></a>
     <a href="mailto:team@77rentals.com"><div class="sos-icon" style="background:#E3B23C">✉️</div><div><strong>Email</strong><span class="num">team@77rentals.com</span><br><small data-es="Para temas no urgentes" data-en="For non-urgent matters">Para temas no urgentes</small></div></a>
+    <a href="tel:123"><div class="sos-icon" style="background:#1a3d8f">🚔</div><div><strong data-es="Policía Nacional" data-en="National Police">Policía Nacional</strong><span class="num">123</span><br><small data-es="Emergencias de seguridad" data-en="Security emergencies">Emergencias de seguridad</small></div></a>
+    <a href="tel:125"><div class="sos-icon" style="background:#1B7F8E">🚑</div><div><strong data-es="Ambulancias / Emergencias médicas" data-en="Ambulance / Medical emergencies">Ambulancias / Emergencias médicas</strong><span class="num">125</span><br><small data-es="Servicio nacional" data-en="National service">Servicio nacional</small></div></a>
+    <a href="tel:119"><div class="sos-icon" style="background:#c0392b">🚒</div><div><strong data-es="Bomberos" data-en="Fire department">Bomberos</strong><span class="num">119</span><br><small data-es="Incendios y rescate" data-en="Fire & rescue">Incendios y rescate</small></div></a>
+    <a href="tel:+573117548493"><div class="sos-icon" style="background:#2c7873">🏢</div><div><strong data-es="Recepción Del Ventto" data-en="Del Ventto Reception">Recepción Del Ventto</strong><span class="num">+57 311 754 8493</span><br><small data-es="Conserje del edificio" data-en="Building concierge">Conserje del edificio</small></div></a>
+  </div>
+  <button class="sos-expand-btn" id="sos-expand-btn" onclick="toggleSosExpand()" data-es="📋 Ver todos los números de emergencia" data-en="📋 See all emergency numbers">📋 Ver todos los números de emergencia</button>
+  <div class="sos-expand" id="sos-expand">
+    <img src="emergency_numbers.jpg" alt="Teléfonos de emergencia Colombia" style="width:100%;max-width:520px;border-radius:18px;display:block;margin:0 auto;">
   </div>
 </section>
 
@@ -876,6 +896,16 @@ function renderGal(){
   renderPhotoGrid('gal-grid-amen',amenPhotos);
 }
 renderGal();
+
+/* ── SOS expand ── */
+function toggleSosExpand(){
+  const panel=document.getElementById('sos-expand');
+  const btn=document.getElementById('sos-expand-btn');
+  const open=panel.classList.toggle('open');
+  btn.dataset.es=open?'▲ Ocultar números':'📋 Ver todos los números de emergencia';
+  btn.dataset.en=open?'▲ Hide numbers':'📋 See all emergency numbers';
+  btn.textContent=btn.dataset[lang];
+}
 
 /* ── Page-wide butterflies ── */
 const bfSvgStr='<svg viewBox="0 0 40 40"><path d="M20 20 C10 6 0 10 6 20 C0 30 10 34 20 20 C30 34 40 30 34 20 C40 10 30 6 20 20Z" fill="#F2D58A" opacity=".85"/><line x1="20" y1="14" x2="20" y2="27" stroke="#3A1248" stroke-width="1.6"/></svg>';
