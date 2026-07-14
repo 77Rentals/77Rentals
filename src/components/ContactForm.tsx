@@ -81,6 +81,7 @@ const ContactForm = () => {
           <div className="flex gap-4">
             <Input
               placeholder="Nombre"
+              aria-label="Nombre"
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
               required
@@ -88,6 +89,7 @@ const ContactForm = () => {
             />
             <Input
               placeholder="Apellido"
+              aria-label="Apellido"
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
               required
@@ -99,6 +101,7 @@ const ContactForm = () => {
           <Input
             type="tel"
             placeholder="WhatsApp / Teléfono"
+            aria-label="WhatsApp / Teléfono"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             required
@@ -109,6 +112,7 @@ const ContactForm = () => {
           <Input
             type="email"
             placeholder="Correo electrónico"
+            aria-label="Correo electrónico"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -118,6 +122,7 @@ const ContactForm = () => {
           {/* Destination — free text */}
           <Input
             placeholder="¿A dónde quieres viajar?"
+            aria-label="¿A dónde quieres viajar?"
             value={destination}
             onChange={(e) => setDestination(e.target.value)}
             required

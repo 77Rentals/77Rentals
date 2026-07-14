@@ -51,6 +51,17 @@ const PropertyDetail = () => {
     return () => clearInterval(interval);
   }, [apt]);
 
+  // SEO: set a descriptive page title per property
+  useEffect(() => {
+    const previousTitle = document.title;
+    if (apt) {
+      document.title = `${apt.name} — ${apt.city} | 77 Rentals`;
+    }
+    return () => {
+      document.title = previousTitle;
+    };
+  }, [apt]);
+
   if (!apt) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#f8f7ff]">
@@ -138,7 +149,7 @@ const PropertyDetail = () => {
                 onClick={() => setCurrentImageIndex(i)}
                 className={`w-16 h-12 rounded-lg border-2 transition-all ${i === currentImageIndex ? 'border-white scale-110' : 'border-white/60 opacity-70 hover:opacity-100'}`}
               >
-                <img src={src} alt="" className="w-full h-full object-cover rounded-lg" />
+                <img src={src} alt={`${name} - foto ${i + 1}`} loading="lazy" className="w-full h-full object-cover rounded-lg" />
               </button>
             ))}
           </div>
@@ -372,7 +383,7 @@ const PropertyDetail = () => {
                       to={`/propiedades/${sibling.slug}`}
                       className="flex items-center gap-3 bg-[#f8f7ff] border border-[#e8e4f5] rounded-xl p-3 hover:border-[#2D1B69]/30 transition-colors"
                     >
-                      <img src={sibling.images[0]} alt={sibling.name} className="w-14 h-14 object-cover rounded-lg" />
+                      <img src={sibling.images[0]} alt={sibling.name} loading="lazy" className="w-14 h-14 object-cover rounded-lg" />
                       <div>
                         <p className="font-serif font-bold text-[#2D1B69] text-sm">{sibling.name}</p>
                         <p className="text-gray-400 text-xs">{sibling.priceFrom > 0 ? `$${sibling.priceFrom}/noche` : 'Consultar precio'}</p>

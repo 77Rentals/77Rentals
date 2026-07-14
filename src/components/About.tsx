@@ -20,9 +20,12 @@ const About = () => {
               src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=600"
               alt="77 Rentals Experience"
               className="rounded-xl shadow-2xl w-full object-cover h-80 md:h-96"
+              loading="lazy"
+              width={600}
+              height={400}
             />
             <div className="absolute -bottom-4 -left-4 w-24 h-24 rounded-xl overflow-hidden shadow-lg">
-              <img src={logo} alt="77 Rentals" className="w-full h-full object-cover" />
+              <img src={logo} alt="77 Rentals" className="w-full h-full object-cover" loading="lazy" width={96} height={96} />
             </div>
           </div>
         </div>

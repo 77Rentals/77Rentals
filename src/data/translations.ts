@@ -101,10 +101,11 @@ export const translations = {
     'management.cta': 'Contáctanos',
 
     // Footer
-    'footer.rights': '© 2025 77 Rentals. Todos los derechos reservados.',
+    'footer.rights': '© {year} 77 Rentals. Todos los derechos reservados.',
     'footer.destinations': 'Destinos',
     'footer.contact': 'Contacto',
     'footer.links': 'Enlaces',
+    'footer.tagline': 'Alquileres vacacionales de lujo en las ciudades más hermosas de Colombia.',
   },
   en: {
     // Navbar
@@ -208,10 +209,11 @@ export const translations = {
     'management.cta': 'Contact Us',
 
     // Footer
-    'footer.rights': '© 2025 77 Rentals. All rights reserved.',
+    'footer.rights': '© {year} 77 Rentals. All rights reserved.',
     'footer.destinations': 'Destinations',
     'footer.contact': 'Contact',
     'footer.links': 'Links',
+    'footer.tagline': 'Luxury vacation rentals in Colombia\'s most beautiful cities.',
   },
 } as const;
 

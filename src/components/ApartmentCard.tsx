@@ -104,7 +104,7 @@ const ApartmentCard = () => {
             onClick={() => setActiveCity(activeCity === 'Santa Marta' ? 'Todas' : 'Santa Marta')}
             className={`relative rounded-2xl overflow-hidden h-44 group transition-all duration-200 ${activeCity === 'Santa Marta' ? 'ring-2 ring-[#D4A843]' : ''}`}
           >
-            <img src={CITY_IMAGES['Santa Marta']} alt="Santa Marta" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+            <img src={CITY_IMAGES['Santa Marta']} alt="Santa Marta" loading="lazy" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
             <div className="absolute inset-0 bg-gradient-to-b from-[#2D1B69]/15 to-[#2D1B69]/80" />
             <div className="absolute top-3 left-3 bg-[#D4A843] text-[#2D1B69] text-xs font-bold px-3 py-1 rounded-full">DESTACADO</div>
             <div className="absolute bottom-0 left-0 right-0 p-4 text-left">
@@ -121,7 +121,7 @@ const ApartmentCard = () => {
                 onClick={() => setActiveCity(activeCity === city ? 'Todas' : city)}
                 className={`relative rounded-2xl overflow-hidden flex-1 group transition-all duration-200 ${activeCity === city ? 'ring-2 ring-[#D4A843]' : ''}`}
               >
-                <img src={CITY_IMAGES[city]} alt={city} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                <img src={CITY_IMAGES[city]} alt={city} loading="lazy" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                 <div className="absolute inset-0 bg-gradient-to-b from-[#2D1B69]/15 to-[#2D1B69]/80" />
                 <div className="absolute bottom-0 left-0 right-0 p-3 text-left">
                   <div className="font-serif text-base font-bold text-white">{city}</div>

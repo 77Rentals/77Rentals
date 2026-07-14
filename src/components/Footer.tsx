@@ -1,5 +1,5 @@
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Mail, Phone, MapPin, Instagram, Facebook } from 'lucide-react';
+import { Mail, Phone, MapPin, Instagram } from 'lucide-react';
 import logo from '@/assets/logo77.jpeg';
 
 const Footer = () => {
@@ -10,9 +10,9 @@ const Footer = () => {
       <div className="container mx-auto px-4">
         <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-8 mb-12">
           <div>
-            <img src={logo} alt="77 Rentals" className="h-16 w-auto mb-4" />
+            <img src={logo} alt="77 Rentals" className="h-16 w-auto mb-4" loading="lazy" width={128} height={64} />
             <p className="text-primary-foreground/60 text-sm leading-relaxed">
-              Luxury vacation rentals in Colombia's most beautiful cities.
+              {t('footer.tagline')}
             </p>
           </div>
 
@@ -36,18 +36,15 @@ const Footer = () => {
           <div>
             <h4 className="text-secondary font-semibold uppercase tracking-widest text-sm mb-4">{t('footer.links')}</h4>
             <div className="flex gap-3">
-              <a href="https://www.instagram.com/co77rentals/" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-primary-foreground/10 flex items-center justify-center hover:bg-secondary/20 transition-colors">
+              <a href="https://www.instagram.com/co77rentals/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="w-10 h-10 rounded-full bg-primary-foreground/10 flex items-center justify-center hover:bg-secondary/20 transition-colors">
                 <Instagram className="w-5 h-5 text-primary-foreground" />
-              </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-primary-foreground/10 flex items-center justify-center hover:bg-secondary/20 transition-colors">
-                <Facebook className="w-5 h-5 text-primary-foreground" />
               </a>
             </div>
           </div>
         </div>
 
         <div className="border-t border-primary-foreground/10 pt-6 text-center">
-          <p className="text-primary-foreground/40 text-sm">{t('footer.rights')}</p>
+          <p className="text-primary-foreground/40 text-sm">{t('footer.rights').replace('{year}', String(new Date().getFullYear()))}</p>
         </div>
       </div>
     </footer>
