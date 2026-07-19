@@ -14,6 +14,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { apartments } from '@/data/apartments';
 import logo from '@/assets/logo77.jpeg';
 import { getThirdPartyProperties, saveThirdPartyProperty, ThirdPartyProperty } from '@/lib/thirdPartyProperties';
+import { getCoHosts, saveCoHost, CoHost } from '@/lib/coHosts';
 import { buildCotizacionText, formatCOP } from '@/lib/cotizacionFormat';
 
 const DRAFT_KEY = 'cotizacion.draft';
@@ -24,6 +25,8 @@ interface FormState {
   thirdPartyId: string;
   guestName: string;
   guestPhone: string;
+  bookingChannel: string;
+  bookingChannelDetail: string;
   buildingName: string;
   apartmentNumber: string;
   featuredAmenity: string;
@@ -40,6 +43,9 @@ interface FormState {
   validUntil: string;
   hostName: string;
   hostPhone: string;
+  coHostId: string;
+  coHostName: string;
+  coHostPhone: string;
   totalOverride: string | null;
 }
 
@@ -49,6 +55,8 @@ const defaultState: FormState = {
   thirdPartyId: '',
   guestName: '',
   guestPhone: '',
+  bookingChannel: '',
+  bookingChannelDetail: '',
   buildingName: '',
   apartmentNumber: '',
   featuredAmenity: '',
@@ -65,6 +73,9 @@ const defaultState: FormState = {
   validUntil: '',
   hostName: 'Claudia Moreno',
   hostPhone: '304 673 6241',
+  coHostId: '',
+  coHostName: 'Sebastian Ruiz',
+  coHostPhone: '+573502053147',
   totalOverride: null,
 };
 
@@ -91,11 +102,13 @@ export default function Cotizacion() {
     }
   });
   const [thirdPartyList, setThirdPartyList] = useState<ThirdPartyProperty[]>([]);
+  const [coHostList, setCoHostList] = useState<CoHost[]>([]);
   const [checkIn, setCheckIn] = useState<Date | undefined>();
   const [checkOut, setCheckOut] = useState<Date | undefined>();
 
   useEffect(() => {
     setThirdPartyList(getThirdPartyProperties());
+    setCoHostList(getCoHosts());
   }, []);
 
   useEffect(() => {
@@ -129,6 +142,19 @@ export default function Cotizacion() {
       featuredAmenity: prop.featuredAmenity,
       nightlyRate: String(prop.nightlyRate),
     });
+  };
+
+  const handleCoHostSelect = (id: string) => {
+    const coHost = coHostList.find((c) => c.id === id);
+    if (!coHost) return;
+    update({ coHostId: id, coHostName: coHost.name, coHostPhone: coHost.phone });
+  };
+
+  const handleSaveCoHost = () => {
+    if (!state.coHostName) return;
+    saveCoHost({ name: state.coHostName, phone: state.coHostPhone });
+    setCoHostList(getCoHosts());
+    toast.success('Co-anfitrión guardado para futuras cotizaciones');
   };
 
   const nights = checkIn && checkOut ? Math.max(0, differenceInCalendarDays(checkOut, checkIn)) : 0;
@@ -169,6 +195,7 @@ export default function Cotizacion() {
         validUntil: state.validUntil,
         hostName: state.hostName,
         hostPhone: state.hostPhone,
+        coHost: state.coHostName ? `${state.coHostName}${state.coHostPhone ? ' - ' + state.coHostPhone : ''}` : '',
       }
     : null;
 
@@ -307,6 +334,30 @@ export default function Cotizacion() {
               </div>
             </div>
 
+            <div className="space-y-2">
+              <Label>Canal de reserva (opcional)</Label>
+              <Select
+                value={state.bookingChannel}
+                onValueChange={(v) => update({ bookingChannel: v, bookingChannelDetail: v === 'Referido' ? state.bookingChannelDetail : '' })}
+              >
+                <SelectTrigger><SelectValue placeholder="Selecciona un canal" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Reserva Directa">Reserva Directa</SelectItem>
+                  <SelectItem value="Booking.com">Booking.com</SelectItem>
+                  <SelectItem value="Airbnb">Airbnb</SelectItem>
+                  <SelectItem value="Despegar">Despegar</SelectItem>
+                  <SelectItem value="Referido">Referido</SelectItem>
+                </SelectContent>
+              </Select>
+              {state.bookingChannel === 'Referido' && (
+                <Input
+                  placeholder="¿Quién refirió?"
+                  value={state.bookingChannelDetail}
+                  onChange={(e) => update({ bookingChannelDetail: e.target.value })}
+                />
+              )}
+            </div>
+
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-2">
                 <Label>Check-in</Label>
@@ -389,6 +440,33 @@ export default function Cotizacion() {
                 <Input value={state.hostPhone} onChange={(e) => update({ hostPhone: e.target.value })} />
               </div>
             </div>
+
+            <div className="space-y-2">
+              <Label>Co-anfitrión</Label>
+              {coHostList.length > 0 && (
+                <Select value={state.coHostId} onValueChange={handleCoHostSelect}>
+                  <SelectTrigger><SelectValue placeholder="Selecciona o escribe uno nuevo abajo" /></SelectTrigger>
+                  <SelectContent>
+                    {coHostList.map((c) => (
+                      <SelectItem key={c.id} value={c.id}>{c.name} — {c.phone}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+              <div className="grid grid-cols-2 gap-3">
+                <Input placeholder="Nombre" value={state.coHostName} onChange={(e) => update({ coHostId: '', coHostName: e.target.value })} />
+                <Input placeholder="Teléfono" value={state.coHostPhone} onChange={(e) => update({ coHostId: '', coHostPhone: e.target.value })} />
+              </div>
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                onClick={handleSaveCoHost}
+                disabled={!state.coHostName}
+              >
+                Guardar co-anfitrión para futuras cotizaciones
+              </Button>
+            </div>
           </CardContent>
         </Card>
 
@@ -446,6 +524,11 @@ export default function Cotizacion() {
                   <div className="border-t pt-3 text-sm">
                     <p>{state.hostName}</p>
                     <p className="text-muted-foreground">77Rentals · {state.hostPhone}</p>
+                    {state.coHostName && (
+                      <p className="text-muted-foreground">
+                        🤝 Co-anfitrión: {state.coHostName}{state.coHostPhone ? ` - ${state.coHostPhone}` : ''}
+                      </p>
+                    )}
                   </div>
                 </div>
               ) : (

@@ -25,6 +25,7 @@ export interface CotizacionData {
   validUntil?: string;
   hostName: string;
   hostPhone: string;
+  coHost?: string;
 }
 
 export function buildCotizacionText(d: CotizacionData): string {
@@ -90,5 +91,6 @@ export function buildCotizacionText(d: CotizacionData): string {
     '💜 77Rentals',
     `📱 ${d.hostPhone}`,
   );
+  if (d.coHost) lines.push('', `🤝 Co-anfitrión: ${d.coHost}`);
   return lines.join('\n');
 }
