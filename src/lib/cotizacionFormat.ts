@@ -26,6 +26,7 @@ export interface CotizacionData {
   hostName: string;
   hostPhone: string;
   coHost?: string;
+  bookingChannel?: string;
 }
 
 export function buildCotizacionText(d: CotizacionData): string {
@@ -38,6 +39,7 @@ export function buildCotizacionText(d: CotizacionData): string {
     `🏠 Apartamento: ${d.apartmentNumber}`,
   ];
   if (d.featuredAmenity) lines.push(`🌇 Amenidad destacada: ${d.featuredAmenity}`);
+  if (d.bookingChannel) lines.push(`📡 Canal de reserva: ${d.bookingChannel}`);
   lines.push(
     '',
     '📅 Detalle de la reserva',

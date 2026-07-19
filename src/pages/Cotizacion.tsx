@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { differenceInCalendarDays, format } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { CalendarIcon, Copy, Printer, RotateCcw } from 'lucide-react';
+import { CalendarIcon, Check, ChevronsUpDown, Copy, Printer, RotateCcw } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,10 +10,12 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
 import { Calendar } from '@/components/ui/calendar';
+import { cn } from '@/lib/utils';
 import { apartments } from '@/data/apartments';
 import logo from '@/assets/logo77.jpeg';
-import { getThirdPartyProperties, saveThirdPartyProperty, ThirdPartyProperty } from '@/lib/thirdPartyProperties';
+import { getBuildings, saveBuildingApartment, ThirdPartyBuilding } from '@/lib/thirdPartyBuildings';
 import { getCoHosts, saveCoHost, CoHost } from '@/lib/coHosts';
 import { buildCotizacionText, formatCOP } from '@/lib/cotizacionFormat';
 
@@ -22,7 +24,8 @@ const DRAFT_KEY = 'cotizacion.draft';
 interface FormState {
   source: 'own' | 'third-party';
   apartmentId: string;
-  thirdPartyId: string;
+  apartmentUnitId: string;
+  apartmentUnitName: string;
   guestName: string;
   guestPhone: string;
   bookingChannel: string;
@@ -52,7 +55,8 @@ interface FormState {
 const defaultState: FormState = {
   source: 'own',
   apartmentId: '',
-  thirdPartyId: '',
+  apartmentUnitId: '',
+  apartmentUnitName: '',
   guestName: '',
   guestPhone: '',
   bookingChannel: '',
@@ -101,13 +105,14 @@ export default function Cotizacion() {
       return defaultState;
     }
   });
-  const [thirdPartyList, setThirdPartyList] = useState<ThirdPartyProperty[]>([]);
+  const [buildings, setBuildings] = useState<ThirdPartyBuilding[]>([]);
+  const [buildingPickerOpen, setBuildingPickerOpen] = useState(false);
   const [coHostList, setCoHostList] = useState<CoHost[]>([]);
   const [checkIn, setCheckIn] = useState<Date | undefined>();
   const [checkOut, setCheckOut] = useState<Date | undefined>();
 
   useEffect(() => {
-    setThirdPartyList(getThirdPartyProperties());
+    setBuildings(getBuildings());
     setCoHostList(getCoHosts());
   }, []);
 
@@ -132,15 +137,32 @@ export default function Cotizacion() {
     });
   };
 
-  const handleThirdPartySelect = (id: string) => {
-    const prop = thirdPartyList.find((p) => p.id === id);
-    if (!prop) return;
+  const selectedBuilding = useMemo(
+    () => buildings.find((b) => b.name.trim().toLowerCase() === state.buildingName.trim().toLowerCase()),
+    [buildings, state.buildingName]
+  );
+
+  const handleBuildingSelect = (building: ThirdPartyBuilding) => {
     update({
-      thirdPartyId: id,
-      buildingName: prop.buildingName,
-      apartmentNumber: prop.apartmentNumber,
-      featuredAmenity: prop.featuredAmenity,
-      nightlyRate: String(prop.nightlyRate),
+      buildingName: building.name,
+      apartmentUnitId: '',
+      apartmentUnitName: '',
+      apartmentNumber: '',
+      featuredAmenity: '',
+      nightlyRate: '',
+    });
+    setBuildingPickerOpen(false);
+  };
+
+  const handleApartmentUnitSelect = (unitId: string) => {
+    const unit = selectedBuilding?.apartments.find((a) => a.id === unitId);
+    if (!unit) return;
+    update({
+      apartmentUnitId: unit.id,
+      apartmentUnitName: unit.name,
+      apartmentNumber: unit.apartmentNumber,
+      featuredAmenity: unit.featuredAmenity,
+      nightlyRate: String(unit.nightlyRate),
     });
   };
 
@@ -196,6 +218,11 @@ export default function Cotizacion() {
         hostName: state.hostName,
         hostPhone: state.hostPhone,
         coHost: state.coHostName ? `${state.coHostName}${state.coHostPhone ? ' - ' + state.coHostPhone : ''}` : '',
+        bookingChannel: state.bookingChannel
+          ? state.bookingChannel === 'Referido' && state.bookingChannelDetail
+            ? `Referido (${state.bookingChannelDetail})`
+            : state.bookingChannel
+          : '',
       }
     : null;
 
@@ -214,14 +241,16 @@ export default function Cotizacion() {
 
   const handleSaveThirdParty = (silent = false) => {
     if (state.source !== 'third-party' || !state.buildingName || !state.apartmentNumber) return;
-    saveThirdPartyProperty({
-      buildingName: state.buildingName,
+    const { apartment } = saveBuildingApartment(state.buildingName, {
+      id: state.apartmentUnitId || undefined,
+      name: state.apartmentUnitName || state.apartmentNumber,
       apartmentNumber: state.apartmentNumber,
       featuredAmenity: state.featuredAmenity,
       nightlyRate,
     });
-    setThirdPartyList(getThirdPartyProperties());
-    if (!silent) toast.success('Propiedad guardada para futuras cotizaciones');
+    setBuildings(getBuildings());
+    update({ apartmentUnitId: apartment.id, apartmentUnitName: apartment.name });
+    if (!silent) toast.success('Apartamento guardado para futuras cotizaciones');
   };
 
   const handlePrint = () => {
@@ -280,30 +309,86 @@ export default function Cotizacion() {
                 </Select>
               </div>
             ) : (
-              thirdPartyList.length > 0 && (
+              <>
                 <div className="space-y-2">
-                  <Label>Propiedad guardada (opcional)</Label>
-                  <Select value={state.thirdPartyId} onValueChange={handleThirdPartySelect}>
-                    <SelectTrigger><SelectValue placeholder="Selecciona o escribe una nueva abajo" /></SelectTrigger>
-                    <SelectContent>
-                      {thirdPartyList.map((p) => (
-                        <SelectItem key={p.id} value={p.id}>{p.buildingName} — {p.apartmentNumber}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <Label>Edificio</Label>
+                  <Popover open={buildingPickerOpen} onOpenChange={setBuildingPickerOpen}>
+                    <PopoverTrigger asChild>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        role="combobox"
+                        className="w-full justify-between font-normal"
+                      >
+                        {state.buildingName || 'Busca o escribe un edificio'}
+                        <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
+                      <Command>
+                        <CommandInput
+                          placeholder="Buscar o escribir edificio..."
+                          value={state.buildingName}
+                          onValueChange={(v) => update({ buildingName: v, apartmentUnitId: '' })}
+                        />
+                        <CommandList>
+                          <CommandEmpty>Este será un edificio nuevo.</CommandEmpty>
+                          <CommandGroup>
+                            {buildings.map((b) => (
+                              <CommandItem
+                                key={b.id}
+                                value={b.name}
+                                onSelect={() => handleBuildingSelect(b)}
+                              >
+                                <Check className={cn('mr-2 h-4 w-4', state.buildingName === b.name ? 'opacity-100' : 'opacity-0')} />
+                                {b.name}
+                                <span className="ml-auto text-xs text-muted-foreground">{b.apartments.length} apto(s)</span>
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
                 </div>
-              )
+
+                {selectedBuilding && selectedBuilding.apartments.length > 0 && (
+                  <div className="space-y-2">
+                    <Label>Apartamento guardado (opcional)</Label>
+                    <Select value={state.apartmentUnitId} onValueChange={handleApartmentUnitSelect}>
+                      <SelectTrigger><SelectValue placeholder="Selecciona o escribe uno nuevo abajo" /></SelectTrigger>
+                      <SelectContent>
+                        {selectedBuilding.apartments.map((a) => (
+                          <SelectItem key={a.id} value={a.id}>{a.name}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
+              </>
             )}
 
             <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-2">
-                <Label>Edificio</Label>
-                <Input value={state.buildingName} onChange={(e) => update({ buildingName: e.target.value })} />
-              </div>
+              {state.source === 'third-party' && (
+                <div className="space-y-2">
+                  <Label>Nombre del apartamento</Label>
+                  <Input
+                    placeholder="Ej. Vista al mar"
+                    value={state.apartmentUnitName}
+                    onChange={(e) => update({ apartmentUnitId: '', apartmentUnitName: e.target.value })}
+                  />
+                </div>
+              )}
               <div className="space-y-2">
                 <Label>Apartamento</Label>
-                <Input value={state.apartmentNumber} onChange={(e) => update({ apartmentNumber: e.target.value })} />
+                <Input value={state.apartmentNumber} onChange={(e) => update({ apartmentNumber: e.target.value, apartmentUnitId: '' })} />
               </div>
+              {state.source === 'own' && (
+                <div className="space-y-2">
+                  <Label>Edificio</Label>
+                  <Input value={state.buildingName} onChange={(e) => update({ buildingName: e.target.value })} />
+                </div>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -319,7 +404,7 @@ export default function Cotizacion() {
                 onClick={() => handleSaveThirdParty()}
                 disabled={!state.buildingName || !state.apartmentNumber}
               >
-                Guardar propiedad para futuras cotizaciones
+                Guardar apartamento para futuras cotizaciones
               </Button>
             )}
 
@@ -490,6 +575,7 @@ export default function Cotizacion() {
                     <span className="text-muted-foreground">Edificio</span><span className="text-right font-medium">{state.buildingName}</span>
                     <span className="text-muted-foreground">Apartamento</span><span className="text-right font-medium">{state.apartmentNumber}</span>
                     {state.featuredAmenity && (<><span className="text-muted-foreground">Amenidad</span><span className="text-right font-medium">{state.featuredAmenity}</span></>)}
+                    {cotizacionData?.bookingChannel && (<><span className="text-muted-foreground">Canal de reserva</span><span className="text-right font-medium">{cotizacionData.bookingChannel}</span></>)}
                     <span className="text-muted-foreground">Check-in</span><span className="text-right font-medium">{cotizacionData?.checkInDate} · {state.checkInTime}</span>
                     <span className="text-muted-foreground">Check-out</span><span className="text-right font-medium">{cotizacionData?.checkOutDate} · {state.checkOutTime}</span>
                     <span className="text-muted-foreground">Noches</span><span className="text-right font-medium">{nights}</span>
