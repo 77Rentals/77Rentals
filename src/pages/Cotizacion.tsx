@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { differenceInCalendarDays, format } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { ArrowRight, CalendarIcon, Check, ChevronsUpDown, Copy, Printer, RotateCcw } from 'lucide-react';
+import { ArrowRight, CalendarIcon, Check, ChevronsUpDown, Copy, FileEdit, Printer, RotateCcw, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -19,11 +19,13 @@ import logo from '@/assets/logo77.jpeg';
 import { getBuildings, saveBuildingApartment, ThirdPartyBuilding } from '@/lib/thirdPartyBuildings';
 import { getCoHosts, saveCoHost, CoHost } from '@/lib/coHosts';
 import { buildCotizacionText, formatCOP } from '@/lib/cotizacionFormat';
+import { getSavedCotizaciones, saveCotizacion, deleteCotizacion, SavedCotizacion } from '@/lib/savedCotizaciones';
 import { HANDOFF_KEY } from '@/pages/ReservaConfirmada';
 
 const DRAFT_KEY = 'cotizacion.draft';
 
 interface FormState {
+  cotizacionId: string;
   source: 'own' | 'third-party';
   apartmentId: string;
   apartmentUnitId: string;
@@ -55,6 +57,7 @@ interface FormState {
 }
 
 const defaultState: FormState = {
+  cotizacionId: '',
   source: 'own',
   apartmentId: '',
   apartmentUnitId: '',
@@ -104,20 +107,23 @@ export default function Cotizacion() {
   const [state, setState] = useState<FormState>(() => {
     try {
       const raw = localStorage.getItem(DRAFT_KEY);
-      return raw ? { ...defaultState, ...JSON.parse(raw) } : defaultState;
+      const loaded = raw ? { ...defaultState, ...JSON.parse(raw) } : defaultState;
+      return loaded.cotizacionId ? loaded : { ...loaded, cotizacionId: crypto.randomUUID() };
     } catch {
-      return defaultState;
+      return { ...defaultState, cotizacionId: crypto.randomUUID() };
     }
   });
   const [buildings, setBuildings] = useState<ThirdPartyBuilding[]>([]);
   const [buildingPickerOpen, setBuildingPickerOpen] = useState(false);
   const [coHostList, setCoHostList] = useState<CoHost[]>([]);
+  const [savedList, setSavedList] = useState<SavedCotizacion[]>([]);
   const [checkIn, setCheckIn] = useState<Date | undefined>();
   const [checkOut, setCheckOut] = useState<Date | undefined>();
 
   useEffect(() => {
     setBuildings(getBuildings());
     setCoHostList(getCoHosts());
+    setSavedList(getSavedCotizaciones());
   }, []);
 
   useEffect(() => {
@@ -232,9 +238,72 @@ export default function Cotizacion() {
 
   const previewText = cotizacionData ? buildCotizacionText(cotizacionData) : '';
 
+  const buildHandoffPayload = (record: {
+    source: 'own' | 'third-party';
+    apartmentId: string;
+    apartmentUnitId: string;
+    apartmentUnitName: string;
+    buildingName: string;
+    apartmentNumber: string;
+    guestName: string;
+    guestsCount: string;
+    checkIn: string | null;
+    checkOut: string | null;
+    checkInTime: string;
+    checkOutTime: string;
+    nightlyRate: string;
+    cleaningFee: string;
+    registrationFee: string;
+    depositPercent: string;
+  }) => ({
+    v: 1 as const,
+    source: record.source,
+    apartmentId: record.apartmentId,
+    apartmentUnitId: record.apartmentUnitId,
+    apartmentUnitName: record.apartmentUnitName,
+    buildingName: record.buildingName,
+    apartmentNumber: record.apartmentNumber,
+    reservationHolderName: record.guestName,
+    guestsCount: record.guestsCount,
+    checkIn: record.checkIn,
+    checkOut: record.checkOut,
+    checkInTime: record.checkInTime,
+    checkOutTime: record.checkOutTime,
+    nightlyRate: record.nightlyRate,
+    cleaningFee: record.cleaningFee,
+    registrationFee: record.registrationFee,
+    depositPercent: record.depositPercent,
+  });
+
+  const handleSaveCotizacion = () => {
+    if (!canGenerate) return;
+    saveCotizacion({
+      id: state.cotizacionId,
+      guestName: state.guestName,
+      buildingName: state.buildingName,
+      apartmentNumber: state.apartmentNumber,
+      total,
+      source: state.source,
+      apartmentId: state.apartmentId,
+      apartmentUnitId: state.apartmentUnitId,
+      apartmentUnitName: state.apartmentUnitName,
+      checkIn: checkIn ? checkIn.toISOString() : null,
+      checkOut: checkOut ? checkOut.toISOString() : null,
+      checkInTime: state.checkInTime,
+      checkOutTime: state.checkOutTime,
+      guestsCount: state.guests,
+      nightlyRate: state.nightlyRate,
+      cleaningFee: state.cleaningFee,
+      registrationFee: state.registrationFee,
+      depositPercent: state.depositPercent,
+    });
+    setSavedList(getSavedCotizaciones());
+  };
+
   const handleCopy = async () => {
     if (!previewText) return;
     handleSaveThirdParty(true);
+    handleSaveCotizacion();
     try {
       await navigator.clipboard.writeText(previewText);
       toast.success('Cotización copiada — pégala en WhatsApp');
@@ -259,27 +328,28 @@ export default function Cotizacion() {
 
   const handlePrint = () => {
     handleSaveThirdParty(true);
+    handleSaveCotizacion();
     window.print();
   };
 
   const handleReset = () => {
     localStorage.removeItem(DRAFT_KEY);
-    setState(defaultState);
+    setState({ ...defaultState, cotizacionId: crypto.randomUUID() });
     setCheckIn(undefined);
     setCheckOut(undefined);
   };
 
   const handleConfirmReserva = () => {
     handleSaveThirdParty(true);
-    const payload = {
-      v: 1 as const,
+    handleSaveCotizacion();
+    const payload = buildHandoffPayload({
       source: state.source,
       apartmentId: state.apartmentId,
       apartmentUnitId: state.apartmentUnitId,
       apartmentUnitName: state.apartmentUnitName,
       buildingName: state.buildingName,
       apartmentNumber: state.apartmentNumber,
-      reservationHolderName: state.guestName,
+      guestName: state.guestName,
       guestsCount: state.guests,
       checkIn: checkIn ? checkIn.toISOString() : null,
       checkOut: checkOut ? checkOut.toISOString() : null,
@@ -289,9 +359,62 @@ export default function Cotizacion() {
       cleaningFee: state.cleaningFee,
       registrationFee: state.registrationFee,
       depositPercent: state.depositPercent,
-    };
+    });
     localStorage.setItem(HANDOFF_KEY, JSON.stringify(payload));
     navigate('/reserva-confirmada');
+  };
+
+  const handleConfirmFromHistory = (record: SavedCotizacion) => {
+    const payload = buildHandoffPayload({
+      source: record.source,
+      apartmentId: record.apartmentId,
+      apartmentUnitId: record.apartmentUnitId,
+      apartmentUnitName: record.apartmentUnitName,
+      buildingName: record.buildingName,
+      apartmentNumber: record.apartmentNumber,
+      guestName: record.guestName,
+      guestsCount: record.guestsCount,
+      checkIn: record.checkIn,
+      checkOut: record.checkOut,
+      checkInTime: record.checkInTime,
+      checkOutTime: record.checkOutTime,
+      nightlyRate: record.nightlyRate,
+      cleaningFee: record.cleaningFee,
+      registrationFee: record.registrationFee,
+      depositPercent: record.depositPercent,
+    });
+    localStorage.setItem(HANDOFF_KEY, JSON.stringify(payload));
+    navigate('/reserva-confirmada');
+  };
+
+  const handleLoadFromHistory = (record: SavedCotizacion) => {
+    setState((s) => ({
+      ...s,
+      cotizacionId: record.id,
+      source: record.source,
+      apartmentId: record.apartmentId,
+      apartmentUnitId: record.apartmentUnitId,
+      apartmentUnitName: record.apartmentUnitName,
+      buildingName: record.buildingName,
+      apartmentNumber: record.apartmentNumber,
+      guestName: record.guestName,
+      guests: record.guestsCount,
+      checkInTime: record.checkInTime,
+      checkOutTime: record.checkOutTime,
+      nightlyRate: record.nightlyRate,
+      cleaningFee: record.cleaningFee,
+      registrationFee: record.registrationFee,
+      depositPercent: record.depositPercent,
+      totalOverride: null,
+    }));
+    setCheckIn(record.checkIn ? new Date(record.checkIn) : undefined);
+    setCheckOut(record.checkOut ? new Date(record.checkOut) : undefined);
+    toast.success('Cotización cargada en el formulario');
+  };
+
+  const handleDeleteFromHistory = (id: string) => {
+    deleteCotizacion(id);
+    setSavedList(getSavedCotizaciones());
   };
 
   return (
@@ -663,6 +786,39 @@ export default function Cotizacion() {
           <Button variant="secondary" className="w-full print:hidden" onClick={handleConfirmReserva} disabled={!canGenerate}>
             Confirmar reserva <ArrowRight className="h-4 w-4 ml-2" />
           </Button>
+
+          {savedList.length > 0 && (
+            <Card className="print:hidden">
+              <CardHeader>
+                <CardTitle className="text-base">Cotizaciones recientes</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {savedList.map((c) => (
+                  <div key={c.id} className="flex items-center justify-between gap-2 border-b pb-2 last:border-b-0 last:pb-0">
+                    <div className="min-w-0">
+                      <p className="text-sm font-medium truncate">{c.guestName || 'Sin nombre'}</p>
+                      <p className="text-xs text-muted-foreground truncate">
+                        {c.buildingName}{c.apartmentNumber ? ` · ${c.apartmentNumber}` : ''}
+                        {c.checkIn && c.checkOut && ` · ${format(new Date(c.checkIn), 'd MMM', { locale: es })}–${format(new Date(c.checkOut), 'd MMM', { locale: es })}`}
+                        {' · $'}{formatCOP(c.total)}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-1 shrink-0">
+                      <Button variant="ghost" size="icon" title="Cargar en el formulario" onClick={() => handleLoadFromHistory(c)}>
+                        <FileEdit className="h-4 w-4" />
+                      </Button>
+                      <Button variant="ghost" size="sm" onClick={() => handleConfirmFromHistory(c)}>
+                        Confirmar
+                      </Button>
+                      <Button variant="ghost" size="icon" title="Eliminar" onClick={() => handleDeleteFromHistory(c.id)}>
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          )}
         </div>
       </div>
     </div>
