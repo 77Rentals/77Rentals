@@ -99,7 +99,7 @@ export default function CompletarDatos() {
           Completa tus datos
         </h1>
         <p className="text-center text-white/60 text-sm mb-8">
-          Necesitamos el nombre, número de identificación y una foto del documento de cada huésped para el registro de tu reserva.
+          Necesitamos el nombre y número de identificación de cada huésped para el registro de tu reserva. La foto del documento es opcional.
         </p>
 
         <form
@@ -138,12 +138,11 @@ export default function CompletarDatos() {
                   className="bg-white/10 border-white/20 text-white placeholder:text-white/50"
                 />
                 <div>
-                  <Label className="block text-white/50 text-xs mb-1">Foto del documento</Label>
+                  <Label className="block text-white/50 text-xs mb-1">Foto del documento (opcional)</Label>
                   <Input
                     type="file"
                     accept="image/*,.pdf"
                     onChange={(e) => updateGuest(i, { idFile: e.target.files?.[0] || null })}
-                    required
                     className="bg-white/10 border-white/20 text-white file:text-white"
                   />
                   {g.idFile && g.idFile.size > MAX_FILE_SIZE && (
