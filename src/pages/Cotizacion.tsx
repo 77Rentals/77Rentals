@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { differenceInCalendarDays, format } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { ArrowRight, CalendarIcon, Check, ChevronsUpDown, Copy, FileEdit, Printer, RotateCcw, Trash2 } from 'lucide-react';
+import { ArrowRight, CalendarIcon, Check, ChevronsUpDown, Copy, FileEdit, Plus, Printer, RotateCcw, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -484,7 +484,7 @@ export default function Cotizacion() {
                           onValueChange={(v) => update({ buildingName: v, apartmentUnitId: '' })}
                         />
                         <CommandList>
-                          <CommandEmpty>Este será un edificio nuevo.</CommandEmpty>
+                          <CommandEmpty>No hay edificios guardados con ese nombre.</CommandEmpty>
                           <CommandGroup>
                             {buildings.map((b) => (
                               <CommandItem
@@ -498,6 +498,15 @@ export default function Cotizacion() {
                               </CommandItem>
                             ))}
                           </CommandGroup>
+                          {state.buildingName.trim() &&
+                            !buildings.some((b) => b.name.trim().toLowerCase() === state.buildingName.trim().toLowerCase()) && (
+                              <CommandGroup>
+                                <CommandItem value={`__new__${state.buildingName}`} onSelect={() => setBuildingPickerOpen(false)}>
+                                  <Plus className="mr-2 h-4 w-4" />
+                                  Agregar "{state.buildingName}" como edificio nuevo
+                                </CommandItem>
+                              </CommandGroup>
+                            )}
                         </CommandList>
                       </Command>
                     </PopoverContent>

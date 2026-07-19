@@ -411,7 +411,7 @@ export default function ReservaConfirmada() {
                           onValueChange={(v) => update({ buildingName: v, apartmentUnitId: '' })}
                         />
                         <CommandList>
-                          <CommandEmpty>Este será un edificio nuevo.</CommandEmpty>
+                          <CommandEmpty>No hay edificios guardados con ese nombre.</CommandEmpty>
                           <CommandGroup>
                             {buildings.map((b) => (
                               <CommandItem key={b.id} value={b.name} onSelect={() => handleBuildingSelect(b)}>
@@ -421,6 +421,15 @@ export default function ReservaConfirmada() {
                               </CommandItem>
                             ))}
                           </CommandGroup>
+                          {state.buildingName.trim() &&
+                            !buildings.some((b) => b.name.trim().toLowerCase() === state.buildingName.trim().toLowerCase()) && (
+                              <CommandGroup>
+                                <CommandItem value={`__new__${state.buildingName}`} onSelect={() => setBuildingPickerOpen(false)}>
+                                  <Plus className="mr-2 h-4 w-4" />
+                                  Agregar "{state.buildingName}" como edificio nuevo
+                                </CommandItem>
+                              </CommandGroup>
+                            )}
                         </CommandList>
                       </Command>
                     </PopoverContent>
