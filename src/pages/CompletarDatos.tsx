@@ -158,7 +158,7 @@ export default function CompletarDatos() {
           <Button
             type="button"
             variant="outline"
-            className="w-full border-white/25 text-white/85 hover:bg-white/10"
+            className="w-full bg-transparent border-white/25 text-white/85 hover:bg-white/10"
             onClick={addGuest}
           >
             <Plus className="h-4 w-4 mr-2" /> Agregar otro huésped
