@@ -10,6 +10,8 @@ import Gracias from "./pages/Gracias.tsx";
 import PropertyDetail from "./pages/PropertyDetail.tsx";
 import PartnerHub from "./pages/PartnerHub";
 import Cotizacion from "./pages/Cotizacion.tsx";
+import ReservaConfirmada from "./pages/ReservaConfirmada.tsx";
+import CompletarDatos from "./pages/CompletarDatos.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -28,6 +30,8 @@ const App = () => (
             <Route path="/propiedades/:slug" element={<PropertyDetail />} />
             <Route path="/partner-hub/*" element={<PartnerHub />} />
             <Route path="/cotizacion" element={<Cotizacion />} />
+            <Route path="/reserva-confirmada" element={<ReservaConfirmada />} />
+            <Route path="/completar-datos" element={<CompletarDatos />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

@@ -4,12 +4,18 @@ export interface ApartmentUnit {
   apartmentNumber: string;
   featuredAmenity: string;
   nightlyRate: number;
+  apartmentNickname?: string;
+  includedText?: string;
 }
 
 export interface ThirdPartyBuilding {
   id: string;
   name: string;
   apartments: ApartmentUnit[];
+  buildingAmenitiesText?: string;
+  neighborhoodText?: string;
+  liaisonName?: string;
+  liaisonPhone?: string;
 }
 
 const STORAGE_KEY = 'cotizacion.thirdPartyBuildings';
@@ -89,4 +95,19 @@ export function saveBuildingApartment(
 
   persist(buildings);
   return { building, apartment: unit };
+}
+
+export function saveBuildingDetails(
+  buildingName: string,
+  details: Partial<Pick<ThirdPartyBuilding, 'buildingAmenitiesText' | 'neighborhoodText' | 'liaisonName' | 'liaisonPhone'>>
+): ThirdPartyBuilding {
+  const buildings = getBuildings();
+  let building = buildings.find((b) => b.name.trim().toLowerCase() === buildingName.trim().toLowerCase());
+  if (!building) {
+    building = { id: crypto.randomUUID(), name: buildingName, apartments: [] };
+    buildings.push(building);
+  }
+  Object.assign(building, details);
+  persist(buildings);
+  return building;
 }

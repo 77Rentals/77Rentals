@@ -1,13 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { differenceInCalendarDays, format } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { ArrowRight, CalendarIcon, Check, ChevronsUpDown, Copy, Printer, RotateCcw } from 'lucide-react';
+import { CalendarIcon, Check, ChevronsUpDown, Copy, Plus, Printer, RotateCcw, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { Switch } from '@/components/ui/switch';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -16,42 +16,42 @@ import { Calendar } from '@/components/ui/calendar';
 import { cn } from '@/lib/utils';
 import { apartments } from '@/data/apartments';
 import logo from '@/assets/logo77.jpeg';
-import { getBuildings, saveBuildingApartment, ThirdPartyBuilding } from '@/lib/thirdPartyBuildings';
-import { getCoHosts, saveCoHost, CoHost } from '@/lib/coHosts';
-import { buildCotizacionText, formatCOP } from '@/lib/cotizacionFormat';
-import { HANDOFF_KEY } from '@/pages/ReservaConfirmada';
+import { getBuildings, saveBuildingApartment, saveBuildingDetails, ThirdPartyBuilding } from '@/lib/thirdPartyBuildings';
+import { getOwnOverride, saveOwnOverride } from '@/lib/ownApartmentOverrides';
+import { buildReservaConfirmadaText, GuestEntry } from '@/lib/reservaConfirmadaFormat';
+import { formatCOP } from '@/lib/cotizacionFormat';
 
-const DRAFT_KEY = 'cotizacion.draft';
+const DRAFT_KEY = 'reserva.draft';
+export const HANDOFF_KEY = 'reserva.handoff';
 
 interface FormState {
   source: 'own' | 'third-party';
   apartmentId: string;
   apartmentUnitId: string;
   apartmentUnitName: string;
-  guestName: string;
-  guestPhone: string;
-  bookingChannel: string;
-  bookingChannelDetail: string;
   buildingName: string;
   apartmentNumber: string;
-  featuredAmenity: string;
-  checkInDate: string;
+  apartmentNickname: string;
+  includedText: string;
+  buildingAmenitiesText: string;
+  neighborhoodText: string;
+  liaisonName: string;
+  liaisonPhone: string;
+  reservationHolderName: string;
+  guests: GuestEntry[];
+  guestFreeTextMode: boolean;
+  guestFreeText: string;
   checkInTime: string;
-  checkOutDate: string;
   checkOutTime: string;
-  guests: string;
+  guestsCount: string;
   nightlyRate: string;
   cleaningFee: string;
   registrationFee: string;
+  totalOverride: string | null;
   depositPercent: string;
-  notes: string;
-  validUntil: string;
+  depositConfirmedDate: string;
   hostName: string;
   hostPhone: string;
-  coHostId: string;
-  coHostName: string;
-  coHostPhone: string;
-  totalOverride: string | null;
 }
 
 const defaultState: FormState = {
@@ -59,65 +59,115 @@ const defaultState: FormState = {
   apartmentId: '',
   apartmentUnitId: '',
   apartmentUnitName: '',
-  guestName: '',
-  guestPhone: '',
-  bookingChannel: '',
-  bookingChannelDetail: '',
   buildingName: '',
   apartmentNumber: '',
-  featuredAmenity: '',
-  checkInDate: '',
+  apartmentNickname: '',
+  includedText: '',
+  buildingAmenitiesText: '',
+  neighborhoodText: '',
+  liaisonName: '',
+  liaisonPhone: '',
+  reservationHolderName: '',
+  guests: [{ name: '', idNumber: '' }],
+  guestFreeTextMode: false,
+  guestFreeText: '',
   checkInTime: '3:00 p. m.',
-  checkOutDate: '',
   checkOutTime: '12:00 m.',
-  guests: '2',
+  guestsCount: '2',
   nightlyRate: '',
   cleaningFee: '80000',
   registrationFee: '67000',
+  totalOverride: null,
   depositPercent: '20',
-  notes: '',
-  validUntil: '',
+  depositConfirmedDate: '',
   hostName: 'Claudia Moreno',
   hostPhone: '304 673 6241',
-  coHostId: '',
-  coHostName: 'Sebastian Ruiz',
-  coHostPhone: '+573502053147',
-  totalOverride: null,
 };
 
-export default function Cotizacion() {
-  const navigate = useNavigate();
+interface HandoffPayload {
+  v: 1;
+  source: 'own' | 'third-party';
+  apartmentId: string;
+  apartmentUnitId: string;
+  apartmentUnitName: string;
+  buildingName: string;
+  apartmentNumber: string;
+  reservationHolderName: string;
+  guestsCount: string;
+  checkIn: string | null;
+  checkOut: string | null;
+  checkInTime: string;
+  checkOutTime: string;
+  nightlyRate: string;
+  cleaningFee: string;
+  registrationFee: string;
+  depositPercent: string;
+}
 
+function loadInitialState(): { state: FormState; checkIn?: Date; checkOut?: Date } {
+  try {
+    const handoffRaw = localStorage.getItem(HANDOFF_KEY);
+    if (handoffRaw) {
+      const payload: HandoffPayload = JSON.parse(handoffRaw);
+      if (payload.v === 1) {
+        return {
+          state: {
+            ...defaultState,
+            source: payload.source,
+            apartmentId: payload.apartmentId,
+            apartmentUnitId: payload.apartmentUnitId,
+            apartmentUnitName: payload.apartmentUnitName,
+            buildingName: payload.buildingName,
+            apartmentNumber: payload.apartmentNumber,
+            reservationHolderName: payload.reservationHolderName,
+            guestsCount: payload.guestsCount,
+            checkInTime: payload.checkInTime,
+            checkOutTime: payload.checkOutTime,
+            nightlyRate: payload.nightlyRate,
+            cleaningFee: payload.cleaningFee,
+            registrationFee: payload.registrationFee,
+            depositPercent: payload.depositPercent,
+          },
+          checkIn: payload.checkIn ? new Date(payload.checkIn) : undefined,
+          checkOut: payload.checkOut ? new Date(payload.checkOut) : undefined,
+        };
+      }
+    }
+  } catch {
+    // fall through to draft
+  }
+  try {
+    const raw = localStorage.getItem(DRAFT_KEY);
+    return { state: raw ? { ...defaultState, ...JSON.parse(raw) } : defaultState };
+  } catch {
+    return { state: defaultState };
+  }
+}
+
+export default function ReservaConfirmada() {
   useEffect(() => {
     const metaRobots = document.createElement('meta');
     metaRobots.name = 'robots';
     metaRobots.content = 'noindex, nofollow';
     document.head.appendChild(metaRobots);
     const previousTitle = document.title;
-    document.title = 'Cotización — 77Rentals';
+    document.title = 'Reserva Confirmada — 77Rentals';
     return () => {
       document.head.removeChild(metaRobots);
       document.title = previousTitle;
     };
   }, []);
 
-  const [state, setState] = useState<FormState>(() => {
-    try {
-      const raw = localStorage.getItem(DRAFT_KEY);
-      return raw ? { ...defaultState, ...JSON.parse(raw) } : defaultState;
-    } catch {
-      return defaultState;
-    }
-  });
+  const initial = useMemo(loadInitialState, []);
+  const [state, setState] = useState<FormState>(initial.state);
+  const [checkIn, setCheckIn] = useState<Date | undefined>(initial.checkIn);
+  const [checkOut, setCheckOut] = useState<Date | undefined>(initial.checkOut);
   const [buildings, setBuildings] = useState<ThirdPartyBuilding[]>([]);
   const [buildingPickerOpen, setBuildingPickerOpen] = useState(false);
-  const [coHostList, setCoHostList] = useState<CoHost[]>([]);
-  const [checkIn, setCheckIn] = useState<Date | undefined>();
-  const [checkOut, setCheckOut] = useState<Date | undefined>();
 
   useEffect(() => {
     setBuildings(getBuildings());
-    setCoHostList(getCoHosts());
+    localStorage.removeItem(HANDOFF_KEY);
   }, []);
 
   useEffect(() => {
@@ -131,13 +181,18 @@ export default function Cotizacion() {
   const handleApartmentSelect = (id: string) => {
     const apt = ownOptions.find((a) => a.id === id);
     if (!apt) return;
-    const amenity = apt.amenitiesDetail?.outdoors?.[0] || apt.amenitiesDetail?.other?.[0] || '';
+    const override = getOwnOverride(id);
     update({
       apartmentId: id,
       buildingName: apt.name,
       apartmentNumber: '',
-      featuredAmenity: amenity,
-      guests: String(apt.guests || state.guests),
+      guestsCount: String(apt.guests || state.guestsCount),
+      apartmentNickname: override?.apartmentNickname || '',
+      includedText: override?.includedText || '',
+      buildingAmenitiesText: override?.buildingAmenitiesText || '',
+      neighborhoodText: override?.neighborhoodText || '',
+      liaisonName: override?.liaisonName || '',
+      liaisonPhone: override?.liaisonPhone || '',
     });
   };
 
@@ -152,8 +207,13 @@ export default function Cotizacion() {
       apartmentUnitId: '',
       apartmentUnitName: '',
       apartmentNumber: '',
-      featuredAmenity: '',
+      apartmentNickname: '',
+      includedText: '',
       nightlyRate: '',
+      buildingAmenitiesText: building.buildingAmenitiesText || '',
+      neighborhoodText: building.neighborhoodText || '',
+      liaisonName: building.liaisonName || '',
+      liaisonPhone: building.liaisonPhone || '',
     });
     setBuildingPickerOpen(false);
   };
@@ -165,22 +225,61 @@ export default function Cotizacion() {
       apartmentUnitId: unit.id,
       apartmentUnitName: unit.name,
       apartmentNumber: unit.apartmentNumber,
-      featuredAmenity: unit.featuredAmenity,
+      apartmentNickname: unit.apartmentNickname || '',
+      includedText: unit.includedText || '',
       nightlyRate: String(unit.nightlyRate),
     });
   };
 
-  const handleCoHostSelect = (id: string) => {
-    const coHost = coHostList.find((c) => c.id === id);
-    if (!coHost) return;
-    update({ coHostId: id, coHostName: coHost.name, coHostPhone: coHost.phone });
+  const handleSaveApartmentDetails = () => {
+    if (!state.buildingName || !state.apartmentNumber) return;
+    if (state.source === 'third-party') {
+      const { apartment } = saveBuildingApartment(state.buildingName, {
+        id: state.apartmentUnitId || undefined,
+        name: state.apartmentUnitName || state.apartmentNumber,
+        apartmentNumber: state.apartmentNumber,
+        featuredAmenity: '',
+        nightlyRate: Number(state.nightlyRate) || 0,
+        apartmentNickname: state.apartmentNickname,
+        includedText: state.includedText,
+      });
+      saveBuildingDetails(state.buildingName, {
+        buildingAmenitiesText: state.buildingAmenitiesText,
+        neighborhoodText: state.neighborhoodText,
+        liaisonName: state.liaisonName,
+        liaisonPhone: state.liaisonPhone,
+      });
+      setBuildings(getBuildings());
+      update({ apartmentUnitId: apartment.id, apartmentUnitName: apartment.name });
+    } else if (state.apartmentId) {
+      saveOwnOverride({
+        apartmentId: state.apartmentId,
+        apartmentNickname: state.apartmentNickname,
+        includedText: state.includedText,
+        buildingAmenitiesText: state.buildingAmenitiesText,
+        neighborhoodText: state.neighborhoodText,
+        liaisonName: state.liaisonName,
+        liaisonPhone: state.liaisonPhone,
+      });
+    }
+    toast.success('Detalles guardados en la ficha del apartamento/edificio');
   };
 
-  const handleSaveCoHost = () => {
-    if (!state.coHostName) return;
-    saveCoHost({ name: state.coHostName, phone: state.coHostPhone });
-    setCoHostList(getCoHosts());
-    toast.success('Co-anfitrión guardado para futuras cotizaciones');
+  const addGuest = () => update({ guests: [...state.guests, { name: '', idNumber: '' }] });
+  const removeGuest = (index: number) => update({ guests: state.guests.filter((_, i) => i !== index) });
+  const updateGuest = (index: number, patch: Partial<GuestEntry>) =>
+    update({ guests: state.guests.map((g, i) => (i === index ? { ...g, ...patch } : g)) });
+
+  const toggleFreeText = (on: boolean) => {
+    if (on) {
+      const starter = state.guests
+        .filter((g) => g.name)
+        .map((g, i) => `${i + 1}. ${g.name}${g.idNumber ? ` – C.C. ${g.idNumber}` : ''}`)
+        .join('\n');
+      update({ guestFreeTextMode: true, guestFreeText: state.guestFreeText || starter });
+    } else {
+      update({ guestFreeTextMode: false });
+    }
   };
 
   const nights = checkIn && checkOut ? Math.max(0, differenceInCalendarDays(checkOut, checkIn)) : 0;
@@ -194,73 +293,54 @@ export default function Cotizacion() {
   const depositAmount = (total * depositPercent) / 100;
   const remainingBalance = total - depositAmount;
 
-  const canGenerate = state.guestName && state.buildingName && checkIn && checkOut && nights > 0 && nightlyRate > 0;
+  const canGenerate =
+    state.reservationHolderName && state.buildingName && checkIn && checkOut && nights > 0 && nightlyRate > 0;
 
-  const cotizacionData = canGenerate
+  const reservaData = canGenerate
     ? {
-        guestName: state.guestName,
-        guestPhone: state.guestPhone,
+        reservationHolderName: state.reservationHolderName,
+        guests: state.guests.filter((g) => g.name),
+        guestsFreeText: state.guestFreeTextMode ? state.guestFreeText : undefined,
         buildingName: state.buildingName,
         apartmentNumber: state.apartmentNumber,
-        featuredAmenity: state.featuredAmenity,
+        apartmentNickname: state.apartmentNickname,
         checkInDate: format(checkIn!, "d 'de' MMMM", { locale: es }),
         checkInTime: state.checkInTime,
         checkOutDate: format(checkOut!, "d 'de' MMMM", { locale: es }),
         checkOutTime: state.checkOutTime,
         nights,
-        guests: Number(state.guests) || 0,
+        guestsCount: Number(state.guestsCount) || 0,
         nightlyRate,
         hospedajeTotal,
         cleaningFee,
         registrationFee,
         total,
-        depositPercent,
         depositAmount,
+        depositConfirmedDate: state.depositConfirmedDate || format(new Date(), "d 'de' MMMM", { locale: es }),
         remainingBalance,
-        notes: state.notes,
-        validUntil: state.validUntil,
+        includedText: state.includedText,
+        buildingAmenitiesText: state.buildingAmenitiesText,
+        neighborhoodText: state.neighborhoodText,
         hostName: state.hostName,
         hostPhone: state.hostPhone,
-        coHost: state.coHostName ? `${state.coHostName}${state.coHostPhone ? ' - ' + state.coHostPhone : ''}` : '',
-        bookingChannel: state.bookingChannel
-          ? state.bookingChannel === 'Referido' && state.bookingChannelDetail
-            ? `Referido (${state.bookingChannelDetail})`
-            : state.bookingChannel
-          : '',
+        liaisonName: state.liaisonName,
+        liaisonPhone: state.liaisonPhone,
       }
     : null;
 
-  const previewText = cotizacionData ? buildCotizacionText(cotizacionData) : '';
+  const previewText = reservaData ? buildReservaConfirmadaText(reservaData) : '';
 
   const handleCopy = async () => {
     if (!previewText) return;
-    handleSaveThirdParty(true);
     try {
       await navigator.clipboard.writeText(previewText);
-      toast.success('Cotización copiada — pégala en WhatsApp');
+      toast.success('Reserva confirmada copiada — pégala en el correo');
     } catch {
       toast.error('No se pudo copiar. Selecciona el texto manualmente.');
     }
   };
 
-  const handleSaveThirdParty = (silent = false) => {
-    if (state.source !== 'third-party' || !state.buildingName || !state.apartmentNumber) return;
-    const { apartment } = saveBuildingApartment(state.buildingName, {
-      id: state.apartmentUnitId || undefined,
-      name: state.apartmentUnitName || state.apartmentNumber,
-      apartmentNumber: state.apartmentNumber,
-      featuredAmenity: state.featuredAmenity,
-      nightlyRate,
-    });
-    setBuildings(getBuildings());
-    update({ apartmentUnitId: apartment.id, apartmentUnitName: apartment.name });
-    if (!silent) toast.success('Apartamento guardado para futuras cotizaciones');
-  };
-
-  const handlePrint = () => {
-    handleSaveThirdParty(true);
-    window.print();
-  };
+  const handlePrint = () => window.print();
 
   const handleReset = () => {
     localStorage.removeItem(DRAFT_KEY);
@@ -269,45 +349,20 @@ export default function Cotizacion() {
     setCheckOut(undefined);
   };
 
-  const handleConfirmReserva = () => {
-    handleSaveThirdParty(true);
-    const payload = {
-      v: 1 as const,
-      source: state.source,
-      apartmentId: state.apartmentId,
-      apartmentUnitId: state.apartmentUnitId,
-      apartmentUnitName: state.apartmentUnitName,
-      buildingName: state.buildingName,
-      apartmentNumber: state.apartmentNumber,
-      reservationHolderName: state.guestName,
-      guestsCount: state.guests,
-      checkIn: checkIn ? checkIn.toISOString() : null,
-      checkOut: checkOut ? checkOut.toISOString() : null,
-      checkInTime: state.checkInTime,
-      checkOutTime: state.checkOutTime,
-      nightlyRate: state.nightlyRate,
-      cleaningFee: state.cleaningFee,
-      registrationFee: state.registrationFee,
-      depositPercent: state.depositPercent,
-    };
-    localStorage.setItem(HANDOFF_KEY, JSON.stringify(payload));
-    navigate('/reserva-confirmada');
-  };
-
   return (
     <div className="min-h-screen bg-muted/30 py-10 px-4 print:bg-white print:p-0">
       <style>{`
         @media print {
           body * { visibility: hidden; }
-          #cotizacion-preview, #cotizacion-preview * { visibility: visible; }
-          #cotizacion-preview { position: absolute; top: 0; left: 0; width: 100%; }
+          #reserva-preview, #reserva-preview * { visibility: visible; }
+          #reserva-preview { position: absolute; top: 0; left: 0; width: 100%; }
         }
       `}</style>
       <div className="mx-auto max-w-6xl grid gap-6 lg:grid-cols-2 print:block">
         <Card className="print:hidden">
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
-              Nueva cotización
+              Reserva confirmada
               <Button variant="ghost" size="sm" onClick={handleReset}>
                 <RotateCcw className="h-4 w-4 mr-1" /> Limpiar
               </Button>
@@ -343,12 +398,7 @@ export default function Cotizacion() {
                   <Label>Edificio</Label>
                   <Popover open={buildingPickerOpen} onOpenChange={setBuildingPickerOpen}>
                     <PopoverTrigger asChild>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        role="combobox"
-                        className="w-full justify-between font-normal"
-                      >
+                      <Button type="button" variant="outline" role="combobox" className="w-full justify-between font-normal">
                         {state.buildingName || 'Busca o escribe un edificio'}
                         <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50" />
                       </Button>
@@ -364,11 +414,7 @@ export default function Cotizacion() {
                           <CommandEmpty>Este será un edificio nuevo.</CommandEmpty>
                           <CommandGroup>
                             {buildings.map((b) => (
-                              <CommandItem
-                                key={b.id}
-                                value={b.name}
-                                onSelect={() => handleBuildingSelect(b)}
-                              >
+                              <CommandItem key={b.id} value={b.name} onSelect={() => handleBuildingSelect(b)}>
                                 <Check className={cn('mr-2 h-4 w-4', state.buildingName === b.name ? 'opacity-100' : 'opacity-0')} />
                                 {b.name}
                                 <span className="ml-auto text-xs text-muted-foreground">{b.apartments.length} apto(s)</span>
@@ -404,7 +450,9 @@ export default function Cotizacion() {
                   <Input
                     placeholder="Ej. Vista al mar"
                     value={state.apartmentUnitName}
-                    onChange={(e) => update({ apartmentUnitId: '', apartmentUnitName: e.target.value })}
+                    onChange={(e) =>
+                      update({ apartmentUnitId: '', apartmentUnitName: e.target.value, apartmentNickname: e.target.value })
+                    }
                   />
                 </div>
               )}
@@ -420,55 +468,110 @@ export default function Cotizacion() {
               )}
             </div>
 
+            {state.source === 'own' && (
+              <div className="space-y-2">
+                <Label>Apodo del apartamento (opcional)</Label>
+                <Input
+                  placeholder="Ej. Vista al mar"
+                  value={state.apartmentNickname}
+                  onChange={(e) => update({ apartmentNickname: e.target.value })}
+                />
+              </div>
+            )}
+
             <div className="space-y-2">
-              <Label>Amenidad destacada</Label>
-              <Input value={state.featuredAmenity} onChange={(e) => update({ featuredAmenity: e.target.value })} />
+              <Label>El apartamento incluye</Label>
+              <Textarea
+                rows={4}
+                placeholder="Descripción de amenidades, toallas, jabón, café de bienvenida, etc."
+                value={state.includedText}
+                onChange={(e) => update({ includedText: e.target.value })}
+              />
             </div>
 
-            {state.source === 'third-party' && (
-              <Button
-                type="button"
-                variant="secondary"
-                size="sm"
-                onClick={() => handleSaveThirdParty()}
-                disabled={!state.buildingName || !state.apartmentNumber}
-              >
-                Guardar apartamento para futuras cotizaciones
-              </Button>
-            )}
+            <div className="space-y-2">
+              <Label>Amenidades del edificio</Label>
+              <Textarea
+                rows={3}
+                placeholder="Piscina, gimnasio, jacuzzi, etc."
+                value={state.buildingAmenitiesText}
+                onChange={(e) => update({ buildingAmenitiesText: e.target.value })}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Ubicación / barrio</Label>
+              <Textarea
+                rows={2}
+                placeholder="Descripción del sector, cercanía a la playa, etc."
+                value={state.neighborhoodText}
+                onChange={(e) => update({ neighborhoodText: e.target.value })}
+              />
+            </div>
 
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-2">
-                <Label>Huésped</Label>
-                <Input value={state.guestName} onChange={(e) => update({ guestName: e.target.value })} />
+                <Label>Co-Host del edificio</Label>
+                <Input value={state.liaisonName} onChange={(e) => update({ liaisonName: e.target.value })} />
               </div>
               <div className="space-y-2">
-                <Label>Teléfono (opcional)</Label>
-                <Input value={state.guestPhone} onChange={(e) => update({ guestPhone: e.target.value })} />
+                <Label>Teléfono co-host</Label>
+                <Input value={state.liaisonPhone} onChange={(e) => update({ liaisonPhone: e.target.value })} />
               </div>
             </div>
 
+            <Button
+              type="button"
+              variant="secondary"
+              size="sm"
+              onClick={handleSaveApartmentDetails}
+              disabled={!state.buildingName || !state.apartmentNumber}
+            >
+              Guardar en la ficha del edificio/apartamento
+            </Button>
+
             <div className="space-y-2">
-              <Label>Canal de reserva (opcional)</Label>
-              <Select
-                value={state.bookingChannel}
-                onValueChange={(v) => update({ bookingChannel: v, bookingChannelDetail: v === 'Referido' ? state.bookingChannelDetail : '' })}
-              >
-                <SelectTrigger><SelectValue placeholder="Selecciona un canal" /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Reserva Directa">Reserva Directa</SelectItem>
-                  <SelectItem value="Booking.com">Booking.com</SelectItem>
-                  <SelectItem value="Airbnb">Airbnb</SelectItem>
-                  <SelectItem value="Despegar">Despegar</SelectItem>
-                  <SelectItem value="Referido">Referido</SelectItem>
-                </SelectContent>
-              </Select>
-              {state.bookingChannel === 'Referido' && (
-                <Input
-                  placeholder="¿Quién refirió?"
-                  value={state.bookingChannelDetail}
-                  onChange={(e) => update({ bookingChannelDetail: e.target.value })}
+              <Label>Titular de la reserva</Label>
+              <Input value={state.reservationHolderName} onChange={(e) => update({ reservationHolderName: e.target.value })} />
+            </div>
+
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <Label>Huéspedes</Label>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-muted-foreground">Editar como texto libre</span>
+                  <Switch checked={state.guestFreeTextMode} onCheckedChange={toggleFreeText} />
+                </div>
+              </div>
+              {state.guestFreeTextMode ? (
+                <Textarea
+                  rows={5}
+                  value={state.guestFreeText}
+                  onChange={(e) => update({ guestFreeText: e.target.value })}
                 />
+              ) : (
+                <div className="space-y-2">
+                  {state.guests.map((g, i) => (
+                    <div key={i} className="flex gap-2">
+                      <Input
+                        placeholder="Nombre completo"
+                        value={g.name}
+                        onChange={(e) => updateGuest(i, { name: e.target.value })}
+                      />
+                      <Input
+                        placeholder="C.C."
+                        value={g.idNumber}
+                        onChange={(e) => updateGuest(i, { idNumber: e.target.value })}
+                      />
+                      <Button type="button" variant="ghost" size="icon" onClick={() => removeGuest(i)} disabled={state.guests.length <= 1}>
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ))}
+                  <Button type="button" variant="outline" size="sm" onClick={addGuest}>
+                    <Plus className="h-4 w-4 mr-1" /> Agregar huésped
+                  </Button>
+                </div>
               )}
             </div>
 
@@ -510,8 +613,8 @@ export default function Cotizacion() {
             <p className="text-sm text-muted-foreground">Noches calculadas: <strong>{nights}</strong></p>
 
             <div className="space-y-2">
-              <Label>Huéspedes</Label>
-              <Input type="number" value={state.guests} onChange={(e) => update({ guests: e.target.value })} />
+              <Label>Huéspedes (cantidad)</Label>
+              <Input type="number" value={state.guestsCount} onChange={(e) => update({ guestsCount: e.target.value })} />
             </div>
 
             <div className="grid grid-cols-3 gap-3">
@@ -530,18 +633,30 @@ export default function Cotizacion() {
             </div>
 
             <div className="space-y-2">
-              <Label>Total de la reserva {state.totalOverride !== null && <span className="text-xs text-amber-600 ml-2">(editado manualmente — <button type="button" className="underline" onClick={() => update({ totalOverride: null })}>recalcular</button>)</span>}</Label>
+              <Label>
+                Total de la reserva{' '}
+                {state.totalOverride !== null && (
+                  <span className="text-xs text-amber-600 ml-2">
+                    (editado manualmente — <button type="button" className="underline" onClick={() => update({ totalOverride: null })}>recalcular</button>)
+                  </span>
+                )}
+              </Label>
               <Input type="number" value={total} onChange={(e) => update({ totalOverride: e.target.value })} />
             </div>
 
-            <div className="space-y-2">
-              <Label>Anticipo mínimo (%)</Label>
-              <Input type="number" value={state.depositPercent} onChange={(e) => update({ depositPercent: e.target.value })} />
-            </div>
-
-            <div className="space-y-2">
-              <Label>Notas adicionales (opcional)</Label>
-              <Textarea value={state.notes} onChange={(e) => update({ notes: e.target.value })} />
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-2">
+                <Label>Anticipo (%)</Label>
+                <Input type="number" value={state.depositPercent} onChange={(e) => update({ depositPercent: e.target.value })} />
+              </div>
+              <div className="space-y-2">
+                <Label>Anticipo confirmado el</Label>
+                <Input
+                  placeholder="Ej. 18 de julio"
+                  value={state.depositConfirmedDate}
+                  onChange={(e) => update({ depositConfirmedDate: e.target.value })}
+                />
+              </div>
             </div>
 
             <div className="grid grid-cols-2 gap-3">
@@ -554,98 +669,20 @@ export default function Cotizacion() {
                 <Input value={state.hostPhone} onChange={(e) => update({ hostPhone: e.target.value })} />
               </div>
             </div>
-
-            <div className="space-y-2">
-              <Label>Co-anfitrión</Label>
-              {coHostList.length > 0 && (
-                <Select value={state.coHostId} onValueChange={handleCoHostSelect}>
-                  <SelectTrigger><SelectValue placeholder="Selecciona o escribe uno nuevo abajo" /></SelectTrigger>
-                  <SelectContent>
-                    {coHostList.map((c) => (
-                      <SelectItem key={c.id} value={c.id}>{c.name} — {c.phone}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              )}
-              <div className="grid grid-cols-2 gap-3">
-                <Input placeholder="Nombre" value={state.coHostName} onChange={(e) => update({ coHostId: '', coHostName: e.target.value })} />
-                <Input placeholder="Teléfono" value={state.coHostPhone} onChange={(e) => update({ coHostId: '', coHostPhone: e.target.value })} />
-              </div>
-              <Button
-                type="button"
-                variant="secondary"
-                size="sm"
-                onClick={handleSaveCoHost}
-                disabled={!state.coHostName}
-              >
-                Guardar co-anfitrión para futuras cotizaciones
-              </Button>
-            </div>
           </CardContent>
         </Card>
 
         <div className="space-y-4">
-          <Card className="print:shadow-none print:border-none" id="cotizacion-preview">
+          <Card className="print:shadow-none print:border-none" id="reserva-preview">
             <CardHeader>
-              <CardTitle className="text-primary">Vista previa</CardTitle>
+              <CardTitle className="flex items-center justify-between text-primary">
+                Vista previa
+                <img src={logo} alt="77 Rentals" className="h-10 w-auto object-contain" />
+              </CardTitle>
             </CardHeader>
             <CardContent>
               {canGenerate ? (
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between border-b pb-4">
-                    <div>
-                      <p className="text-lg font-semibold">🏖️ Cotización de Hospedaje</p>
-                      <p className="text-sm text-muted-foreground">77Rentals</p>
-                    </div>
-                    <img src={logo} alt="77 Rentals" className="h-12 w-auto object-contain" />
-                  </div>
-                  <div className="grid grid-cols-2 gap-y-1 text-sm">
-                    <span className="text-muted-foreground">Huésped</span><span className="text-right font-medium">{state.guestName}</span>
-                    <span className="text-muted-foreground">Edificio</span><span className="text-right font-medium">{state.buildingName}</span>
-                    <span className="text-muted-foreground">Apartamento</span><span className="text-right font-medium">{state.apartmentNumber}</span>
-                    {state.featuredAmenity && (<><span className="text-muted-foreground">Amenidad</span><span className="text-right font-medium">{state.featuredAmenity}</span></>)}
-                    {cotizacionData?.bookingChannel && (<><span className="text-muted-foreground">Canal de reserva</span><span className="text-right font-medium">{cotizacionData.bookingChannel}</span></>)}
-                    <span className="text-muted-foreground">Check-in</span><span className="text-right font-medium">{cotizacionData?.checkInDate} · {state.checkInTime}</span>
-                    <span className="text-muted-foreground">Check-out</span><span className="text-right font-medium">{cotizacionData?.checkOutDate} · {state.checkOutTime}</span>
-                    <span className="text-muted-foreground">Noches</span><span className="text-right font-medium">{nights}</span>
-                    <span className="text-muted-foreground">Huéspedes</span><span className="text-right font-medium">{state.guests}</span>
-                  </div>
-                  <div className="border-t pt-3 space-y-1 text-sm">
-                    <div className="flex justify-between"><span>Hospedaje ({nights} × ${formatCOP(nightlyRate)})</span><span>${formatCOP(hospedajeTotal)}</span></div>
-                    {cleaningFee > 0 && <div className="flex justify-between"><span>Aseo de check-out</span><span>${formatCOP(cleaningFee)}</span></div>}
-                    {registrationFee > 0 && <div className="flex justify-between"><span>Registro del edificio</span><span>${formatCOP(registrationFee)}</span></div>}
-                    <div className="flex justify-between font-semibold text-base pt-2 border-t"><span>Total</span><span>${formatCOP(total)}</span></div>
-                  </div>
-                  <div className="border-t pt-3 space-y-1 text-sm">
-                    <div className="flex justify-between"><span>Anticipo mínimo ({depositPercent}%)</span><span>${formatCOP(depositAmount)}</span></div>
-                    <div className="flex justify-between"><span>Saldo restante</span><span>${formatCOP(remainingBalance)}</span></div>
-                  </div>
-                  <div className="border-t pt-3 space-y-2 text-sm">
-                    <p className="font-medium">💳 Datos para pago</p>
-                    <div>
-                      <p>👤 Claudia Moreno Velosa</p>
-                      <p className="text-muted-foreground">🏦 Bancolombia · Ahorros: 20444432854</p>
-                      <p className="text-muted-foreground">📲 Nequi: 304 673 6241</p>
-                      <p className="text-muted-foreground">🏦 Davivienda: 488 446 486 604 (ahorros)</p>
-                      <p className="text-muted-foreground">🔑 Llave Bancolombia: @claudia8523</p>
-                    </div>
-                    <div>
-                      <p>👤 Roberto Carlos Ruiz Gómez</p>
-                      <p className="text-muted-foreground">🏦 BBVA · Ahorros: 0142274059</p>
-                    </div>
-                    <p className="text-muted-foreground">💳✨ Hazme saber si requieres el link para pago con tarjeta de crédito.</p>
-                  </div>
-                  {state.notes && <p className="text-sm text-muted-foreground border-t pt-3">{state.notes}</p>}
-                  <div className="border-t pt-3 text-sm">
-                    <p>{state.hostName}</p>
-                    <p className="text-muted-foreground">77Rentals · {state.hostPhone}</p>
-                    {state.coHostName && (
-                      <p className="text-muted-foreground">
-                        🤝 Co-anfitrión: {state.coHostName}{state.coHostPhone ? ` - ${state.coHostPhone}` : ''}
-                      </p>
-                    )}
-                  </div>
-                </div>
+                <pre className="whitespace-pre-wrap font-sans text-sm">{previewText}</pre>
               ) : (
                 <p className="text-sm text-muted-foreground">Completa el formulario para ver la vista previa.</p>
               )}
@@ -654,15 +691,12 @@ export default function Cotizacion() {
 
           <div className="flex gap-3 print:hidden">
             <Button className="flex-1" onClick={handleCopy} disabled={!canGenerate}>
-              <Copy className="h-4 w-4 mr-2" /> Copiar para WhatsApp
+              <Copy className="h-4 w-4 mr-2" /> Copiar para correo
             </Button>
             <Button variant="outline" className="flex-1" onClick={handlePrint} disabled={!canGenerate}>
               <Printer className="h-4 w-4 mr-2" /> Descargar / Imprimir PDF
             </Button>
           </div>
-          <Button variant="secondary" className="w-full print:hidden" onClick={handleConfirmReserva} disabled={!canGenerate}>
-            Confirmar reserva <ArrowRight className="h-4 w-4 ml-2" />
-          </Button>
         </div>
       </div>
     </div>
