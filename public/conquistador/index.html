@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nuevo Conquistador · Welcome Guide · 77Rentals</title>
+<link rel="icon" type="image/svg+xml" href="../favicon.svg?v=2">
+<link rel="alternate icon" type="image/x-icon" href="../favicon.ico?v=2">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --purple:#1C7A8C;
+  --purple-deep:#123A52;
+  --purple-dark:#101A33;
+  --gold:#F2823C;
+  --gold-soft:#F6C89A;
+  --cream:#FBF7F0;
+  --ink:#1B2430;
+  --sea:#2AA3B4;
+  --coral:#E0573A;
+  --white:#FFFFFF;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:'Outfit',sans-serif;
+  background:var(--cream);
+  color:var(--ink);
+  line-height:1.6;
+  overflow-x:hidden;
+}
+h1,h2,h3,.display{font-family:'Cormorant Garamond',serif;}
+
+/* ───── Passcode gate ───── */
+.site{display:none;}
+.gate{
+  min-height:100svh;display:flex;align-items:center;justify-content:center;
+  text-align:center;padding:24px;
+  background:linear-gradient(165deg,#101A33 0%,#123A52 30%,#1C7A8C 58%,#2AA3B4 80%,#F2823C 100%);
+  color:var(--cream);
+  position:relative;overflow:hidden;
+}
+.bf-enter{position:absolute;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+.bf-fly{position:absolute;left:-14vw;opacity:0;animation:glideAcross linear forwards;}
+.bf-fly svg{width:100%;height:100%;}
+@keyframes glideAcross{
+  0%{transform:translate(0,0) rotate(-2deg);opacity:0;}
+  8%{opacity:.8;}
+  50%{transform:translate(60vw,-6vh) rotate(2deg);}
+  92%{opacity:.8;}
+  100%{transform:translate(128vw,3vh) rotate(-1deg);opacity:0;}
+}
+.gate-card{max-width:380px;width:100%;position:relative;z-index:1;}
+.gate-eyebrow{letter-spacing:.35em;font-size:.72rem;font-weight:600;color:var(--gold-soft);text-transform:uppercase;margin-bottom:10px;}
+.gate-title{font-size:clamp(2.2rem,8vw,3.1rem);font-weight:600;margin-bottom:14px;}
+.gate-title em{font-style:italic;color:var(--gold-soft);}
+.gate-sub{font-weight:300;font-size:.95rem;color:rgba(251,247,240,.92);margin-bottom:26px;}
+.gate-input{
+  width:100%;padding:14px 18px;border-radius:999px;border:1px solid rgba(246,200,154,.5);
+  background:rgba(16,26,51,.3);color:var(--cream);font-family:'Outfit';font-size:1rem;
+  text-align:center;letter-spacing:.2em;outline:none;margin-bottom:14px;
+}
+.gate-input::placeholder{color:rgba(251,247,240,.5);}
+.gate-input:focus{border-color:var(--gold);}
+.gate-btn{
+  width:100%;padding:14px 18px;border-radius:999px;border:none;cursor:pointer;
+  background:var(--gold);color:var(--purple-dark);font-family:'Outfit';font-weight:700;
+  font-size:.95rem;letter-spacing:.08em;transition:background .2s;
+}
+.gate-btn:hover{background:var(--gold-soft);}
+.gate-error{margin-top:14px;font-size:.85rem;color:#F6C89A;opacity:0;transition:opacity .2s;}
+.gate-error.show{opacity:1;}
+
+/* ───── Top bar ───── */
+.topbar{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 24px;
+  background:rgba(16,26,51,.85);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+}
+.brand{display:flex;align-items:center;gap:10px;color:var(--gold-soft);}
+.brand svg{width:30px;height:30px;}
+.brand-name{font-weight:600;letter-spacing:.14em;font-size:.8rem;color:var(--cream);}
+.brand-name span{color:var(--gold);}
+.lang-toggle{
+  display:flex;border:1px solid rgba(246,200,154,.5);border-radius:999px;overflow:hidden;
+}
+.lang-toggle button{
+  background:transparent;border:none;color:var(--cream);
+  padding:7px 16px;font-family:'Outfit';font-size:.78rem;font-weight:600;
+  letter-spacing:.08em;cursor:pointer;transition:all .25s;
+}
+.lang-toggle button.active{background:var(--gold);color:var(--purple-dark);}
+
+/* ───── Hero ───── */
+.hero{
+  min-height:100svh;
+  display:flex;flex-direction:column;justify-content:center;align-items:center;
+  text-align:center;position:relative;
+  background:linear-gradient(165deg,#101A33 0%,#123A52 30%,#1C7A8C 58%,#2AA3B4 80%,#F2823C 100%);
+  color:var(--cream);
+  padding:110px 24px 80px;
+  overflow:hidden;
+}
+.hero::after{
+  content:"";position:absolute;left:0;right:0;bottom:0;height:140px;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 140' preserveAspectRatio='none'%3E%3Cpath d='M0,80 C240,140 480,20 720,60 C960,100 1200,40 1440,90 L1440,140 L0,140 Z' fill='%23FBF7F0'/%3E%3C/svg%3E") no-repeat bottom/cover;
+}
+.hero-eyebrow{
+  letter-spacing:.35em;font-size:.72rem;font-weight:600;color:var(--gold-soft);
+  text-transform:uppercase;margin-bottom:18px;
+}
+.hero h1{
+  font-size:clamp(2.7rem,9vw,5.6rem);
+  font-weight:600;line-height:1.05;letter-spacing:.01em;
+}
+.hero h1 em{font-style:italic;color:var(--gold-soft);}
+.hero-sub{
+  max-width:560px;margin:22px auto 0;font-weight:300;
+  font-size:clamp(1rem,2.4vw,1.15rem);color:rgba(251,247,240,.92);
+}
+.hero-badges{display:flex;gap:14px;margin-top:34px;flex-wrap:wrap;justify-content:center;}
+.badge{
+  border:1px solid rgba(246,200,154,.45);border-radius:999px;
+  padding:8px 18px;font-size:.78rem;letter-spacing:.06em;color:var(--gold-soft);
+  background:rgba(16,26,51,.3);
+}
+.butterflies{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
+.bf{position:absolute;opacity:.6;animation:float 14s ease-in-out infinite;}
+.bf svg{width:100%;height:100%;}
+@keyframes float{
+  0%,100%{transform:translate(0,0) rotate(-1deg);}
+  25%{transform:translate(30px,-14px) rotate(2deg);}
+  50%{transform:translate(-10px,-24px) rotate(-2deg);}
+  75%{transform:translate(22px,-10px) rotate(1deg);}
+}
+@media (prefers-reduced-motion:reduce){.bf{animation:none;} *{scroll-behavior:auto!important;}}
+.scroll-hint{
+  position:absolute;bottom:26px;left:50%;transform:translateX(-50%);
+  font-size:.7rem;letter-spacing:.3em;text-transform:uppercase;color:rgba(251,247,240,.7);
+  z-index:2;
+}
+
+/* ───── Sections ───── */
+section{padding:80px 24px;max-width:1080px;margin:0 auto;}
+.sec-eyebrow{
+  letter-spacing:.3em;font-size:.7rem;font-weight:600;color:var(--purple);
+  text-transform:uppercase;display:block;margin-bottom:10px;
+}
+.sec-title{font-size:clamp(2rem,5vw,3rem);font-weight:600;line-height:1.1;margin-bottom:14px;}
+.sec-title em{font-style:italic;color:var(--purple);}
+.sec-lead{max-width:640px;font-weight:300;color:#3D5560;margin-bottom:40px;}
+
+/* Countdown */
+.count-wrap{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px;
+}
+.count-card{
+  background:var(--white);border-radius:22px;padding:30px 26px;
+  border:1px solid #efe6db;
+  box-shadow:0 18px 40px -28px rgba(16,26,51,.35);
+}
+.count-card h3{font-size:1.5rem;color:var(--purple-deep);margin-bottom:4px;}
+.count-time{font-family:'Outfit';font-size:2.1rem;font-weight:700;color:var(--ink);}
+.count-note{font-size:.85rem;color:#6B8088;margin-top:8px;}
+.count-card.gold{background:linear-gradient(140deg,var(--purple-deep),var(--purple));color:var(--cream);border:none;}
+.count-card.gold h3{color:var(--gold-soft);}
+.count-card.gold .count-time{color:var(--white);}
+.count-card.gold .count-note{color:rgba(251,247,240,.8);}
+.steps{margin-top:36px;display:grid;gap:14px;}
+.step{
+  display:flex;gap:16px;background:var(--white);border-radius:16px;padding:18px 20px;
+  border:1px solid #efe6db;align-items:flex-start;
+}
+.step-num{
+  flex:0 0 34px;height:34px;border-radius:50%;
+  background:var(--gold);color:var(--purple-dark);
+  display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:.9rem;
+}
+.step strong{display:block;color:var(--purple-deep);}
+.step p{font-size:.92rem;color:#3D5560;}
+
+/* Page-wide floating butterflies (fixed, behind content) */
+.bf-page{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+.bf-page .bf{opacity:.3;}
+section,header,footer,.topbar{position:relative;z-index:1;}
+
+/* Gallery */
+.gal-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;}
+.amen-list{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px;}
+.amen-chip{
+  border:1px solid var(--purple);border-radius:999px;padding:9px 20px;
+  font-family:'Outfit';font-weight:600;font-size:.82rem;color:var(--purple);
+  background:transparent;
+}
+.amen-fee{
+  display:flex;gap:14px;align-items:flex-start;
+  border:1px solid var(--purple);border-radius:16px;
+  padding:18px 20px;margin:24px 0 28px;background:rgba(28,122,140,.08);
+}
+.amen-fee .amen-fee-icon{font-size:1.6rem;line-height:1;}
+.amen-fee p{margin:0;font-size:.92rem;line-height:1.5;}
+.amen-hours{border:1px solid #efe6db;border-radius:16px;overflow:hidden;margin-bottom:24px;}
+.amen-hour-row{display:flex;align-items:center;gap:12px;padding:12px 18px;font-size:.88rem;}
+.amen-hour-row:not(:last-child){border-bottom:1px solid #efe6db;}
+.amen-hour-row span:first-child{font-size:1.2rem;flex-shrink:0;}
+.amen-hour-row span:nth-child(2){flex:1;font-weight:600;color:var(--purple-deep);}
+.amen-hour-row span:last-child{color:var(--gold);font-weight:700;white-space:nowrap;}
+.gal-item{
+  border-radius:18px;overflow:hidden;cursor:zoom-in;position:relative;
+  aspect-ratio:4/3;background:#cfe6e6;
+}
+.gal-item img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .35s;}
+.gal-item:hover img{transform:scale(1.04);}
+.gal-item-label{
+  position:absolute;bottom:0;left:0;right:0;
+  background:linear-gradient(transparent,rgba(16,26,51,.75));
+  color:var(--cream);font-size:.82rem;font-weight:600;padding:22px 14px 10px;
+  opacity:0;transition:opacity .25s;
+}
+.gal-item:hover .gal-item-label{opacity:1;}
+.gal-ph{
+  aspect-ratio:4/3;border-radius:18px;
+  background:linear-gradient(140deg,#dff0ee,#cfe6e6);
+  border:2px dashed #7cc4c2;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
+  color:var(--purple);font-size:.82rem;font-weight:500;text-align:center;padding:14px;
+}
+.gal-ph svg{width:34px;height:34px;opacity:.7;}
+.gal-drive{
+  margin-top:22px;display:flex;align-items:center;justify-content:center;
+}
+.gal-drive a{
+  display:inline-flex;align-items:center;gap:10px;
+  background:var(--purple);color:var(--cream);
+  padding:13px 28px;border-radius:999px;text-decoration:none;
+  font-weight:600;font-size:.88rem;letter-spacing:.04em;
+  transition:background .2s,transform .2s;
+}
+.gal-drive a:hover{background:var(--purple-deep);transform:translateY(-2px);}
+/* Lightbox */
+.lb{
+  display:none;position:fixed;inset:0;z-index:1000;
+  background:rgba(10,16,30,.92);align-items:center;justify-content:center;
+  padding:16px;
+}
+.lb.open{display:flex;}
+.lb img{max-width:100%;max-height:90svh;border-radius:14px;object-fit:contain;
+  box-shadow:0 30px 80px rgba(0,0,0,.6);}
+.lb-close{
+  position:fixed;top:18px;right:22px;color:var(--cream);
+  font-size:2rem;cursor:pointer;line-height:1;background:none;border:none;
+  z-index:1001;opacity:.8;transition:opacity .2s;
+}
+.lb-close:hover{opacity:1;}
+
+/* Map */
+.map-card{
+  background:var(--white);border-radius:26px;padding:22px;
+  border:1px solid #efe6db;box-shadow:0 22px 48px -32px rgba(16,26,51,.4);
+}
+.map-embed{width:100%;height:420px;border:0;border-radius:16px;display:block;}
+.map-links{display:flex;gap:12px;flex-wrap:wrap;margin-top:16px;}
+.map-link{
+  display:inline-flex;align-items:center;gap:8px;text-decoration:none;
+  background:var(--cream);border:1px solid #efe6db;border-radius:999px;
+  padding:9px 18px;font-size:.85rem;font-weight:600;color:var(--purple-deep);
+  transition:background .2s;
+}
+.map-link:hover{background:#e3f0f0;}
+
+/* Places cards */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;}
+.place{
+  background:var(--white);border-radius:20px;padding:0 0 24px;
+  border:1px solid #efe6db;position:relative;overflow:hidden;
+  transition:transform .25s, box-shadow .25s;
+}
+.place.featured{border:2px solid var(--gold);box-shadow:0 24px 44px -28px rgba(242,130,60,.45);}
+.place:hover{transform:translateY(-4px);box-shadow:0 24px 44px -28px rgba(16,26,51,.4);}
+.place-img{width:100%;height:170px;object-fit:cover;display:block;background:#dff0ee;}
+.place-ph{
+  width:100%;height:170px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
+  background:linear-gradient(140deg,#dff0ee,#cfe6e6);color:var(--purple);font-size:.78rem;font-weight:500;
+}
+.place-body{padding:20px 24px 0;}
+.place-tag{
+  display:inline-block;font-size:.68rem;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;border-radius:999px;padding:4px 12px;margin-bottom:12px;color:var(--white);
+}
+.tag-food{background:var(--coral);}
+.tag-fun{background:var(--purple);}
+.tag-culture{background:var(--purple-dark);}
+.tag-partner{background:var(--gold);color:var(--purple-dark);}
+.place h3{font-size:1.45rem;color:var(--purple-deep);margin-bottom:6px;}
+.place-meta{font-size:.78rem;font-weight:600;color:var(--gold);letter-spacing:.05em;margin-bottom:10px;}
+.place p{font-size:.92rem;color:#3D5560;}
+.place-links{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;}
+.place-link{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:.75rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  border:1px solid var(--purple);border-radius:999px;padding:6px 14px;
+  color:var(--purple);text-decoration:none;transition:background .2s,color .2s;
+}
+.place-link:hover{background:var(--purple);color:var(--cream);}
+
+/* Hosts */
+.hosts{
+  background:linear-gradient(150deg,var(--purple-dark),var(--purple-deep));
+  border-radius:30px;color:var(--cream);padding:50px 40px;
+  display:grid;grid-template-columns:200px 1fr;gap:40px;align-items:start;
+}
+.host-photo{
+  width:200px;height:200px;border-radius:50%;
+  background:linear-gradient(140deg,#123a52,#1c7a8c);
+  border:3px solid rgba(246,200,154,.6);
+  overflow:hidden;flex-shrink:0;
+}
+.hosts h2{font-size:2.3rem;color:var(--gold-soft);margin-bottom:12px;}
+.hosts p{font-weight:300;color:rgba(251,247,240,.92);margin-bottom:14px;}
+.host-stats{display:flex;gap:22px;flex-wrap:wrap;margin-top:8px;}
+.hstat{font-size:.8rem;letter-spacing:.05em;}
+.hstat b{display:block;font-size:1.25rem;color:var(--gold);font-family:'Cormorant Garamond';}
+.host-sign{font-family:'Cormorant Garamond';font-style:italic;font-size:1.6rem;color:var(--gold-soft);margin-top:10px;}
+
+/* Amenities */
+.amen{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;}
+.amen div{
+  background:var(--white);border:1px solid #efe6db;border-radius:16px;
+  padding:20px 16px;text-align:center;font-size:.85rem;font-weight:500;color:var(--purple-deep);
+}
+.amen div span{display:block;font-size:1.6rem;margin-bottom:6px;}
+.rules-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-bottom:24px;}
+.rule-card{
+  background:var(--white);border:1px solid #efe6db;border-radius:16px;
+  padding:18px 18px;font-size:.85rem;font-weight:500;color:var(--purple-deep);
+  display:flex;gap:12px;align-items:flex-start;line-height:1.4;
+}
+.rule-card span.rc-icon{font-size:1.4rem;line-height:1;flex-shrink:0;}
+.wifi-box{
+  margin-top:22px;background:var(--gold-soft);border-radius:18px;padding:22px 26px;
+  display:flex;gap:30px;flex-wrap:wrap;align-items:center;
+}
+.wifi-box b{color:var(--purple-dark);font-size:1.05rem;}
+.wifi-box small{display:block;letter-spacing:.15em;text-transform:uppercase;font-size:.65rem;color:#8a4a1f;font-weight:700;}
+
+/* Emergency */
+.sos{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px;}
+.sos a{
+  text-decoration:none;background:var(--white);border-radius:18px;padding:22px;
+  border:1px solid #efe6db;display:flex;align-items:center;gap:16px;
+  color:var(--ink);transition:transform .2s, box-shadow .2s;
+}
+.sos a:hover{transform:translateY(-3px);box-shadow:0 18px 36px -26px rgba(16,26,51,.4);}
+.sos-icon{
+  flex:0 0 48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;
+  font-size:1.3rem;color:var(--white);
+}
+.sos strong{display:block;color:var(--purple-deep);}
+.sos small{color:#6B8088;}
+.sos .num{font-weight:700;color:var(--sea);}
+
+/* Video */
+.video-wrap{
+  border-radius:26px;overflow:hidden;
+  box-shadow:0 30px 60px -30px rgba(16,26,51,.55);
+  background:#101a2e;line-height:0;
+}
+.video-wrap video{width:100%;max-height:72vh;display:block;}
+.video-ph{
+  border-radius:26px;padding:60px 24px;text-align:center;
+  background:linear-gradient(140deg,#dff0ee,#cfe6e6);
+  border:2px dashed #7cc4c2;color:var(--purple);font-weight:500;
+}
+
+/* Weather */
+.weather{
+  margin-top:26px;
+  background:linear-gradient(135deg,#2AA3B4,#2aa3b4);
+  border-radius:22px;padding:26px 28px;color:var(--cream);
+  display:flex;gap:26px;align-items:center;flex-wrap:wrap;
+  box-shadow:0 22px 44px -30px rgba(42,163,180,.7);
+}
+.weather-now{display:flex;align-items:center;gap:14px;}
+.weather-icon{font-size:3rem;line-height:1;}
+.weather-temp{font-family:'Cormorant Garamond';font-size:3rem;font-weight:600;line-height:1;}
+.weather-desc{font-size:.85rem;opacity:.9;}
+.weather-days{display:flex;gap:18px;margin-left:auto;flex-wrap:wrap;}
+.wday{text-align:center;font-size:.78rem;}
+.wday b{display:block;font-size:1.05rem;}
+.wday span{font-size:1.4rem;display:block;}
+.weather-loading{font-size:.9rem;opacity:.85;}
+@media(max-width:640px){.weather-days{margin-left:0;}}
+
+/* Footer */
+footer{
+  background:var(--purple-dark);color:rgba(251,247,240,.8);
+  text-align:center;padding:50px 24px 40px;margin-top:40px;
+}
+footer .display{font-size:1.9rem;color:var(--gold-soft);font-style:italic;margin-bottom:10px;}
+footer a{color:var(--gold);text-decoration:none;}
+.foot-links{display:flex;gap:18px;justify-content:center;margin-top:16px;flex-wrap:wrap;font-size:.85rem;}
+
+@media(max-width:720px){
+  .hosts{grid-template-columns:1fr;text-align:center;justify-items:center;}
+  section{padding:60px 18px;}
+}
+</style>
+</head>
+<body>
+
+<!-- PASSCODE GATE -->
+<div class="gate" id="gate">
+  <div class="bf-enter" id="bf-enter"></div>
+  <div class="gate-card">
+    <div class="gate-eyebrow" data-es="Bienvenido a" data-en="Welcome to">Bienvenido a</div>
+    <h1 class="gate-title">Nuevo <em>Conquistador</em></h1>
+    <p class="gate-sub" data-es="Ingresa el código que te enviamos para ver tu guía de bienvenida." data-en="Enter the code we sent you to view your welcome guide.">Ingresa el código que te enviamos para ver tu guía de bienvenida.</p>
+    <input type="text" id="gate-name" class="gate-input" autocomplete="off" spellcheck="false" data-es-placeholder="Tu nombre" data-en-placeholder="Your name" placeholder="Tu nombre">
+    <input type="text" id="gate-input" class="gate-input" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="••••••">
+    <button class="gate-btn" onclick="checkGate()" data-es="Ingresar" data-en="Enter">Ingresar</button>
+    <p class="gate-error" id="gate-error" data-es="Código incorrecto, intenta de nuevo." data-en="Incorrect code, please try again.">Código incorrecto, intenta de nuevo.</p>
+  </div>
+</div>
+
+<div class="site" id="site">
+
+<div class="topbar">
+  <div class="brand">
+    <svg viewBox="0 0 40 40" fill="none"><path d="M6 20 L20 8 L34 20" stroke="#F2823C" stroke-width="3" stroke-linecap="round"/><rect x="11" y="20" width="18" height="13" rx="2" fill="#F2823C"/><rect x="17" y="25" width="6" height="8" rx="1" fill="#101A33"/></svg>
+    <div class="brand-name">77<span>RENTALS</span> · NUEVO CONQUISTADOR</div>
+  </div>
+  <div class="lang-toggle">
+    <button id="btn-es" class="active" onclick="setLang('es')">ES</button>
+    <button id="btn-en" onclick="setLang('en')">EN</button>
+  </div>
+</div>
+
+<!-- PAGE-WIDE BUTTERFLIES (fixed, behind all content) -->
+<div class="bf-page" id="bf-page"></div>
+
+<!-- LIGHTBOX -->
+<div class="lb" id="lightbox" onclick="closeLB()">
+  <button class="lb-close" onclick="closeLB()">✕</button>
+  <img id="lb-img" src="" alt="">
+</div>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="butterflies" id="butterflies"></div>
+  <div class="hero-eyebrow" data-es="El Laguito · Cartagena de Indias · Colombia" data-en="El Laguito · Cartagena de Indias · Colombia">El Laguito · Cartagena de Indias · Colombia</div>
+  <h1><span data-es="Bienvenido a" data-en="Welcome to">Bienvenido a</span> <em>Nuevo Conquistador</em><span id="hero-name"></span></h1>
+  <p class="hero-sub" data-es="Un refugio frente al mar en el corazón de El Laguito, donde la brisa del Caribe y la magia de Cartagena se encuentran a pocos pasos de tu puerta." data-en="A seaside retreat in the heart of El Laguito, where the Caribbean breeze and the magic of Cartagena meet just steps from your door.">Un refugio frente al mar en el corazón de El Laguito, donde la brisa del Caribe y la magia de Cartagena se encuentran a pocos pasos de tu puerta.</p>
+  <div class="hero-badges">
+    <span class="badge" data-es="Suite en El Laguito" data-en="El Laguito suite">Suite en El Laguito</span>
+    <span class="badge">Superhost · 77Rentals</span>
+    <span class="badge" data-es="Edificio Nuevo Conquistador" data-en="Nuevo Conquistador Building">Edificio Nuevo Conquistador</span>
+  </div>
+  <div class="scroll-hint" data-es="Desliza para explorar" data-en="Scroll to explore">Desliza para explorar</div>
+</header>
+
+<!-- DESCRIPTION -->
+<section id="description">
+  <span class="sec-eyebrow" data-es="Bienvenida" data-en="Welcome">Bienvenida</span>
+  <h2 class="sec-title"><span data-es="Tu refugio en" data-en="Your retreat in">Tu refugio en</span> <em>El Laguito</em></h2>
+  <p class="sec-lead" data-es="[FALTA: texto de bienvenida — ver formulario, sección 1] Bienvenido a tu apartamento en el Edificio Nuevo Conquistador, en El Laguito, una de las zonas más exclusivas de Cartagena, a pasos del mar Caribe y muy cerca del Centro Histórico." data-en="[MISSING: welcome text — see form, section 1] Welcome to your apartment in the Nuevo Conquistador Building, in El Laguito, one of Cartagena's most exclusive areas, steps from the Caribbean Sea and close to the Historic Center.">[FALTA: texto de bienvenida — ver formulario, sección 1] Bienvenido a tu apartamento en el Edificio Nuevo Conquistador, en El Laguito, una de las zonas más exclusivas de Cartagena, a pasos del mar Caribe y muy cerca del Centro Histórico.</p>
+</section>
+
+<!-- CHECK-IN -->
+<section id="checkin">
+  <span class="sec-eyebrow" data-es="Tu llegada" data-en="Your arrival">Tu llegada</span>
+  <h2 class="sec-title"><span data-es="Check-in y" data-en="Check-in &">Check-in y</span> <em>check-out</em></h2>
+  <p class="sec-lead" data-es="[FALTA: distancia/tiempo y costo aproximado de taxi desde el Aeropuerto Rafael Núñez hasta El Laguito]" data-en="[MISSING: distance/time and approx. taxi fare from Rafael Núñez Airport to El Laguito]">[FALTA: distancia/tiempo y costo aproximado de taxi desde el Aeropuerto Rafael Núñez hasta El Laguito]</p>
+
+  <div class="count-wrap">
+    <div class="count-card gold">
+      <h3>Check-in</h3>
+      <div class="count-time">[FALTA]</div>
+      <p class="count-note" data-es="Hora de check-in" data-en="Check-in time">Hora de check-in</p>
+    </div>
+    <div class="count-card">
+      <h3>Check-out</h3>
+      <div class="count-time">[FALTA]</div>
+      <p class="count-note" data-es="Hora de check-out" data-en="Check-out time">Hora de check-out</p>
+    </div>
+    <div class="count-card">
+      <h3 data-es="Hora local" data-en="Local time">Hora local</h3>
+      <div class="count-time" id="local-clock">--:--</div>
+      <p class="count-note">Cartagena (GMT-5)</p>
+    </div>
+  </div>
+
+  <div class="steps">
+    <div class="step"><div class="step-num">1</div><div><strong data-es="Registro" data-en="Registration">Registro</strong><p data-es="Al llegar al Edificio Nuevo Conquistador, dirígete a [FALTA: recepción / portería]." data-en="When you arrive at the Nuevo Conquistador Building, head to [MISSING: reception / front desk].">Al llegar al Edificio Nuevo Conquistador, dirígete a [FALTA: recepción / portería].</p></div></div>
+    <div class="step"><div class="step-num">2</div><div><strong data-es="Identificación" data-en="Identification">Identificación</strong><p data-es="Presenta los documentos de identidad de todos los huéspedes y tu confirmación de reserva para el [FALTA: número de apto]." data-en="Present ID for all guests along with your booking confirmation for [MISSING: apartment number].">Presenta los documentos de identidad de todos los huéspedes y tu confirmación de reserva para el [FALTA: número de apto].</p></div></div>
+    <div class="step"><div class="step-num">3</div><div><strong data-es="Acceso" data-en="Access">Acceso</strong><p data-es="[FALTA: cómo se entrega el acceso — clave digital por WhatsApp, llave física, portero, etc.]" data-en="[MISSING: how access is provided — digital code via WhatsApp, physical key, doorman, etc.]">[FALTA: cómo se entrega el acceso — clave digital por WhatsApp, llave física, portero, etc.]</p></div></div>
+    <div class="step"><div class="step-num">4</div><div><strong data-es="WiFi" data-en="WiFi">WiFi</strong><p data-es="Red: [FALTA] · Clave: [FALTA]" data-en="Network: [MISSING] · Password: [MISSING]">Red: [FALTA] · Clave: [FALTA]</p></div></div>
+  </div>
+  <div class="weather" id="weather">
+    <div class="weather-loading" data-es="Cargando el clima de Cartagena..." data-en="Loading Cartagena weather...">Cargando el clima de Cartagena...</div>
+  </div>
+</section>
+
+<!-- VIDEO TOUR -->
+<section id="tour">
+  <span class="sec-eyebrow" data-es="Recorrido en video" data-en="Video tour">Recorrido en video</span>
+  <h2 class="sec-title"><span data-es="Camina por tu" data-en="Walk through your">Camina por tu</span> <em>apartamento</em></h2>
+  <p class="sec-lead" data-es="[FALTA: breve descripción del recorrido en video]" data-en="[MISSING: short description of the video walkthrough]">[FALTA: breve descripción del recorrido en video]</p>
+  <div class="video-ph" data-es="Video pendiente — lo agregaremos cuando Maria Teresa nos lo comparta" data-en="Video pending — we'll add it once Maria Teresa shares it">Video pendiente — lo agregaremos cuando Maria Teresa nos lo comparta</div>
+</section>
+
+<!-- GALLERY -->
+<section id="gallery">
+  <span class="sec-eyebrow" data-es="Galería" data-en="Gallery">Galería</span>
+  <h2 class="sec-title"><span data-es="Imágenes de tu" data-en="Glimpses of your">Imágenes de tu</span> <em data-es="estadía" data-en="stay">estadía</em></h2>
+  <div class="gal-grid" id="gal-grid-prop"></div>
+  <div class="gal-drive">
+    <a href="#" id="drive-link-prop" target="_blank" rel="noopener">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      <span data-es="Haz clic para ver todas las fotos" data-en="Click to see all pictures">Click to see all pictures</span>
+    </a>
+  </div>
+</section>
+
+<!-- BUILDING AMENITIES -->
+<section id="amenities-building">
+  <span class="sec-eyebrow" data-es="Amenidades" data-en="Amenities">Amenidades</span>
+  <h2 class="sec-title"><span data-es="Amenidades del" data-en="Building">Amenidades del</span> <em data-es="edificio" data-en="amenities">edificio</em></h2>
+  <div class="amen-list" id="amen-chip-list">
+    <span class="amen-chip">[FALTA: lista de amenidades — ver formulario]</span>
+  </div>
+  <div class="amen-fee">
+    <span class="amen-fee-icon">🎟️</span>
+    <p data-es="[FALTA: ¿hay costo por manilla/uso de amenidades? indícalo aquí, o bórralo si no aplica]" data-en="[MISSING: is there a wristband/amenity-use fee? note it here, or remove if not applicable]">[FALTA: ¿hay costo por manilla/uso de amenidades? indícalo aquí, o bórralo si no aplica]</p>
+  </div>
+  <div class="amen-hours" id="amen-hours-list">
+    <div class="amen-hour-row"><span>🏊</span><span data-es="Piscina" data-en="Pool">Piscina</span><span>[FALTA]</span></div>
+    <div class="amen-hour-row"><span>🏋️</span><span data-es="Gimnasio" data-en="Gym">Gimnasio</span><span>[FALTA]</span></div>
+  </div>
+  <div class="gal-grid" id="gal-grid-amen"></div>
+</section>
+
+<!-- MAP -->
+<section id="map">
+  <span class="sec-eyebrow" data-es="Tu mapa de El Laguito" data-en="Your El Laguito map">Tu mapa de El Laguito</span>
+  <h2 class="sec-title"><span data-es="Todo está" data-en="Everything is">Todo está</span> <em data-es="cerca" data-en="close by">cerca</em></h2>
+  <div class="map-card">
+    <iframe class="map-embed" src="https://www.google.com/maps?q=El+Laguito,+Cartagena,+Colombia&z=15&output=embed" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+    <div class="map-links">
+      <a class="map-link" href="https://www.google.com/maps?q=El+Laguito,+Cartagena" target="_blank" rel="noopener">🏠 <span data-es="Nuevo Conquistador · El Laguito" data-en="Nuevo Conquistador · El Laguito">Nuevo Conquistador · El Laguito</span></a>
+      <a class="map-link" href="https://www.google.com/maps/dir/?api=1&origin=10.391,-75.556&destination=10.4424,-75.513" target="_blank" rel="noopener">✈️ <span data-es="Aeropuerto Rafael Núñez" data-en="Rafael Núñez Airport">Aeropuerto Rafael Núñez</span></a>
+      <a class="map-link" href="https://vivalavidactg.com" target="_blank" rel="noopener">🍣 <span>Viva La Vida Cartagena</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- PLACES -->
+<section id="places">
+  <span class="sec-eyebrow" data-es="Recomendaciones de tus anfitriones" data-en="Your hosts' picks">Recomendaciones de tus anfitriones</span>
+  <h2 class="sec-title"><span data-es="Cosas por" data-en="Things to">Cosas por</span> <em data-es="hacer y ver" data-en="do and see">hacer y ver</em></h2>
+  <div class="cards" id="places-grid">
+    <div class="place featured">
+      <div class="place-ph" data-es="Foto pendiente — envíanos una imagen del restaurante" data-en="Photo pending — send us a picture of the venue">🍣 <span>Foto pendiente — envíanos una imagen del restaurante</span></div>
+      <div class="place-body">
+      <span class="place-tag tag-partner" data-es="Restaurante aliado" data-en="Partner restaurant">Restaurante aliado</span>
+      <h3>Viva La Vida Cartagena</h3>
+      <div class="place-meta" data-es="ROOFTOP · JAPONÉS-FUSIÓN · GETSEMANÍ · ~10-15 MIN EN CARRO" data-en="ROOFTOP · JAPANESE-FUSION · GETSEMANÍ · ~10-15 MIN BY CAR">ROOFTOP · JAPONÉS-FUSIÓN · GETSEMANÍ · ~10-15 MIN EN CARRO</div>
+      <p data-es="Nuestro restaurante aliado. Una azotea elegante sobre el Centro de Convenciones en Getsemaní, con vista al mar Caribe y a la ciudad amurallada. Cocina japonesa de autor curada por el chef Félix Jiménez (2 Soles Repsol), barra de omakase, música en vivo y coctelería — perfecto para una cena especial o un atardecer inolvidable." data-en="Our partner restaurant. An elegant rooftop above the Convention Center in Getsemaní, with views of the Caribbean and the walled city. Chef-driven Japanese cuisine curated by Félix Jiménez (2 Repsol Suns), an omakase bar, live music, and cocktails — perfect for a special dinner or an unforgettable sunset.">Nuestro restaurante aliado. Una azotea elegante sobre el Centro de Convenciones en Getsemaní, con vista al mar Caribe y a la ciudad amurallada. Cocina japonesa de autor curada por el chef Félix Jiménez (2 Soles Repsol), barra de omakase, música en vivo y coctelería — perfecto para una cena especial o un atardecer inolvidable.</p>
+      <div class="place-links">
+        <a class="place-link" href="https://instagram.com/vivalavida.ctg" target="_blank" rel="noopener">📸 Instagram</a>
+        <a class="place-link" href="https://vivalavidactg.com" target="_blank" rel="noopener" data-es="🌐 Sitio web" data-en="🌐 Website">🌐 Sitio web</a>
+        <a class="place-link" href="https://wa.me/573105421014" target="_blank" rel="noopener" data-es="📅 Reservas" data-en="📅 Reservations">📅 Reservas</a>
+        <a class="place-link" href="https://www.google.com/maps/dir/?api=1&origin=10.391,-75.556&destination=Viva+La+Vida+Cartagena+Centro+de+Convenciones+Getsemani" target="_blank" rel="noopener" data-es="📍 Cómo llegar" data-en="📍 Directions">📍 Cómo llegar</a>
+      </div>
+      </div>
+    </div>
+    <div class="place">
+      <img class="place-img" src="https://upload.wikimedia.org/wikipedia/commons/a/ab/Cartagena_Old_City.JPG" alt="Centro Histórico" loading="lazy">
+      <div class="place-body">
+      <span class="place-tag tag-culture" data-es="Cultura y vida nocturna" data-en="Culture & nightlife">Cultura y vida nocturna</span>
+      <h3 data-es="Centro Histórico y Getsemaní" data-en="Historic Center & Getsemaní">Centro Histórico y Getsemaní</h3>
+      <div class="place-meta" data-es="~10-15 MIN EN CARRO" data-en="~10-15 MIN BY CAR">~10-15 MIN EN CARRO</div>
+      <p data-es="Calles coloniales llenas de color, plazas, arte urbano, bares y restaurantes. Ideal para caminar al atardecer por la muralla." data-en="Colorful colonial streets, plazas, street art, bars and restaurants. Perfect for a sunset walk along the city walls.">Calles coloniales llenas de color, plazas, arte urbano, bares y restaurantes. Ideal para caminar al atardecer por la muralla.</p>
+      <div class="place-links"><a class="place-link" href="https://www.google.com/maps/dir/?api=1&origin=10.391,-75.556&destination=10.4236,-75.5482" target="_blank" rel="noopener" data-es="📍 Cómo llegar" data-en="📍 Directions">📍 Cómo llegar</a></div>
+      </div>
+    </div>
+    <div class="place">
+      <img class="place-img" src="https://upload.wikimedia.org/wikipedia/commons/8/8c/Graffiti_in_Getseman%C3%AD%2C_Cartagena_01.jpg" alt="Getsemaní" loading="lazy">
+      <div class="place-body">
+      <span class="place-tag tag-culture" data-es="Arte y calles" data-en="Art & streets">Arte y calles</span>
+      <h3>Getsemaní</h3>
+      <div class="place-meta" data-es="~10 MIN EN CARRO" data-en="~10 MIN BY CAR">~10 MIN EN CARRO</div>
+      <p data-es="El barrio más vibrante de Cartagena: arte urbano, plazas llenas de música y la mejor vida nocturna de la ciudad." data-en="Cartagena's most vibrant neighborhood: street art, plazas full of music, and the city's best nightlife.">El barrio más vibrante de Cartagena: arte urbano, plazas llenas de música y la mejor vida nocturna de la ciudad.</p>
+      <div class="place-links"><a class="place-link" href="https://www.google.com/maps/dir/?api=1&origin=10.391,-75.556&destination=10.4207,-75.5468" target="_blank" rel="noopener" data-es="📍 Cómo llegar" data-en="📍 Directions">📍 Cómo llegar</a></div>
+      </div>
+    </div>
+    <div class="place">
+      <img class="place-img" src="https://upload.wikimedia.org/wikipedia/commons/0/04/Castillo_San_Felipe_de_Barajas%2C_Cartagena_04.jpg" alt="Castillo San Felipe de Barajas" loading="lazy">
+      <div class="place-body">
+      <span class="place-tag tag-fun" data-es="Historia" data-en="History">Historia</span>
+      <h3>Castillo San Felipe de Barajas</h3>
+      <div class="place-meta" data-es="~15 MIN EN CARRO" data-en="~15 MIN BY CAR">~15 MIN EN CARRO</div>
+      <p data-es="Fortaleza española del siglo XVII con vistas panorámicas de la ciudad. Uno de los símbolos más icónicos de Cartagena." data-en="A 17th-century Spanish fortress with panoramic city views. One of Cartagena's most iconic landmarks.">Fortaleza española del siglo XVII con vistas panorámicas de la ciudad. Uno de los símbolos más icónicos de Cartagena.</p>
+      <div class="place-links"><a class="place-link" href="https://www.google.com/maps/dir/?api=1&origin=10.391,-75.556&destination=10.4224,-75.5361" target="_blank" rel="noopener" data-es="📍 Cómo llegar" data-en="📍 Directions">📍 Cómo llegar</a></div>
+      </div>
+    </div>
+    <div class="place">
+      <img class="place-img" src="https://upload.wikimedia.org/wikipedia/commons/f/f9/Islas_el_Rosario_Cartagena_d_Indias%2C_Colombia.JPG" alt="Islas del Rosario" loading="lazy">
+      <div class="place-body">
+      <span class="place-tag tag-fun" data-es="Playa y paseo en barco" data-en="Beach & boat trip">Playa y paseo en barco</span>
+      <h3>Islas del Rosario</h3>
+      <div class="place-meta" data-es="LANCHAS DESDE BOCAGRANDE / EL LAGUITO" data-en="BOATS FROM BOCAGRANDE / EL LAGUITO">LANCHAS DESDE BOCAGRANDE / EL LAGUITO</div>
+      <p data-es="Un día completo recorriendo islas de aguas turquesa, con snorkel, clubes de playa y almuerzo de ceviche. Las lanchas salen cerca de tu edificio." data-en="A full day island-hopping through turquoise waters, with snorkeling, beach clubs, and a ceviche lunch. Boats depart close to your building.">Un día completo recorriendo islas de aguas turquesa, con snorkel, clubes de playa y almuerzo de ceviche. Las lanchas salen cerca de tu edificio.</p>
+      <div class="place-links"><a class="place-link" href="https://www.google.com/maps/dir/?api=1&origin=10.391,-75.556&destination=10.1833,-75.7833" target="_blank" rel="noopener" data-es="📍 Cómo llegar" data-en="📍 Directions">📍 Cómo llegar</a></div>
+      </div>
+    </div>
+    <div class="place">
+      <img class="place-img" src="https://upload.wikimedia.org/wikipedia/commons/4/4d/Playa_Bocagrande_1.JPG" alt="Playa de Bocagrande / El Laguito" loading="lazy">
+      <div class="place-body">
+      <span class="place-tag tag-food" data-es="Playa y comida" data-en="Beach & food">Playa y comida</span>
+      <h3 data-es="Playa de El Laguito / Bocagrande" data-en="El Laguito / Bocagrande beach">Playa de El Laguito / Bocagrande</h3>
+      <div class="place-meta" data-es="A PASOS DEL APARTAMENTO" data-en="STEPS FROM THE APARTMENT">A PASOS DEL APARTAMENTO</div>
+      <p data-es="Kioscos frente al mar con pescado frito, ceviche y arroz de coco, a un paseo corto desde el apartamento." data-en="Beachfront shacks serving fried fish, ceviche, and coconut rice, just a short walk from the apartment.">Kioscos frente al mar con pescado frito, ceviche y arroz de coco, a un paseo corto desde el apartamento.</p>
+      <div class="place-links"><a class="place-link" href="https://www.google.com/maps/dir/?api=1&origin=10.391,-75.556&destination=10.3989,-75.5548" target="_blank" rel="noopener" data-es="📍 Cómo llegar" data-en="📍 Directions">📍 Cómo llegar</a></div>
+      </div>
+    </div>
+    <div class="place">
+      <img class="place-img" src="https://upload.wikimedia.org/wikipedia/commons/f/fe/AVENIDA_SAN_MARTIN%2C_CARTAGENA.JPG" alt="Avenida San Martín" loading="lazy">
+      <div class="place-body">
+      <span class="place-tag tag-food" data-es="Compras y comida" data-en="Shopping & food">Compras y comida</span>
+      <h3>Avenida San Martín</h3>
+      <div class="place-meta" data-es="5-10 MIN CAMINANDO" data-en="5-10 MIN WALK">5-10 MIN CAMINANDO</div>
+      <p data-es="La calle principal de Bocagrande: restaurantes, cafés y tiendas a la mano." data-en="Bocagrande's main strip: restaurants, cafés, and shops close at hand.">La calle principal de Bocagrande: restaurantes, cafés y tiendas a la mano.</p>
+      <div class="place-links"><a class="place-link" href="https://www.google.com/maps/dir/?api=1&origin=10.391,-75.556&destination=10.3999,-75.5544" target="_blank" rel="noopener" data-es="📍 Cómo llegar" data-en="📍 Directions">📍 Cómo llegar</a></div>
+      </div>
+    </div>
+    <div class="place">
+      <img class="place-img" src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Mercado_de_Bazurto.jpg" alt="Mercado de Bazurto" loading="lazy">
+      <div class="place-body">
+      <span class="place-tag tag-culture" data-es="Mercado local" data-en="Local market">Mercado local</span>
+      <h3 data-es="Mercado de Bazurto" data-en="Bazurto Market">Mercado de Bazurto</h3>
+      <div class="place-meta" data-es="~15 MIN EN CARRO" data-en="~15 MIN BY CAR">~15 MIN EN CARRO</div>
+      <p data-es="Para quienes quieren ver el lado más auténtico y local de Cartagena — colores, frutas y el ritmo real de la ciudad." data-en="For travelers who want to see the more authentic, local side of Cartagena — colors, fruit stalls, and the city's real rhythm.">Para quienes quieren ver el lado más auténtico y local de Cartagena — colores, frutas y el ritmo real de la ciudad.</p>
+      <div class="place-links"><a class="place-link" href="https://www.google.com/maps/dir/?api=1&origin=10.391,-75.556&destination=10.4189,-75.5119" target="_blank" rel="noopener" data-es="📍 Cómo llegar" data-en="📍 Directions">📍 Cómo llegar</a></div>
+      </div>
+    </div>
+  </div>
+  <p style="margin-top:16px;font-size:.85rem;color:#6B8088;" data-es="[FALTA: ¿tienen ustedes un lugar favorito de playa/ceviche o un bar de atardecer específico para recomendar? Avísanos en el formulario y lo agregamos aquí.]" data-en="[MISSING: do you have a specific favorite beach/ceviche spot or sunset bar to recommend? Let us know in the form and we'll add it here.]">[FALTA: ¿tienen ustedes un lugar favorito de playa/ceviche o un bar de atardecer específico para recomendar? Avísanos en el formulario y lo agregamos aquí.]</p>
+</section>
+
+<!-- SUITE AMENITIES -->
+<section id="amenities-suite">
+  <span class="sec-eyebrow" data-es="Tu suite" data-en="Your suite">Tu suite</span>
+  <h2 class="sec-title"><span data-es="Todo lo que" data-en="Everything you">Todo lo que</span> <em data-es="necesitas" data-en="need">necesitas</em></h2>
+  <div class="amen">
+    <div><span>🛏</span><span data-es="[FALTA: camas]" data-en="[MISSING: beds]">[FALTA: camas]</span></div>
+    <div><span>❄️</span><span data-es="Aire acondicionado" data-en="Air conditioning">Aire acondicionado</span></div>
+    <div><span>🚿</span><span data-es="Ducha caliente" data-en="Hot shower">Ducha caliente</span></div>
+    <div><span>📶</span><span>WiFi</span></div>
+    <div><span>🌅</span><span data-es="Vista" data-en="View">Vista</span></div>
+  </div>
+</section>
+
+<!-- HOUSE RULES -->
+<section id="house-rules">
+  <span class="sec-eyebrow" data-es="Para una estadía perfecta" data-en="For a perfect stay">Para una estadía perfecta</span>
+  <h2 class="sec-title"><span data-es="Reglas de la" data-en="House">Reglas de la</span> <em data-es="casa" data-en="rules">casa</em></h2>
+  <div class="rules-grid">
+    <div class="rule-card"><span class="rc-icon">🤫</span><span data-es="Por favor, mantén el volumen bajo entre 10pm y 8am" data-en="Please keep noise to a minimum between 10pm and 8am">Por favor, mantén el volumen bajo entre 10pm y 8am</span></div>
+    <div class="rule-card"><span class="rc-icon">👥</span><span data-es="Máximo de huéspedes según lo reservado, sin visitantes no registrados" data-en="Max occupancy as booked — no unregistered guests">Máximo de huéspedes según lo reservado, sin visitantes no registrados</span></div>
+    <div class="rule-card"><span class="rc-icon">🎉</span><span data-es="No se permiten fiestas ni eventos" data-en="No parties or events">No se permiten fiestas ni eventos</span></div>
+    <div class="rule-card"><span class="rc-icon">🚭</span><span data-es="No fumar dentro del apartamento" data-en="No smoking inside the apartment">No fumar dentro del apartamento</span></div>
+    <div class="rule-card"><span class="rc-icon">🐾</span><span data-es="No mascotas sin aprobación previa" data-en="No pets unless approved in advance">No mascotas sin aprobación previa</span></div>
+    <div class="rule-card"><span class="rc-icon">🪪</span><span data-es="Identificación válida requerida al check-in para todos los huéspedes" data-en="Valid ID required at check-in for all registered guests">Identificación válida requerida al check-in para todos los huéspedes</span></div>
+    <div class="rule-card"><span class="rc-icon">🔑</span><span data-es="Al salir: apaga luces y aires, deja la cerradura como se indicó" data-en="On checkout: turn off lights & AC, leave the lock as instructed">Al salir: apaga luces y aires, deja la cerradura como se indicó</span></div>
+    <div class="rule-card"><span class="rc-icon">🛠</span><span data-es="El huésped es responsable por cualquier daño causado al apartamento o sus bienes durante la estadía" data-en="The guest is liable for any damage caused to the apartment or its contents during the stay">El huésped es responsable por cualquier daño causado al apartamento o sus bienes durante la estadía</span></div>
+  </div>
+  <div class="amen-fee">
+    <span class="amen-fee-icon">📋</span>
+    <p data-es="Al reservar y/o hacer check-in, aceptas estas reglas de la casa. 77Rentals y los anfitriones no se hacen responsables por lesiones, pérdidas o robo de pertenencias personales, salvo negligencia comprobada del anfitrión, en la medida permitida por la ley aplicable. El incumplimiento de estas reglas (fiestas, fumar, huéspedes no registrados, daños a la propiedad) puede resultar en la terminación inmediata de la estadía sin reembolso, conforme a los términos de la plataforma de reserva (Airbnb / Booking.com). Cargos por daños o depósito de seguridad pueden tramitarse a través del Centro de Resolución de la plataforma correspondiente." data-en="By booking and/or checking in, you agree to these house rules. 77Rentals and the hosts are not liable for guest injury, loss, or theft of personal belongings, except where caused by proven host negligence, to the extent permitted by applicable law. Violation of these rules (parties, smoking, unregistered guests, property damage) may result in immediate termination of the stay without refund, per the booking platform's terms (Airbnb / Booking.com). Damage charges or security deposit claims may be processed through the relevant platform's Resolution Center.">Al reservar y/o hacer check-in, aceptas estas reglas de la casa. 77Rentals y los anfitriones no se hacen responsables por lesiones, pérdidas o robo de pertenencias personales, salvo negligencia comprobada del anfitrión, en la medida permitida por la ley aplicable. El incumplimiento de estas reglas (fiestas, fumar, huéspedes no registrados, daños a la propiedad) puede resultar en la terminación inmediata de la estadía sin reembolso, conforme a los términos de la plataforma de reserva (Airbnb / Booking.com). Cargos por daños o depósito de seguridad pueden tramitarse a través del Centro de Resolución de la plataforma correspondiente.</p>
+  </div>
+</section>
+
+<!-- HOSTS -->
+<section id="hosts-sec">
+  <div class="hosts">
+    <div class="host-photo"><img src="host_photo.jpg" alt="Maria Teresa" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.style.display='none'"></div>
+    <div>
+      <h2 data-es="Sobre nosotros" data-en="About us">Sobre nosotros</h2>
+      <p data-es="[FALTA: texto sobre Maria Teresa / los anfitriones — ver formulario]" data-en="[MISSING: about Maria Teresa / the hosts — see form]">[FALTA: texto sobre Maria Teresa / los anfitriones — ver formulario]</p>
+      <div class="host-stats">
+        <div class="hstat"><b>ES/EN</b><span data-es="Idiomas" data-en="Languages">Idiomas</span></div>
+      </div>
+      <div class="host-sign">Maria Teresa</div>
+    </div>
+  </div>
+</section>
+
+<!-- SOS -->
+<section id="sos">
+  <span class="sec-eyebrow" data-es="Siempre a un toque" data-en="One tap away">Siempre a un toque</span>
+  <h2 class="sec-title"><span data-es="Contactos de" data-en="Emergency">Contactos de</span> <em data-es="emergencia" data-en="contacts">emergencia</em></h2>
+  <div class="sos">
+    <a href="#" id="sos-host-whatsapp"><div class="sos-icon" style="background:#25D366">💬</div><div><strong data-es="Tus anfitriones (WhatsApp)" data-en="Your hosts (WhatsApp)">Tus anfitriones (WhatsApp)</strong><span class="num">[FALTA]</span><br><small data-es="Respondemos lo antes posible" data-en="We reply as soon as we can">Respondemos lo antes posible</small></div></a>
+    <a href="#"><div class="sos-icon" style="background:#2AA3B4">🏥</div><div><strong>Nuevo Hospital Bocagrande</strong><span class="num">[FALTA: teléfono]</span><br><small data-es="Cra. 6 con Calle 5, Bocagrande — confirmar teléfono" data-en="Cra. 6 & Calle 5, Bocagrande — phone to confirm">Cra. 6 con Calle 5, Bocagrande — confirmar teléfono</small></div></a>
+    <a href="#"><div class="sos-icon" style="background:#1C7A8C">💊</div><div><strong>Cruz Verde Bocagrande</strong><span class="num">[FALTA: teléfono]</span><br><small data-es="Av. San Martín #4-66, Bocagrande — confirmar teléfono y horario" data-en="Av. San Martín #4-66, Bocagrande — confirm phone & hours">Av. San Martín #4-66, Bocagrande — confirmar teléfono y horario</small></div></a>
+    <a href="mailto:team@77rentals.com"><div class="sos-icon" style="background:#F2823C">✉️</div><div><strong>Email</strong><span class="num">team@77rentals.com</span><br><small data-es="Para temas no urgentes" data-en="For non-urgent matters">Para temas no urgentes</small></div></a>
+    <a href="tel:123"><div class="sos-icon" style="background:#1a3d8f">🚔</div><div><strong data-es="Policía Nacional" data-en="National Police">Policía Nacional</strong><span class="num">123</span><br><small data-es="Emergencias de seguridad" data-en="Security emergencies">Emergencias de seguridad</small></div></a>
+    <a href="tel:125"><div class="sos-icon" style="background:#2AA3B4">🚑</div><div><strong data-es="Ambulancias / Emergencias médicas" data-en="Ambulance / Medical emergencies">Ambulancias / Emergencias médicas</strong><span class="num">125</span><br><small data-es="Servicio nacional" data-en="National service">Servicio nacional</small></div></a>
+    <a href="tel:119"><div class="sos-icon" style="background:#c0392b">🚒</div><div><strong data-es="Bomberos" data-en="Fire department">Bomberos</strong><span class="num">119</span><br><small data-es="Incendios y rescate" data-en="Fire & rescue">Incendios y rescate</small></div></a>
+    <a href="#"><div class="sos-icon" style="background:#2c7873">🏢</div><div><strong data-es="Recepción / Portería del edificio" data-en="Building reception / front desk">Recepción / Portería del edificio</strong><span class="num">[FALTA]</span><br><small data-es="Conserje del edificio" data-en="Building concierge">Conserje del edificio</small></div></a>
+  </div>
+</section>
+
+<footer>
+  <div class="display" data-es="Deja que la magia comience" data-en="Let the magic begin">Deja que la magia comience</div>
+  <p data-es="[FALTA: dirección completa], El Laguito · Cartagena" data-en="[MISSING: full address], El Laguito · Cartagena">[FALTA: dirección completa], El Laguito · Cartagena</p>
+  <div class="foot-links">
+    <a href="#" id="foot-airbnb" target="_blank" rel="noopener">Airbnb</a>
+    <a href="#" id="foot-booking" target="_blank" rel="noopener">Booking.com</a>
+    <a href="#" id="foot-whatsapp" target="_blank" rel="noopener">WhatsApp</a>
+    <a href="#house-rules" data-es="Reglas de la casa" data-en="House Rules">House Rules</a>
+  </div>
+  <p style="margin-top:18px;font-size:.78rem;opacity:.6">77Rentals · Nuevo Conquistador · <span data-es="Si disfrutaste tu estancia, una reseña 5 estrellas nos ayuda muchísimo ⭐" data-en="If you enjoyed your stay, a 5-star review helps us so much ⭐">Si disfrutaste tu estancia, una reseña 5 estrellas nos ayuda muchísimo ⭐</span></p>
+</footer>
+
+</div><!-- /.site -->
+
+<script>
+/* ───── Gate entrance butterflies ───── */
+(function(){
+  const wrap=document.getElementById('bf-enter');
+  const birdColors=['#F2823C','#2AA3B4','#F6C89A'];
+  const birdSvg=c=>`<svg viewBox="0 0 40 24"><path d="M2 15 Q10 4 20 13 Q30 4 38 15" stroke="${c}" stroke-width="2.6" fill="none" stroke-linecap="round"/></svg>`;
+  for(let i=0;i<18;i++){
+    const d=document.createElement('div');
+    d.className='bf-fly';
+    const s=18+Math.random()*20;
+    d.style.cssText=`width:${s*1.6}px;height:${s}px;top:${8+Math.random()*55}%;animation-delay:${Math.random()*3}s;animation-duration:${6+Math.random()*4}s;`;
+    d.innerHTML=birdSvg(birdColors[i%birdColors.length]);
+    wrap.appendChild(d);
+    d.addEventListener('animationend',()=>d.remove());
+  }
+})();
+
+/* ───── Passcode gate ───── */
+const GATE_CODE='123';
+const gateInput=document.getElementById('gate-input');
+const gateName=document.getElementById('gate-name');
+function applyGuestName(){
+  const name=sessionStorage.getItem('conquistadorGuestName')||'';
+  document.getElementById('hero-name').textContent=name?', '+name:'';
+}
+function unlock(){
+  document.getElementById('gate').style.display='none';
+  document.getElementById('site').style.display='block';
+  applyGuestName();
+  setTimeout(()=>window.dispatchEvent(new Event('resize')),50);
+}
+function checkGate(){
+  const val=gateInput.value.trim().toUpperCase();
+  if(val===GATE_CODE){
+    const name=gateName.value.trim();
+    if(name)sessionStorage.setItem('conquistadorGuestName',name);
+    sessionStorage.setItem('conquistadorGate','1');
+    unlock();
+  } else {
+    document.getElementById('gate-error').classList.add('show');
+  }
+}
+gateInput.addEventListener('keydown',e=>{if(e.key==='Enter')checkGate();});
+gateName.addEventListener('keydown',e=>{if(e.key==='Enter')checkGate();});
+if(sessionStorage.getItem('conquistadorGate')==='1')unlock();
+
+/* ───── Language ───── */
+let lang='es';
+function setLang(l){
+  lang=l;
+  document.getElementById('btn-es').classList.toggle('active',l==='es');
+  document.getElementById('btn-en').classList.toggle('active',l==='en');
+  document.querySelectorAll('[data-es]').forEach(el=>{
+    el.textContent=el.dataset[l];
+  });
+  document.querySelectorAll('[data-es-placeholder]').forEach(el=>{
+    el.placeholder=el.dataset[l+'Placeholder'];
+  });
+  document.documentElement.lang=l;
+  renderGal();
+  if(typeof renderWeather==='function')renderWeather();
+}
+
+/* ───── Clock ───── */
+function tick(){
+  const t=new Date().toLocaleTimeString('en-US',{timeZone:'America/Bogota',hour:'2-digit',minute:'2-digit'});
+  document.getElementById('local-clock').textContent=t;
+}
+tick();setInterval(tick,30000);
+
+/* ───── Seabirds ───── */
+const birdColors=['#F2823C','#2AA3B4','#F6C89A'];
+function birdSvg(c){return `<svg viewBox="0 0 40 24"><path d="M2 15 Q10 4 20 13 Q30 4 38 15" stroke="${c}" stroke-width="2.6" fill="none" stroke-linecap="round"/></svg>`;}
+const bWrap=document.getElementById('butterflies');
+for(let i=0;i<7;i++){
+  const d=document.createElement('div');
+  d.className='bf';
+  const s=12+Math.random()*16;
+  d.style.cssText=`width:${s*1.7}px;height:${s}px;left:${Math.random()*92}%;top:${15+Math.random()*65}%;animation-delay:-${Math.random()*14}s;animation-duration:${11+Math.random()*8}s;`;
+  d.innerHTML=birdSvg(birdColors[i%birdColors.length]);
+  bWrap.appendChild(d);
+}
+
+/* ───── Gallery (placeholders until real photos arrive) ───── */
+const propPhotos=[];
+const amenPhotos=[];
+function openLB(src){
+  document.getElementById('lb-img').src=src;
+  document.getElementById('lightbox').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeLB(){
+  document.getElementById('lightbox').classList.remove('open');
+  document.body.style.overflow='';
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeLB();});
+function phSvg(){
+  return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10" r="1.5"/><path d="M21 15l-5-5-9 9"/></svg>';
+}
+function renderPhotoGrid(gridId,photos,placeholderCount){
+  const g=document.getElementById(gridId);
+  g.innerHTML='';
+  photos.forEach(p=>{
+    const d=document.createElement('div');
+    d.className='gal-item';
+    d.innerHTML=`<img src="${p.src}" alt="${p[lang]}" loading="lazy">${p[lang]?`<div class="gal-item-label">${p[lang]}</div>`:''}`;
+    d.onclick=()=>openLB(p.src);
+    g.appendChild(d);
+  });
+  for(let i=0;i<placeholderCount;i++){
+    const d=document.createElement('div');
+    d.className='gal-ph';
+    d.innerHTML=phSvg()+`<span>${lang==='es'?'Foto pendiente':'Photo pending'}</span>`;
+    g.appendChild(d);
+  }
+}
+function renderGal(){
+  renderPhotoGrid('gal-grid-prop',propPhotos,6);
+  renderPhotoGrid('gal-grid-amen',amenPhotos,4);
+}
+renderGal();
+
+/* ── Page-wide seabirds ── */
+const bfPage=document.getElementById('bf-page');
+for(let i=0;i<14;i++){
+  const d=document.createElement('div');
+  d.className='bf';
+  const s=9+Math.random()*14;
+  d.style.cssText=`width:${s*1.7}px;height:${s}px;left:${Math.random()*96}%;top:${Math.random()*95}%;animation-delay:-${Math.random()*18}s;animation-duration:${12+Math.random()*10}s;`;
+  d.innerHTML=birdSvg(birdColors[i%birdColors.length]);
+  bfPage.appendChild(d);
+}
+
+/* ───── Weather (Open-Meteo, no key needed) — El Laguito, Cartagena ───── */
+const wmoIcon=c=>{
+  if(c===0)return'☀️';if(c<=2)return'🌤';if(c===3)return'☁️';
+  if(c<=48)return'🌫';if(c<=57)return'🌦';if(c<=67)return'🌧';
+  if(c<=77)return'🌨';if(c<=82)return'🌧';if(c<=86)return'🌨';return'⛈';
+};
+const wmoText={es:{0:'Despejado',1:'Mayormente despejado',2:'Parcialmente nublado',3:'Nublado',45:'Neblina',61:'Lluvia ligera',63:'Lluvia',65:'Lluvia fuerte',80:'Chubascos',95:'Tormenta'},
+en:{0:'Clear',1:'Mostly clear',2:'Partly cloudy',3:'Cloudy',45:'Fog',61:'Light rain',63:'Rain',65:'Heavy rain',80:'Showers',95:'Thunderstorm'}};
+let weatherData=null;
+function renderWeather(){
+  const el=document.getElementById('weather');
+  if(!weatherData){return;}
+  const d=weatherData;
+  const code=d.current.weather_code;
+  const desc=(wmoText[lang][code])||(lang==='es'?'Caribe en su punto':'Caribbean vibes');
+  const dayNames=lang==='es'?['Dom','Lun','Mar','Mié','Jue','Vie','Sáb']:['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  let days='';
+  for(let i=1;i<=3;i++){
+    const dt=new Date(d.daily.time[i]+'T12:00:00');
+    days+=`<div class="wday"><span>${wmoIcon(d.daily.weather_code[i])}</span><b>${Math.round(d.daily.temperature_2m_max[i])}°</b>${dayNames[dt.getDay()]}</div>`;
+  }
+  el.innerHTML=`
+    <div class="weather-now">
+      <div class="weather-icon">${wmoIcon(code)}</div>
+      <div>
+        <div class="weather-temp">${Math.round(d.current.temperature_2m)}°C</div>
+        <div class="weather-desc">${desc} · El Laguito</div>
+      </div>
+    </div>
+    <div class="weather-days">${days}</div>`;
+}
+fetch('https://api.open-meteo.com/v1/forecast?latitude=10.391&longitude=-75.556&current=temperature_2m,weather_code&daily=weather_code,temperature_2m_max&timezone=America%2FBogota&forecast_days=4')
+  .then(r=>r.json()).then(d=>{weatherData=d;renderWeather();})
+  .catch(()=>{
+    const el=document.getElementById('weather');
+    el.innerHTML='<div class="weather-now"><div class="weather-icon">🌴</div><div><div class="weather-temp">~30°C</div><div class="weather-desc">'+(lang==='es'?'Sol caribeño casi garantizado':'Caribbean sun, almost guaranteed')+'</div></div></div>';
+  });
+</script>
+</body>
+</html>
