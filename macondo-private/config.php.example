@@ -1,0 +1,9 @@
+<?php
+/**
+ * Copy this file to config.php in the SAME folder (macondo-private/) and fill in your real key.
+ * config.php must live OUTSIDE any web-accessible folder — never upload it into
+ * public/ or your domain's document root on DreamHost. Never commit config.php to git
+ * (it's already in .gitignore).
+ */
+
+define('ANTHROPIC_API_KEY', 'sk-ant-REPLACE-WITH-YOUR-REAL-KEY');
