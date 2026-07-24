@@ -1311,11 +1311,17 @@ fetch('https://api.open-meteo.com/v1/forecast?latitude=11.2008&longitude=-74.224
     bottom:calc(18px + env(safe-area-inset-bottom));
     right:16px;width:56px;height:56px;font-size:22px;
   }
+  /* Pin BOTH top and bottom with height:auto so the panel is forced to fit
+     between the two edges and can never overflow past the top of the screen.
+     fitPanel() below then overrides these with visualViewport values, because
+     position:fixed follows the layout viewport, which does NOT shrink when the
+     on-screen keyboard opens. */
   #macondo-chat-panel{
-    left:10px;right:10px;bottom:calc(10px + env(safe-area-inset-bottom));
-    width:auto;
-    height:min(78dvh,calc(100dvh - 90px));
-    border-radius:20px;
+    left:8px;right:8px;width:auto;
+    top:calc(10px + env(safe-area-inset-top));
+    bottom:calc(10px + env(safe-area-inset-bottom));
+    height:auto;
+    border-radius:18px;
   }
 }
 #macondo-chat-header{
@@ -1418,6 +1424,45 @@ fetch('https://api.open-meteo.com/v1/forecast?latitude=11.2008&longitude=-74.224
     return div;
   }
 
+  function isMobile(){ return window.innerWidth <= 480; }
+
+  // position:fixed follows the LAYOUT viewport, which does not shrink when the
+  // on-screen keyboard opens — so a bottom-anchored panel gets pushed up and
+  // its header ends up off the top of the screen. Pin it to the VISUAL
+  // viewport instead, which does shrink, and re-measure whenever it changes.
+  function fitPanel(){
+    if (!isMobile() || !window.visualViewport) {
+      panel.style.removeProperty('top');
+      panel.style.removeProperty('bottom');
+      panel.style.removeProperty('height');
+      return;
+    }
+    var vv = window.visualViewport;
+    var gap = 10;
+    panel.style.top = (vv.offsetTop + gap) + 'px';
+    panel.style.bottom = 'auto';
+    panel.style.height = Math.max(220, vv.height - gap * 2) + 'px';
+  }
+
+  function onViewportChange(){ if (opened) fitPanel(); }
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', onViewportChange);
+    window.visualViewport.addEventListener('scroll', onViewportChange);
+  }
+  window.addEventListener('resize', onViewportChange);
+  window.addEventListener('orientationchange', onViewportChange);
+
+  // Backup for the keyboard case, in case visualViewport events are unreliable:
+  // tapping the field is what opens the keyboard, so re-measure once it has
+  // animated in and keep the latest message in view.
+  input.addEventListener('focus', function(){
+    if (!isMobile()) return;
+    setTimeout(function(){
+      fitPanel();
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    }, 300);
+  });
+
   toggle.addEventListener('click', function(){
     opened = !opened;
     panel.classList.toggle('open', opened);
@@ -1425,7 +1470,13 @@ fetch('https://api.open-meteo.com/v1/forecast?latitude=11.2008&longitude=-74.224
     if (opened && messagesEl.children.length === 0) {
       addMessage(STRINGS[currentLang()].greeting, 'bot');
     }
-    if (opened) input.focus();
+    if (opened) {
+      fitPanel();
+      // Deliberately no autofocus on phones: it pops the keyboard open the
+      // instant the panel appears, covering the greeting the guest is meant
+      // to read first. They tap the field when they're ready to type.
+      if (!isMobile()) input.focus();
+    }
   });
   closeBtn.addEventListener('click', function(){
     opened = false;
