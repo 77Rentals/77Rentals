@@ -36,5 +36,31 @@ jobs:
           remote_key: ${{ secrets.DREAMHOST_SSH_KEY }}
           remote_key_pass: ${{ secrets.DREAMHOST_SSH_PASSPHRASE }}
 
+      # macondo-private/config.php is gitignored (holds the Anthropic API key)
+      # and is generated here from a GitHub secret, never committed to the repo.
+      - name: Generate Macondo chat config.php
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          mkdir -p macondo-private
+          {
+            echo '<?php'
+            echo "define('ANTHROPIC_API_KEY', '${ANTHROPIC_API_KEY}');"
+          } > macondo-private/config.php
+
+      # Deployed OUTSIDE public_html/ (no --delete, so it never touches the
+      # webroot and never wipes the runtime rate-limit.json chat.php writes
+      # on the server between deploys).
+      - name: Deploy Macondo private config (outside webroot)
+        uses: burnett01/rsync-deployments@6.0.0
+        with:
+          switches: -avzr
+          path: macondo-private/
+          remote_path: /home/${{ secrets.DREAMHOST_USERNAME }}/macondo-private/
+          remote_host: ${{ secrets.DREAMHOST_HOST }}
+          remote_user: ${{ secrets.DREAMHOST_USERNAME }}
+          remote_key: ${{ secrets.DREAMHOST_SSH_KEY }}
+          remote_key_pass: ${{ secrets.DREAMHOST_SSH_PASSPHRASE }}
+
       - name: Deployment Success
         run: echo "✅ Deployed to 77rentals.com successfully!"
