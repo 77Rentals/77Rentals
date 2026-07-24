@@ -1,0 +1,4 @@
+# Defense in depth: macondo-private/ should never be inside a served webroot
+# in the first place (see chat.php's path comment), but if it ever ends up
+# there by mistake, this blocks all HTTP access to everything in this folder.
+Require all denied

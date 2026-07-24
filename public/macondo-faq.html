@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Preguntas frecuentes · Macondo 717</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --purple:#8B3FA1;--purple-deep:#5E2370;--purple-dark:#3A1248;
+  --gold:#E3B23C;--gold-soft:#F2D58A;--cream:#FBF7F0;--ink:#2A1633;--white:#FFFFFF;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Outfit',sans-serif;background:var(--cream);color:var(--ink);line-height:1.5;padding:20px;}
+.wrap{max-width:720px;margin:0 auto;}
+header{
+  background:linear-gradient(140deg,var(--purple-deep),var(--purple));
+  color:var(--cream);border-radius:16px;padding:22px 22px 18px;margin-bottom:24px;
+}
+header h1{font-family:'Cormorant Garamond',serif;font-size:1.7rem;font-weight:700;}
+header p{color:var(--gold-soft);font-size:.92rem;margin-top:6px;}
+.intro{background:var(--white);border-radius:14px;padding:16px 18px;margin-bottom:22px;font-size:.92rem;border-left:4px solid var(--gold);}
+.category{margin-bottom:26px;}
+.category h2{font-family:'Cormorant Garamond',serif;color:var(--purple-deep);font-size:1.25rem;margin-bottom:10px;border-bottom:2px solid var(--gold-soft);padding-bottom:6px;}
+.q{background:var(--white);border-radius:12px;padding:14px 16px;margin-bottom:10px;box-shadow:0 2px 8px rgba(58,18,72,.06);}
+.q label{display:block;font-weight:600;font-size:.92rem;margin-bottom:8px;color:var(--purple-dark);}
+.q textarea{
+  width:100%;border:1px solid #e2d7ea;border-radius:8px;padding:9px 11px;font-family:inherit;
+  font-size:.92rem;resize:vertical;min-height:52px;outline:none;
+}
+.q textarea:focus{border-color:var(--purple);}
+.extra-row{display:flex;gap:8px;margin-bottom:10px;}
+.extra-row textarea{flex:1;min-height:44px;}
+.extra-row .extra-q{flex:1;}
+.extra-row .extra-a{flex:1.4;}
+#addExtra{
+  background:none;border:1.5px dashed var(--purple);color:var(--purple-deep);border-radius:10px;
+  padding:9px 14px;font-size:.85rem;cursor:pointer;font-weight:600;margin-bottom:8px;
+}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin:26px 0 14px;}
+button.primary{
+  background:linear-gradient(140deg,var(--purple-deep),var(--purple));color:var(--cream);
+  border:none;border-radius:999px;padding:13px 22px;font-weight:600;font-size:.95rem;cursor:pointer;
+}
+button.secondary{
+  background:var(--white);color:var(--purple-deep);border:1.5px solid var(--purple);
+  border-radius:999px;padding:12px 20px;font-weight:600;font-size:.95rem;cursor:pointer;
+}
+#output{display:none;margin-top:18px;}
+#output textarea{
+  width:100%;min-height:260px;border:1px solid #ddd;border-radius:10px;padding:12px;
+  font-family:ui-monospace,monospace;font-size:.8rem;background:var(--white);
+}
+#copyMsg{font-size:.85rem;color:var(--purple-deep);margin-top:6px;height:1.2em;}
+footer{text-align:center;font-size:.78rem;color:#9b8aa8;margin-top:30px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Preguntas frecuentes · Macondo 717</h1>
+    <p>Para Claudia — ayuda al asistente de IA a responder mejor</p>
+  </header>
+
+  <div class="intro">
+    Hola Claudia 👋 Estas son preguntas que suelen hacer los huéspedes por WhatsApp. Responde las que sepas
+    (puedes dejar en blanco las que no apliquen). Al final hay un botón para generar un resumen que le
+    puedes reenviar a Sebastián/al equipo para actualizar el asistente del chat de la guía. No hace falta
+    que respondas todas de una vez — puedes volver a este link cuando quieras.
+  </div>
+
+  <div class="category">
+    <h2>Llegada y logística</h2>
+    <div class="q"><label>¿Qué hacemos si llegamos antes de las 3pm y el apartamento no está listo?</label><textarea data-q="early-arrival"></textarea></div>
+    <div class="q"><label>¿Se puede dejar el equipaje guardado si el vuelo de salida es más tarde que el check-out?</label><textarea data-q="luggage-storage"></textarea></div>
+    <div class="q"><label>¿Hay parqueadero para carro? ¿Tiene costo?</label><textarea data-q="parking"></textarea></div>
+    <div class="q"><label>Si no llega el mensaje de WhatsApp con la clave, ¿qué debe hacer el huésped?</label><textarea data-q="no-code"></textarea></div>
+    <div class="q"><label>¿Qué hacer si la clave digital no funciona al llegar?</label><textarea data-q="lock-fails"></textarea></div>
+  </div>
+
+  <div class="category">
+    <h2>Durante la estadía</h2>
+    <div class="q"><label>¿A qué número o cómo se reportan problemas del apartamento (AC, agua caliente, etc.)?</label><textarea data-q="maintenance"></textarea></div>
+    <div class="q"><label>¿Hay lavandería en el edificio o cerca?</label><textarea data-q="laundry"></textarea></div>
+    <div class="q"><label>¿Hay supermercado cerca para comprar mercado/víveres?</label><textarea data-q="supermarket"></textarea></div>
+    <div class="q"><label>¿Cómo se reserva o si hay que reservar la zona BBQ o sala de reuniones?</label><textarea data-q="reserve-amenities"></textarea></div>
+    <div class="q"><label>¿Se permite recibir visitas que no se quedan a dormir?</label><textarea data-q="day-visitors"></textarea></div>
+    <div class="q"><label>¿Qué pasa si se necesita una noche adicional de último momento (extender la estadía)?</label><textarea data-q="extend-stay"></textarea></div>
+  </div>
+
+  <div class="category">
+    <h2>Salida</h2>
+    <div class="q"><label>¿Se puede pedir un check-out tardío? ¿Hasta qué hora y tiene costo?</label><textarea data-q="late-checkout"></textarea></div>
+    <div class="q"><label>¿Qué hacer si el huésped olvidó algo después de salir?</label><textarea data-q="lost-item"></textarea></div>
+  </div>
+
+  <div class="category">
+    <h2>Turismo — lo que más preguntan</h2>
+    <div class="q"><label>¿Cuál es la mejor forma de moverse por Santa Marta (taxi, apps, transporte público)? ¿Alguna app recomendada tipo inDriver/Uber?</label><textarea data-q="transport"></textarea></div>
+    <div class="q"><label>¿Es seguro caminar de noche cerca del apartamento / en Santa Marta en general?</label><textarea data-q="safety"></textarea></div>
+    <div class="q"><label>¿Dónde cambiar dólares o sacar efectivo (cajeros) cerca?</label><textarea data-q="currency"></textarea></div>
+    <div class="q"><label>¿Cómo se coordina/reserva un tour a Tayrona, Minca o Palomino? ¿Precios aproximados?</label><textarea data-q="tours"></textarea></div>
+    <div class="q"><label>¿Alguna farmacia o droguería abierta 24 horas?</label><textarea data-q="pharmacy-24h"></textarea></div>
+    <div class="q"><label>¿Algún otro restaurante o plan que recomiendes y que no esté ya en la guía (Playa del Ritmo, Zazué, Pizza El Vómito, Harry's, Cambiante, Burukuka, Brot, Holguer Pizza)?</label><textarea data-q="more-restaurants"></textarea></div>
+  </div>
+
+  <div class="category">
+    <h2>Otras preguntas frecuentes (las tuyas)</h2>
+    <p style="font-size:.85rem;color:#8a7a94;margin-bottom:10px;">Si guardas mensajes de WhatsApp con preguntas que no están arriba, agrégalas aquí — pregunta y respuesta.</p>
+    <div id="extraList"></div>
+    <button id="addExtra" type="button">+ Agregar otra pregunta</button>
+  </div>
+
+  <div class="actions">
+    <button class="primary" id="generateBtn">Generar resumen</button>
+  </div>
+
+  <div id="output">
+    <textarea id="outputText" readonly></textarea>
+    <div class="actions">
+      <button class="secondary" id="copyBtn">📋 Copiar resumen</button>
+    </div>
+    <div id="copyMsg"></div>
+  </div>
+
+  <footer>77Rentals · Macondo 717 — este resumen no se envía a ningún lado automáticamente, solo se genera aquí para que lo copies y reenvíes tú misma.</footer>
+</div>
+
+<script>
+(function(){
+  var QUESTIONS = [
+    ["early-arrival", "¿Qué hacemos si llegamos antes de las 3pm y el apartamento no está listo?"],
+    ["luggage-storage", "¿Se puede dejar el equipaje guardado si el vuelo de salida es más tarde que el check-out?"],
+    ["parking", "¿Hay parqueadero para carro? ¿Tiene costo?"],
+    ["no-code", "Si no llega el mensaje de WhatsApp con la clave, ¿qué debe hacer el huésped?"],
+    ["lock-fails", "¿Qué hacer si la clave digital no funciona al llegar?"],
+    ["maintenance", "¿A qué número o cómo se reportan problemas del apartamento (AC, agua caliente, etc.)?"],
+    ["laundry", "¿Hay lavandería en el edificio o cerca?"],
+    ["supermarket", "¿Hay supermercado cerca para comprar mercado/víveres?"],
+    ["reserve-amenities", "¿Cómo se reserva o si hay que reservar la zona BBQ o sala de reuniones?"],
+    ["day-visitors", "¿Se permite recibir visitas que no se quedan a dormir?"],
+    ["extend-stay", "¿Qué pasa si se necesita una noche adicional de último momento (extender la estadía)?"],
+    ["late-checkout", "¿Se puede pedir un check-out tardío? ¿Hasta qué hora y tiene costo?"],
+    ["lost-item", "¿Qué hacer si el huésped olvidó algo después de salir?"],
+    ["transport", "¿Cuál es la mejor forma de moverse por Santa Marta (taxi, apps, transporte público)? ¿Alguna app recomendada tipo inDriver/Uber?"],
+    ["safety", "¿Es seguro caminar de noche cerca del apartamento / en Santa Marta en general?"],
+    ["currency", "¿Dónde cambiar dólares o sacar efectivo (cajeros) cerca?"],
+    ["tours", "¿Cómo se coordina/reserva un tour a Tayrona, Minca o Palomino? ¿Precios aproximados?"],
+    ["pharmacy-24h", "¿Alguna farmacia o droguería abierta 24 horas?"],
+    ["more-restaurants", "¿Algún otro restaurante o plan que recomiendes y que no esté ya en la guía?"]
+  ];
+
+  var extraList = document.getElementById('extraList');
+  var extraCount = 0;
+
+  function addExtraRow(){
+    extraCount++;
+    var row = document.createElement('div');
+    row.className = 'extra-row';
+    row.innerHTML =
+      '<textarea class="extra-q" placeholder="Pregunta #' + extraCount + '"></textarea>' +
+      '<textarea class="extra-a" placeholder="Respuesta"></textarea>';
+    extraList.appendChild(row);
+  }
+  document.getElementById('addExtra').addEventListener('click', addExtraRow);
+  addExtraRow(); addExtraRow(); addExtraRow(); // start with 3 blank rows
+
+  document.getElementById('generateBtn').addEventListener('click', function(){
+    var lines = ['FAQ Macondo 717 — respuestas de Claudia', '='.repeat(40), ''];
+
+    QUESTIONS.forEach(function(pair){
+      var key = pair[0], question = pair[1];
+      var el = document.querySelector('textarea[data-q="' + key + '"]');
+      var answer = el.value.trim();
+      if (answer) {
+        lines.push('P: ' + question);
+        lines.push('R: ' + answer);
+        lines.push('');
+      }
+    });
+
+    var rows = extraList.querySelectorAll('.extra-row');
+    rows.forEach(function(row){
+      var q = row.querySelector('.extra-q').value.trim();
+      var a = row.querySelector('.extra-a').value.trim();
+      if (q && a) {
+        lines.push('P: ' + q);
+        lines.push('R: ' + a);
+        lines.push('');
+      }
+    });
+
+    if (lines.length === 3) {
+      lines.push('(No se respondió ninguna pregunta todavía.)');
+    }
+
+    document.getElementById('outputText').value = lines.join('\n');
+    document.getElementById('output').style.display = 'block';
+    document.getElementById('output').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
+  document.getElementById('copyBtn').addEventListener('click', function(){
+    var ta = document.getElementById('outputText');
+    ta.select();
+    var msg = document.getElementById('copyMsg');
+    navigator.clipboard && navigator.clipboard.writeText(ta.value).then(function(){
+      msg.textContent = '¡Copiado! Ya lo puedes pegar en WhatsApp o email.';
+    }, function(){
+      msg.textContent = 'No se pudo copiar automáticamente — selecciona el texto y copia manualmente.';
+    });
+  });
+})();
+</script>
+</body>
+</html>

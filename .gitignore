@@ -26,3 +26,5 @@ dist-ssr
 
 # Macondo AI chat - real API key, never commit
 macondo-private/config.php
+# Runtime rate-limit state (per-IP timestamps), not source
+macondo-private/rate-limit.json

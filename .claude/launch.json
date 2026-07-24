@@ -6,6 +6,12 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev"],
       "port": 5174
+    },
+    {
+      "name": "Macondo Chat (PHP)",
+      "runtimeExecutable": "C:\\Users\\57350\\AppData\\Local\\Microsoft\\WinGet\\Packages\\PHP.PHP.8.3_Microsoft.Winget.Source_8wekyb3d8bbwe\\php.exe",
+      "runtimeArgs": ["-S", "localhost:8000", "-t", "public"],
+      "port": 8000
     }
   ]
 }
