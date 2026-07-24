@@ -1297,12 +1297,27 @@ fetch('https://api.open-meteo.com/v1/forecast?latitude=11.2008&longitude=-74.224
 #macondo-chat-panel{
   position:fixed;bottom:94px;right:22px;z-index:9999;
   width:min(360px,calc(100vw - 32px));height:min(520px,calc(100vh - 140px));
+  height:min(520px,calc(100dvh - 140px));
   background:var(--white);border-radius:18px;overflow:hidden;
   box-shadow:0 20px 60px rgba(42,22,51,.35);
   display:none;flex-direction:column;
   font-family:'Outfit',sans-serif;
 }
 #macondo-chat-panel.open{display:flex;}
+/* Mobile: near-fullscreen sheet instead of a small floating card, and keep
+   the toggle button clear of iOS/Android home-indicator safe areas. */
+@media (max-width:480px){
+  #macondo-chat-toggle{
+    bottom:calc(18px + env(safe-area-inset-bottom));
+    right:16px;width:56px;height:56px;font-size:22px;
+  }
+  #macondo-chat-panel{
+    left:10px;right:10px;bottom:calc(10px + env(safe-area-inset-bottom));
+    width:auto;
+    height:min(78dvh,calc(100dvh - 90px));
+    border-radius:20px;
+  }
+}
 #macondo-chat-header{
   background:linear-gradient(140deg,var(--purple-deep),var(--purple));
   color:var(--cream);padding:14px 16px;
@@ -1322,7 +1337,10 @@ fetch('https://api.open-meteo.com/v1/forecast?latitude=11.2008&longitude=-74.224
 .mc-msg.typing{align-self:flex-start;color:#8a7a94;font-style:italic;}
 #macondo-chat-form{display:flex;gap:8px;padding:10px;border-top:1px solid #eee;background:var(--white);}
 #macondo-chat-input{
-  flex:1;border:1px solid #ddd;border-radius:999px;padding:9px 14px;font-size:.9rem;font-family:inherit;outline:none;
+  /* 16px, not .9rem (14.4px): anything smaller makes iOS Safari auto-zoom
+     the whole page when the field is focused, which is what "looks bigger
+     on mobile" was. */
+  flex:1;border:1px solid #ddd;border-radius:999px;padding:9px 14px;font-size:16px;font-family:inherit;outline:none;
 }
 #macondo-chat-input:focus{border-color:var(--purple);}
 #macondo-chat-send{
