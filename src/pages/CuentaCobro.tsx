@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
 import logo from '@/assets/logo77.jpeg';
@@ -30,6 +31,8 @@ const DEFAULT_PAYMENT_DETAILS = [
   '💼 Cuenta de ahorros: 0142274059',
 ].join('\n');
 
+const CITIES = ['Cartagena', 'Bogotá', 'Santa Marta'];
+
 interface FormState {
   numero: string;
   city: string;
@@ -38,7 +41,11 @@ interface FormState {
   clientId: string;
   issuerName: string;
   issuerId: string;
-  items: CuentaCobroItem[];
+  nights: string;
+  nightlyRate: string;
+  cleaningFee: string;
+  resortFee: string;
+  extras: CuentaCobroItem[];
   paymentDetails: string;
 }
 
@@ -50,11 +57,11 @@ const defaultState: FormState = {
   clientId: '',
   issuerName: 'Claudia Moreno Velosa',
   issuerId: '',
-  items: [
-    { description: 'Tarifa por noche (5 noches x $320.000)', amount: 1600000 },
-    { description: 'Aseo de check-out', amount: 80000 },
-    { description: 'Registro del edificio / resort fee', amount: 67000 },
-  ],
+  nights: '5',
+  nightlyRate: '320000',
+  cleaningFee: '80000',
+  resortFee: '67000',
+  extras: [],
   paymentDetails: DEFAULT_PAYMENT_DETAILS,
 };
 
@@ -88,14 +95,29 @@ export default function CuentaCobro() {
 
   const update = (patch: Partial<FormState>) => setState((s) => ({ ...s, ...patch }));
 
-  const addItem = () => update({ items: [...state.items, { description: '', amount: 0 }] });
-  const removeItem = (index: number) => update({ items: state.items.filter((_, i) => i !== index) });
-  const updateItem = (index: number, patch: Partial<CuentaCobroItem>) =>
-    update({ items: state.items.map((it, i) => (i === index ? { ...it, ...patch } : it)) });
+  const addExtra = () => update({ extras: [...state.extras, { description: '', amount: 0 }] });
+  const removeExtra = (index: number) => update({ extras: state.extras.filter((_, i) => i !== index) });
+  const updateExtra = (index: number, patch: Partial<CuentaCobroItem>) =>
+    update({ extras: state.extras.map((it, i) => (i === index ? { ...it, ...patch } : it)) });
 
-  const total = state.items.reduce((sum, it) => sum + (Number(it.amount) || 0), 0);
+  const nights = Number(state.nights) || 0;
+  const nightlyRate = Number(state.nightlyRate) || 0;
+  const cleaningFee = Number(state.cleaningFee) || 0;
+  const resortFee = Number(state.resortFee) || 0;
+  const hospedajeTotal = nights * nightlyRate;
+  const extrasTotal = state.extras.reduce((sum, it) => sum + (Number(it.amount) || 0), 0);
+  const total = hospedajeTotal + cleaningFee + resortFee + extrasTotal;
 
   const canGenerate = state.clientName && state.issuerName && state.issuerId && date && total > 0;
+
+  const items: CuentaCobroItem[] = [
+    ...(hospedajeTotal > 0
+      ? [{ description: `Tarifa por noche (${nights} noches x $${formatCOP(nightlyRate)})`, amount: hospedajeTotal }]
+      : []),
+    ...(cleaningFee > 0 ? [{ description: 'Aseo de check-out', amount: cleaningFee }] : []),
+    ...(resortFee > 0 ? [{ description: 'Registro del edificio / resort fee', amount: resortFee }] : []),
+    ...state.extras.filter((it) => it.description && it.amount > 0),
+  ];
 
   const cuentaData = canGenerate
     ? {
@@ -107,7 +129,7 @@ export default function CuentaCobro() {
         clientId: state.clientId,
         issuerName: state.issuerName,
         issuerId: state.issuerId,
-        items: state.items.filter((it) => it.description && it.amount > 0),
+        items,
         total,
         paymentDetails: state.paymentDetails,
       }
@@ -160,7 +182,14 @@ export default function CuentaCobro() {
               </div>
               <div className="space-y-2">
                 <Label>Ciudad</Label>
-                <Input value={state.city} onChange={(e) => update({ city: e.target.value })} />
+                <Select value={state.city} onValueChange={(v) => update({ city: v })}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    {CITIES.map((c) => (
+                      <SelectItem key={c} value={c}>{c}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             </div>
 
@@ -210,32 +239,52 @@ export default function CuentaCobro() {
               </div>
             </div>
 
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <Label>Concepto(s)</Label>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-2">
+                <Label>Noches</Label>
+                <Input type="number" value={state.nights} onChange={(e) => update({ nights: e.target.value })} />
               </div>
               <div className="space-y-2">
-                {state.items.map((it, i) => (
+                <Label>Tarifa por noche</Label>
+                <Input type="number" value={state.nightlyRate} onChange={(e) => update({ nightlyRate: e.target.value })} />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-2">
+                <Label>Aseo</Label>
+                <Input type="number" value={state.cleaningFee} onChange={(e) => update({ cleaningFee: e.target.value })} />
+              </div>
+              <div className="space-y-2">
+                <Label>Resort fee / registro</Label>
+                <Input type="number" value={state.resortFee} onChange={(e) => update({ resortFee: e.target.value })} />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Extras (opcional)</Label>
+              <div className="space-y-2">
+                {state.extras.map((it, i) => (
                   <div key={i} className="flex gap-2">
                     <Input
                       placeholder="Descripción"
                       value={it.description}
-                      onChange={(e) => updateItem(i, { description: e.target.value })}
+                      onChange={(e) => updateExtra(i, { description: e.target.value })}
                     />
                     <Input
                       type="number"
                       placeholder="Valor"
                       className="w-40"
                       value={it.amount || ''}
-                      onChange={(e) => updateItem(i, { amount: Number(e.target.value) || 0 })}
+                      onChange={(e) => updateExtra(i, { amount: Number(e.target.value) || 0 })}
                     />
-                    <Button type="button" variant="ghost" size="icon" onClick={() => removeItem(i)} disabled={state.items.length <= 1}>
+                    <Button type="button" variant="ghost" size="icon" onClick={() => removeExtra(i)}>
                       <Trash2 className="h-4 w-4" />
                     </Button>
                   </div>
                 ))}
-                <Button type="button" variant="outline" size="sm" onClick={addItem}>
-                  <Plus className="h-4 w-4 mr-1" /> Agregar concepto
+                <Button type="button" variant="outline" size="sm" onClick={addExtra}>
+                  <Plus className="h-4 w-4 mr-1" /> Agregar extra
                 </Button>
               </div>
             </div>
