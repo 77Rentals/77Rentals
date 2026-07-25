@@ -49,10 +49,16 @@ if ($origin !== '') {
 }
 
 // Per-IP rate limit: this endpoint calls a paid API with no per-user login,
-// so it must not be left open to unlimited scripted calls. 20 messages/hour
+// so it must not be left open to unlimited scripted calls. 10 messages/hour
 // per IP comfortably covers a real guest conversation and blocks scripting.
+// Tightened from 20 to 10 now that each message can also trigger paid web
+// searches (see WEB_SEARCH_MAX_USES below).
 // File-based and single-server only — fine for one small shared-hosting site.
-rateLimitOrExit($privateDir . '/rate-limit.json', $_SERVER['REMOTE_ADDR'] ?? 'unknown', 20, 3600);
+rateLimitOrExit($privateDir . '/rate-limit.json', $_SERVER['REMOTE_ADDR'] ?? 'unknown', 10, 3600);
+
+// Cap on web searches per guest message. Keeps worst-case cost bounded even
+// under scripted abuse: 10 req/hr * 2 searches = 20 searches/hr per IP max.
+const WEB_SEARCH_MAX_USES = 2;
 
 function rateLimitOrExit(string $file, string $ip, int $limit, int $windowSeconds): void
 {
@@ -167,6 +173,17 @@ $payload = json_encode([
     'max_tokens' => 500,
     'system' => $systemPrompt,
     'messages' => $messages,
+    'tools' => [
+        [
+            // Basic (non-dynamic-filtering) version: claude-haiku-4-5 does
+            // not support the newer web_search_20260209/20260318 versions
+            // without allowed_callers=["direct"] (programmatic tool calling
+            // isn't available on Haiku) — confirmed via a live API probe.
+            'type' => 'web_search_20250305',
+            'name' => 'web_search',
+            'max_uses' => WEB_SEARCH_MAX_USES,
+        ],
+    ],
 ]);
 
 if ($payload === false) {
@@ -202,10 +219,44 @@ if ($response === false || $curlErrNo !== 0) {
 
 $decoded = json_decode($response, true);
 
-if ($httpCode !== 200 || !isset($decoded['content'][0]['text'])) {
+if ($httpCode !== 200 || !isset($decoded['content']) || !is_array($decoded['content'])) {
     http_response_code(502);
     echo json_encode(['error' => 'Unexpected response from the AI service.']);
     exit;
 }
 
-echo json_encode(['reply' => $decoded['content'][0]['text']]);
+// With the web_search tool enabled, content[] is no longer just one text
+// block — it can interleave text, server_tool_use (the query), and
+// web_search_tool_result (results, or an error object) blocks. Concatenate
+// every text block instead of assuming content[0] is the answer.
+//
+// Join with '' (no separator), NOT "\n\n": when a reply has citations,
+// Claude splits it into a separate text block at every citation boundary —
+// verified live, e.g. one sentence about a weather forecast came back as
+// 3 consecutive text blocks split mid-sentence. These are contiguous
+// fragments of one continuous string, not separate paragraphs/thoughts;
+// inserting blank lines between them breaks words apart mid-sentence.
+//
+// stop_reason "pause_turn" (a long-running server-tool loop got paused) is
+// not specially handled: at max_uses=2 with short history it should be rare,
+// and this endpoint has no session state to safely resubmit within its 25s
+// timeout. Worst case the guest sees the generic error below and can resend.
+//
+// Citations on cited text spans are intentionally discarded — the widget
+// renders replies via textContent (plain text only), so a raw "Sources:"
+// URL list would be unclickable clutter, not real transparency.
+$replyParts = [];
+foreach ($decoded['content'] as $block) {
+    if (is_array($block) && ($block['type'] ?? null) === 'text' && isset($block['text']) && is_string($block['text'])) {
+        $replyParts[] = $block['text'];
+    }
+}
+$reply = trim(implode('', $replyParts));
+
+if ($reply === '') {
+    http_response_code(502);
+    echo json_encode(['error' => 'Unexpected response from the AI service.']);
+    exit;
+}
+
+echo json_encode(['reply' => $reply]);
