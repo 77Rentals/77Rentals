@@ -10,6 +10,7 @@ export interface CuentaCobroData {
   numero?: string;
   city: string;
   date: string;
+  apartmentNote?: string;
   clientName: string;
   clientId?: string;
   issuerName: string;
@@ -29,6 +30,7 @@ export function buildCuentaCobroText(d: CuentaCobroData): string {
     d.clientName,
     ...(d.clientId ? [`C.C./NIT: ${d.clientId}`] : []),
     '',
+    ...(d.apartmentNote ? [`Apartamento: ${d.apartmentNote}`, ''] : []),
     `Debe a: ${d.issuerName}, identificado(a) con C.C. No. ${d.issuerId}`,
     '',
     `La suma de: ${pesosToWords(d.total)} ($${formatCOP(d.total)})`,

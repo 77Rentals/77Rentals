@@ -33,6 +33,7 @@ const DEFAULT_PAYMENT_DETAILS = [
 interface FormState {
   numero: string;
   city: string;
+  apartmentNote: string;
   clientName: string;
   clientId: string;
   issuerName: string;
@@ -44,11 +45,16 @@ interface FormState {
 const defaultState: FormState = {
   numero: '',
   city: 'Cartagena',
+  apartmentNote: 'Ej: Murano Élite - Apto 3504',
   clientName: '',
   clientId: '',
   issuerName: 'Claudia Moreno Velosa',
   issuerId: '',
-  items: [{ description: '', amount: 0 }],
+  items: [
+    { description: 'Tarifa por noche (5 noches x $320.000)', amount: 1600000 },
+    { description: 'Aseo de check-out', amount: 80000 },
+    { description: 'Registro del edificio / resort fee', amount: 67000 },
+  ],
   paymentDetails: DEFAULT_PAYMENT_DETAILS,
 };
 
@@ -96,6 +102,7 @@ export default function CuentaCobro() {
         numero: state.numero,
         city: state.city,
         date: format(date!, "d 'de' MMMM 'de' yyyy", { locale: es }),
+        apartmentNote: state.apartmentNote,
         clientName: state.clientName,
         clientId: state.clientId,
         issuerName: state.issuerName,
@@ -172,6 +179,15 @@ export default function CuentaCobro() {
               </Popover>
             </div>
 
+            <div className="space-y-2">
+              <Label>Apartamento / Edificio (nota interna)</Label>
+              <Input
+                value={state.apartmentNote}
+                onChange={(e) => update({ apartmentNote: e.target.value })}
+                placeholder="Ej: Murano Élite - Apto 3504"
+              />
+            </div>
+
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-2">
                 <Label>Cliente (quien paga)</Label>
@@ -240,9 +256,9 @@ export default function CuentaCobro() {
         <div className="space-y-4">
           <Card className="print:shadow-none print:border-none" id="cuenta-cobro-preview">
             <CardHeader>
-              <CardTitle className="flex items-center justify-between text-primary">
-                Vista previa
-                <img src={logo} alt="77 Rentals" className="h-10 w-auto object-contain" />
+              <CardTitle className="flex items-center text-primary">
+                <span className="print:hidden">Vista previa</span>
+                <img src={logo} alt="77 Rentals" className="h-10 w-auto object-contain ml-auto" />
               </CardTitle>
             </CardHeader>
             <CardContent>
