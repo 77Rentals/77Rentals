@@ -492,8 +492,9 @@ footer a{color:var(--gold);text-decoration:none;}
     <div class="brand-name">77<span>RENTALS</span> · MACONDO 717</div>
   </div>
   <div class="lang-toggle">
-    <button id="btn-es" class="active" onclick="setLang('es')">ES</button>
-    <button id="btn-en" onclick="setLang('en')">EN</button>
+    <button data-lang="es" class="active" onclick="setLang('es')">ES</button>
+    <button data-lang="en" onclick="setLang('en')">EN</button>
+    <button data-lang="fr" onclick="setLang('fr')">FR</button>
   </div>
 </div>
 
@@ -896,8 +897,9 @@ if(sessionStorage.getItem('macondoGate')==='1')unlock();
 let lang='es';
 function setLang(l){
   lang=l;
-  document.getElementById('btn-es').classList.toggle('active',l==='es');
-  document.getElementById('btn-en').classList.toggle('active',l==='en');
+  document.querySelectorAll('.lang-toggle button').forEach(btn=>{
+    btn.classList.toggle('active', btn.dataset.lang===l);
+  });
   document.querySelectorAll('[data-es]').forEach(el=>{
     el.textContent=el.dataset[l];
   });
