@@ -1418,12 +1418,18 @@ fetch('https://api.open-meteo.com/v1/forecast?latitude=11.2008&longitude=-74.224
       placeholder: 'Type your question...',
       greeting: "Hi, I'm the Macondo 717 assistant. Ask me about check-in, wifi, or what to do in Santa Marta.",
       error: 'I could not connect right now. Please try again or message 77Rentals on WhatsApp.'
+    },
+    fr: {
+      sub: 'ASSISTANT VIRTUEL',
+      placeholder: 'Posez votre question…',
+      greeting: "Bonjour ! Je suis l'assistant de Macondo 717. Posez-moi vos questions sur votre arrivée, le Wi-Fi, ou les activités à Santa Marta.",
+      error: "Je n'ai pas pu me connecter pour le moment. Veuillez réessayer ou écrire à 77Rentals sur WhatsApp."
     }
   };
 
   function currentLang(){
     var l = document.documentElement.lang;
-    return l === 'en' ? 'en' : 'es';
+    return (l === 'en' || l === 'fr') ? l : 'es';
   }
 
   function applyLangStrings(){
