@@ -474,13 +474,18 @@ footer a{color:var(--gold);text-decoration:none;}
   <canvas class="gate-fluid" id="gate-fluid"></canvas>
   <div class="bf-enter" id="bf-enter"></div>
   <div class="gate-card">
-    <div class="gate-eyebrow" data-es="Bienvenido a" data-en="Welcome to">Bienvenido a</div>
+    <div class="lang-toggle" style="justify-content:center;margin-bottom:18px;">
+      <button data-lang="es" class="active" onclick="setLang('es')">ES</button>
+      <button data-lang="en" onclick="setLang('en')">EN</button>
+      <button data-lang="fr" onclick="setLang('fr')">FR</button>
+    </div>
+    <div class="gate-eyebrow" data-es="Bienvenido a" data-en="Welcome to" data-fr="Bienvenue à">Bienvenido a</div>
     <h1 class="gate-title">Macondo <em>717</em></h1>
-    <p class="gate-sub" data-es="Ingresa el código que te enviamos para ver tu guía de bienvenida." data-en="Enter the code we sent you to view your welcome guide.">Ingresa el código que te enviamos para ver tu guía de bienvenida.</p>
-    <input type="text" id="gate-name" class="gate-input" autocomplete="off" spellcheck="false" data-es-placeholder="Tu nombre" data-en-placeholder="Your name" placeholder="Tu nombre">
+    <p class="gate-sub" data-es="Ingresa el código que te enviamos para ver tu guía de bienvenida." data-en="Enter the code we sent you to view your welcome guide." data-fr="Entrez le code que nous vous avons envoyé pour consulter votre guide de bienvenue.">Ingresa el código que te enviamos para ver tu guía de bienvenida.</p>
+    <input type="text" id="gate-name" class="gate-input" autocomplete="off" spellcheck="false" data-es-placeholder="Tu nombre" data-en-placeholder="Your name" data-fr-placeholder="Votre nom" placeholder="Tu nombre">
     <input type="text" id="gate-input" class="gate-input" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="••••••">
-    <button class="gate-btn" onclick="checkGate()" data-es="Ingresar" data-en="Enter">Ingresar</button>
-    <p class="gate-error" id="gate-error" data-es="Código incorrecto, intenta de nuevo." data-en="Incorrect code, please try again.">Código incorrecto, intenta de nuevo.</p>
+    <button class="gate-btn" onclick="checkGate()" data-es="Ingresar" data-en="Enter" data-fr="Entrer">Ingresar</button>
+    <p class="gate-error" id="gate-error" data-es="Código incorrecto, intenta de nuevo." data-en="Incorrect code, please try again." data-fr="Code incorrect, veuillez réessayer.">Código incorrecto, intenta de nuevo.</p>
   </div>
 </div>
 
