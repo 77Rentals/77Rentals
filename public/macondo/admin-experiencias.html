@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Moderar experiencias · Macondo 717</title>
+<link rel="icon" type="image/svg+xml" href="../favicon.svg?v=2">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<style>
+:root{
+  --purple:#8B3FA1;--purple-deep:#5E2370;--purple-dark:#3A1248;
+  --gold:#E3B23C;--gold-soft:#F2D58A;--cream:#FBF7F0;--ink:#2A1633;--white:#FFFFFF;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Outfit',sans-serif;background:var(--cream);color:var(--ink);}
+h1,h2{font-family:'Cormorant Garamond',serif;}
+
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;padding:16px 24px;
+  background:var(--purple-dark);color:var(--cream);
+}
+.topbar h1{font-size:1.3rem;font-weight:600;color:var(--gold-soft);}
+#ge-admin-logout{background:none;border:1px solid rgba(243,213,138,.5);color:var(--cream);padding:7px 16px;border-radius:999px;cursor:pointer;font-family:'Outfit';font-size:.8rem;}
+
+main{max-width:900px;margin:0 auto;padding:40px 20px 80px;}
+
+/* Login */
+#ge-admin-login{max-width:360px;margin:60px auto;background:var(--white);border-radius:20px;padding:32px;border:1px solid #efe6db;}
+#ge-admin-login h2{color:var(--purple-deep);margin-bottom:18px;font-size:1.4rem;}
+#ge-admin-login-form{display:grid;gap:12px;}
+#ge-admin-login-form input{padding:11px 14px;border-radius:10px;border:1px solid #e0d3ce;font-family:'Outfit';font-size:.92rem;}
+#ge-admin-login-form button{
+  padding:11px;border-radius:999px;border:none;background:var(--gold);color:var(--purple-dark);
+  font-weight:700;cursor:pointer;font-family:'Outfit';
+}
+#ge-admin-status{font-size:.85rem;color:#b04a3a;min-height:1.2em;}
+
+/* Panel */
+#ge-admin-panel{display:none;}
+.ge-tabs{display:flex;gap:8px;margin-bottom:22px;}
+.ge-tab{
+  border:1px solid var(--purple);background:transparent;color:var(--purple);
+  padding:8px 18px;border-radius:999px;cursor:pointer;font-family:'Outfit';font-weight:600;font-size:.82rem;
+}
+.ge-tab.active{background:var(--purple);color:var(--white);}
+
+.ge-admin-card{background:var(--white);border-radius:18px;padding:20px;border:1px solid #efe6db;margin-bottom:16px;}
+.ge-card-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:6px;}
+.ge-guest-name{font-weight:700;color:var(--purple-deep);}
+.ge-property-badge{font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;background:rgba(139,63,161,.1);color:var(--purple);padding:3px 10px;border-radius:999px;}
+.ge-date{font-size:.78rem;color:#8a7a95;margin-bottom:10px;}
+.ge-quote{font-style:italic;color:#4a3a55;margin-bottom:8px;}
+.ge-reco{background:rgba(139,63,161,.07);border-left:3px solid var(--gold);border-radius:8px;padding:8px 12px;font-size:.88rem;margin-bottom:10px;}
+.ge-reco-label{font-weight:700;color:var(--purple-deep);}
+.ge-photos{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;}
+.ge-photo{width:88px;height:88px;object-fit:cover;border-radius:10px;cursor:pointer;}
+.ge-admin-actions{display:flex;gap:8px;flex-wrap:wrap;}
+.ge-btn{border:none;border-radius:999px;padding:8px 16px;font-family:'Outfit';font-weight:600;font-size:.8rem;cursor:pointer;}
+.ge-btn-approve{background:#3a8a5e;color:#fff;}
+.ge-btn-reject{background:#b04a3a;color:#fff;}
+.ge-btn-pending{background:var(--gold);color:var(--purple-dark);}
+.ge-error-msg{color:#b04a3a;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <h1>Moderar · Nuestros huéspedes y sus experiencias</h1>
+  <button id="ge-admin-logout">Cerrar sesión</button>
+</div>
+
+<main>
+  <div id="ge-admin-login">
+    <h2>Acceso de administrador</h2>
+    <form id="ge-admin-login-form">
+      <input id="ge-admin-email" type="email" placeholder="Correo" required autocomplete="username">
+      <input id="ge-admin-password" type="password" placeholder="Contraseña" required autocomplete="current-password">
+      <button type="submit">Ingresar</button>
+    </form>
+    <div id="ge-admin-status"></div>
+  </div>
+
+  <div id="ge-admin-panel">
+    <div class="ge-tabs">
+      <button class="ge-tab active" data-tab="pending">Pendientes</button>
+      <button class="ge-tab" data-tab="approved">Aprobadas</button>
+      <button class="ge-tab" data-tab="rejected">Rechazadas</button>
+    </div>
+    <div id="ge-admin-list"></div>
+  </div>
+</main>
+
+<script src="../shared/supabase-config.js"></script>
+<script src="../shared/guest-experiences.js"></script>
+<script>
+geInitAdminPage();
+</script>
+</body>
+</html>
