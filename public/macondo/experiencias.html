@@ -28,11 +28,15 @@ h1,h2,h3{font-family:'Cormorant Garamond',serif;}
 
 .topbar{
   position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;
-  padding:14px 24px;background:rgba(58,18,72,.92);backdrop-filter:blur(12px);
+  padding:14px 24px;background:rgba(58,18,72,.92);backdrop-filter:blur(12px);gap:16px;flex-wrap:wrap;
 }
 .topbar a{color:var(--gold-soft);text-decoration:none;font-weight:600;font-size:.85rem;letter-spacing:.05em;}
 .brand-name{color:var(--cream);font-weight:600;letter-spacing:.1em;font-size:.8rem;}
 .brand-name span{color:var(--gold);}
+.topbar-right{display:flex;align-items:center;gap:16px;}
+.lang-toggle{display:flex;border:1px solid rgba(243,213,138,.5);border-radius:999px;overflow:hidden;}
+.lang-toggle button{background:transparent;border:none;color:var(--cream);padding:7px 16px;font-family:'Outfit';font-size:.78rem;font-weight:600;letter-spacing:.08em;cursor:pointer;transition:all .25s;}
+.lang-toggle button.active{background:var(--gold);color:var(--purple-dark);}
 
 .ge-hero{
   padding:56px 24px 40px;text-align:center;
@@ -113,65 +117,72 @@ section{margin-bottom:56px;}
 
 <div class="topbar">
   <span class="brand-name">MACONDO <span>717</span></span>
-  <a href="index.html">← Volver a la guía</a>
+  <div class="topbar-right">
+    <div class="lang-toggle">
+      <button data-lang="es" class="active" onclick="geSetLang('es')">ES</button>
+      <button data-lang="en" onclick="geSetLang('en')">EN</button>
+      <button data-lang="fr" onclick="geSetLang('fr')">FR</button>
+    </div>
+    <a href="index.html" data-es="← Volver a la guía" data-en="← Back to the guide" data-fr="← Retour au guide">← Volver a la guía</a>
+  </div>
 </div>
 
 <div class="ge-hero">
-  <span class="ge-hero-eyebrow">Voces de la comunidad</span>
-  <h1>Nuestros huéspedes y <em>sus experiencias</em></h1>
-  <p>Lee lo que otros viajeros vivieron en Macondo, sus recomendaciones de la ciudad, y comparte tu propia historia.</p>
+  <span class="ge-hero-eyebrow" data-es="Voces de la comunidad" data-en="Community voices" data-fr="Voix de la communauté">Voces de la comunidad</span>
+  <h1><span data-es="Nuestros huéspedes y" data-en="Our guests and" data-fr="Nos invités et">Nuestros huéspedes y</span> <em data-es="sus experiencias" data-en="their experiences" data-fr="leurs expériences">sus experiencias</em></h1>
+  <p data-es="Lee lo que otros viajeros vivieron en Macondo, sus recomendaciones de la ciudad, y comparte tu propia historia." data-en="Read what other travelers experienced at Macondo, their recommendations for the city, and share your own story." data-fr="Lisez ce que d'autres voyageurs ont vécu à Macondo, leurs recommandations pour la ville, et partagez votre propre histoire.">Lee lo que otros viajeros vivieron en Macondo, sus recomendaciones de la ciudad, y comparte tu propia historia.</p>
 </div>
 
 <main>
   <section>
-    <h2 class="sec-title">Experiencias de huéspedes</h2>
-    <p class="ge-board-empty" id="ge-board-empty" style="display:none;">Aún no hay experiencias publicadas — ¡sé el primero en compartir la tuya!</p>
+    <h2 class="sec-title" data-es="Experiencias de huéspedes" data-en="Guest experiences" data-fr="Expériences des invités">Experiencias de huéspedes</h2>
+    <p class="ge-board-empty" id="ge-board-empty" style="display:none;" data-es="Aún no hay experiencias publicadas — ¡sé el primero en compartir la tuya!" data-en="No experiences published yet — be the first to share yours!" data-fr="Aucune expérience publiée pour l'instant — soyez le premier à partager la vôtre !">Aún no hay experiencias publicadas — ¡sé el primero en compartir la tuya!</p>
     <div class="ge-board-list" id="ge-board-list"></div>
   </section>
 
   <section>
-    <h2 class="sec-title">Comparte tu experiencia</h2>
+    <h2 class="sec-title" data-es="Comparte tu experiencia" data-en="Share your experience" data-fr="Partagez votre expérience">Comparte tu experiencia</h2>
 
     <div class="ge-confirmation" id="ge-confirmation">
-      <h3>¡Gracias por compartir!</h3>
-      <p>Tu historia será revisada antes de publicarse. Apreciamos mucho que te hayas tomado el tiempo.</p>
+      <h3 data-es="¡Gracias por compartir!" data-en="Thanks for sharing!" data-fr="Merci d'avoir partagé !">¡Gracias por compartir!</h3>
+      <p data-es="Tu historia será revisada antes de publicarse. Apreciamos mucho que te hayas tomado el tiempo." data-en="Your story will be reviewed before it's published. We really appreciate you taking the time." data-fr="Votre histoire sera examinée avant sa publication. Nous vous remercions sincèrement d'avoir pris le temps.">Tu historia será revisada antes de publicarse. Apreciamos mucho que te hayas tomado el tiempo.</p>
     </div>
 
     <form class="ge-form" id="ge-form">
       <input class="ge-hp-field" type="text" name="ge-hp" tabindex="-1" autocomplete="off">
 
       <div class="ge-field">
-        <label for="ge-guest-name">Nombre *</label>
+        <label for="ge-guest-name" data-es="Nombre *" data-en="Name *" data-fr="Nom *">Nombre *</label>
         <input id="ge-guest-name" type="text" name="guest_name" required maxlength="120">
       </div>
 
       <div class="ge-row">
         <div class="ge-field">
-          <label for="ge-stay-start">Fecha de llegada *</label>
+          <label for="ge-stay-start" data-es="Fecha de llegada *" data-en="Arrival date *" data-fr="Date d'arrivée *">Fecha de llegada *</label>
           <input id="ge-stay-start" type="date" name="stay_start" required>
         </div>
         <div class="ge-field">
-          <label for="ge-stay-end">Fecha de salida *</label>
+          <label for="ge-stay-end" data-es="Fecha de salida *" data-en="Departure date *" data-fr="Date de départ *">Fecha de salida *</label>
           <input id="ge-stay-end" type="date" name="stay_end" required>
         </div>
       </div>
 
       <div class="ge-field">
-        <label for="ge-review-text">Tu experiencia *</label>
-        <textarea id="ge-review-text" name="review_text" required maxlength="1000" placeholder="Cuéntanos cómo fue tu estadía en Macondo..."></textarea>
+        <label for="ge-review-text" data-es="Tu experiencia *" data-en="Your experience *" data-fr="Votre expérience *">Tu experiencia *</label>
+        <textarea id="ge-review-text" name="review_text" required maxlength="1000" data-es-placeholder="Cuéntanos cómo fue tu estadía en Macondo..." data-en-placeholder="Tell us about your stay at Macondo..." data-fr-placeholder="Racontez-nous votre séjour à Macondo..." placeholder="Cuéntanos cómo fue tu estadía en Macondo..."></textarea>
       </div>
 
       <div class="ge-field">
-        <label for="ge-reco-text">Recomendaciones cerca de Macondo (opcional)</label>
-        <textarea id="ge-reco-text" name="recommendations_text" maxlength="400" placeholder="Restaurantes, playas, actividades que recomiendes..."></textarea>
+        <label for="ge-reco-text" data-es="Recomendaciones cerca de Macondo (opcional)" data-en="Recommendations near Macondo (optional)" data-fr="Recommandations près de Macondo (facultatif)">Recomendaciones cerca de Macondo (opcional)</label>
+        <textarea id="ge-reco-text" name="recommendations_text" maxlength="400" data-es-placeholder="Restaurantes, playas, actividades que recomiendes..." data-en-placeholder="Restaurants, beaches, activities you'd recommend..." data-fr-placeholder="Restaurants, plages, activités que vous recommandez..." placeholder="Restaurantes, playas, actividades que recomiendes..."></textarea>
       </div>
 
       <div class="ge-field">
-        <label for="ge-photos">Fotos (opcional, máx. 5)</label>
+        <label for="ge-photos" data-es="Fotos (opcional, máx. 5)" data-en="Photos (optional, max. 5)" data-fr="Photos (facultatif, max. 5)">Fotos (opcional, máx. 5)</label>
         <input id="ge-photos" type="file" name="photos" accept="image/jpeg,image/png,image/heic,image/webp" multiple>
       </div>
 
-      <button class="ge-submit-btn" id="ge-submit-btn" type="submit">Enviar mi experiencia</button>
+      <button class="ge-submit-btn" id="ge-submit-btn" type="submit" data-es="Enviar mi experiencia" data-en="Submit my experience" data-fr="Envoyer mon expérience">Enviar mi experiencia</button>
       <div class="ge-form-status" id="ge-form-status"></div>
     </form>
   </section>

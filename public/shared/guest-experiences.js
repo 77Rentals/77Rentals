@@ -26,10 +26,11 @@ function geEscapeHtml(str) {
 
 const GE_MONTHS_ES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
 const GE_MONTHS_EN = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const GE_MONTHS_FR = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
 function geFormatMonthYear(dateStr, lang) {
   // dateStr is 'YYYY-MM-DD'; parse manually to avoid timezone shifting the month.
   const [y, m] = dateStr.split('-').map(Number);
-  const months = lang === 'en' ? GE_MONTHS_EN : GE_MONTHS_ES;
+  const months = lang === 'en' ? GE_MONTHS_EN : lang === 'fr' ? GE_MONTHS_FR : GE_MONTHS_ES;
   const month = months[m - 1] || '';
   return lang === 'en' ? `${month} ${y}` : `${month.charAt(0).toUpperCase()}${month.slice(1)} ${y}`;
 }
@@ -104,7 +105,22 @@ async function geUploadImages(files, property, submissionId, onProgress) {
 /* ══════════ PUBLIC BOARD PAGE (experiencias.html) ══════════ */
 
 function geCurrentLang() {
-  return document.documentElement.lang === 'en' ? 'en' : 'es';
+  const l = document.documentElement.lang;
+  return (l === 'en' || l === 'fr') ? l : 'es';
+}
+
+function geSetLang(l) {
+  document.documentElement.lang = l;
+  document.querySelectorAll('.lang-toggle button').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.lang === l);
+  });
+  document.querySelectorAll('[data-es]').forEach(el => {
+    el.textContent = el.dataset[l];
+  });
+  document.querySelectorAll('[data-es-placeholder]').forEach(el => {
+    el.placeholder = el.dataset[l + 'Placeholder'];
+  });
+  geLoadBoard(); // re-render approved cards so month/year labels switch language too
 }
 
 function geRenderCard(row) {
@@ -115,8 +131,9 @@ function geRenderCard(row) {
     return `<img class="ge-photo" src="${geEscapeHtml(url)}" alt="" loading="lazy" onclick="openLB('${url.replace(/'/g, "\\'")}')">`;
   }).join('');
 
+  const recoLabel = lang === 'en' ? 'Recommends:' : lang === 'fr' ? 'Recommande :' : 'Recomienda:';
   const recoBlock = row.recommendations_text
-    ? `<div class="ge-reco"><span class="ge-reco-label">📍 ${lang === 'en' ? 'Recommends:' : 'Recomienda:'}</span> ${geEscapeHtml(row.recommendations_text)}</div>`
+    ? `<div class="ge-reco"><span class="ge-reco-label">📍 ${recoLabel}</span> ${geEscapeHtml(row.recommendations_text)}</div>`
     : '';
 
   return `
@@ -139,7 +156,9 @@ async function geLoadBoard() {
   try {
     client = geGetClient();
   } catch (e) {
-    list.innerHTML = `<p class="ge-error-msg">${geCurrentLang() === 'en' ? 'Guest board is not configured yet.' : 'El tablero de experiencias aún no está configurado.'}</p>`;
+    const lang = geCurrentLang();
+    const msg = lang === 'en' ? 'Guest board is not configured yet.' : lang === 'fr' ? "Le tableau des expériences n'est pas encore configuré." : 'El tablero de experiencias aún no está configurado.';
+    list.innerHTML = `<p class="ge-error-msg">${msg}</p>`;
     return;
   }
   const { data, error } = await client
@@ -150,7 +169,9 @@ async function geLoadBoard() {
     .order('created_at', { ascending: false });
 
   if (error) {
-    list.innerHTML = `<p class="ge-error-msg">${geCurrentLang() === 'en' ? 'Could not load experiences right now.' : 'No se pudieron cargar las experiencias en este momento.'}</p>`;
+    const lang = geCurrentLang();
+    const msg = lang === 'en' ? 'Could not load experiences right now.' : lang === 'fr' ? "Impossible de charger les expériences pour le moment." : 'No se pudieron cargar las experiencias en este momento.';
+    list.innerHTML = `<p class="ge-error-msg">${msg}</p>`;
     return;
   }
   if (!data || data.length === 0) {
@@ -190,22 +211,22 @@ async function geHandleSubmit(evt) {
   const files = fileInput && fileInput.files ? Array.from(fileInput.files).slice(0, GE_MAX_IMAGES) : [];
 
   if (!guestName || !stayStart || !stayEnd || !reviewText) {
-    geSetFormBusy(false, lang === 'en' ? 'Please fill in all required fields.' : 'Por favor completa todos los campos obligatorios.');
+    geSetFormBusy(false, lang === 'en' ? 'Please fill in all required fields.' : lang === 'fr' ? 'Veuillez remplir tous les champs obligatoires.' : 'Por favor completa todos los campos obligatorios.');
     return;
   }
   if (reviewText.length > 1000 || recoText.length > 400) {
-    geSetFormBusy(false, lang === 'en' ? 'Text is too long.' : 'El texto es demasiado largo.');
+    geSetFormBusy(false, lang === 'en' ? 'Text is too long.' : lang === 'fr' ? 'Le texte est trop long.' : 'El texto es demasiado largo.');
     return;
   }
 
-  geSetFormBusy(true, lang === 'en' ? 'Submitting…' : 'Enviando…');
+  geSetFormBusy(true, lang === 'en' ? 'Submitting…' : lang === 'fr' ? 'Envoi en cours…' : 'Enviando…');
 
   try {
     const submissionId = crypto.randomUUID();
     let imagePaths = [];
     if (files.length > 0) {
       imagePaths = await geUploadImages(files, window.GE_CONFIG.property, submissionId, (i, n) => {
-        geSetFormBusy(true, lang === 'en' ? `Uploading photo ${i} of ${n}…` : `Subiendo foto ${i} de ${n}…`);
+        geSetFormBusy(true, lang === 'en' ? `Uploading photo ${i} of ${n}…` : lang === 'fr' ? `Envoi de la photo ${i} sur ${n}…` : `Subiendo foto ${i} de ${n}…`);
       });
     }
 
@@ -227,7 +248,7 @@ async function geHandleSubmit(evt) {
     geSetFormBusy(false, '');
     geShowConfirmation();
   } catch (e) {
-    geSetFormBusy(false, lang === 'en' ? 'Something went wrong. Please try again.' : 'Algo salió mal. Por favor intenta de nuevo.');
+    geSetFormBusy(false, lang === 'en' ? 'Something went wrong. Please try again.' : lang === 'fr' ? 'Une erreur est survenue. Veuillez réessayer.' : 'Algo salió mal. Por favor intenta de nuevo.');
   }
 }
 
