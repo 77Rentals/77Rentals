@@ -26,6 +26,7 @@ create index guest_experiences_property_approved_idx
 alter table public.guest_experiences enable row level security;
 
 -- Public (anon) can insert only a new, pending, non-approved row.
+drop policy if exists "anon can insert pending submissions" on public.guest_experiences;
 create policy "anon can insert pending submissions"
   on public.guest_experiences for insert to anon
   with check (
@@ -36,6 +37,7 @@ create policy "anon can insert pending submissions"
   );
 
 -- Public (anon) can read only approved rows.
+drop policy if exists "anon can read approved submissions" on public.guest_experiences;
 create policy "anon can read approved submissions"
   on public.guest_experiences for select to anon
   using (approved = true);
@@ -43,14 +45,17 @@ create policy "anon can read approved submissions"
 -- No anon update/delete policies exist — denied by default under RLS.
 
 -- Admin (any authenticated user) can see and moderate everything.
+drop policy if exists "authenticated can read all submissions" on public.guest_experiences;
 create policy "authenticated can read all submissions"
   on public.guest_experiences for select to authenticated
   using (true);
 
+drop policy if exists "authenticated can update submissions" on public.guest_experiences;
 create policy "authenticated can update submissions"
   on public.guest_experiences for update to authenticated
   using (true) with check (true);
 
+drop policy if exists "authenticated can delete submissions" on public.guest_experiences;
 create policy "authenticated can delete submissions"
   on public.guest_experiences for delete to authenticated
   using (true);
@@ -59,14 +64,17 @@ create policy "authenticated can delete submissions"
 -- Create a bucket named `guest-experience-photos` via the Supabase dashboard
 -- (Storage → New bucket), mark it Public, then run these policies:
 
+drop policy if exists "anon can upload guest photos" on storage.objects;
 create policy "anon can upload guest photos"
   on storage.objects for insert to anon
   with check (bucket_id = 'guest-experience-photos');
 
+drop policy if exists "anyone can view guest photos" on storage.objects;
 create policy "anyone can view guest photos"
   on storage.objects for select to anon, authenticated
   using (bucket_id = 'guest-experience-photos');
 
+drop policy if exists "authenticated can delete guest photos" on storage.objects;
 create policy "authenticated can delete guest photos"
   on storage.objects for delete to authenticated
   using (bucket_id = 'guest-experience-photos');

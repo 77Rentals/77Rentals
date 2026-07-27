@@ -5,5 +5,5 @@
 //
 // Replace both placeholders after creating the Supabase project and running the
 // setup SQL (see public/shared/guest-experiences-setup.sql).
-window.SUPABASE_URL = 'REPLACE_WITH_YOUR_SUPABASE_PROJECT_URL';
-window.SUPABASE_ANON_KEY = 'REPLACE_WITH_YOUR_SUPABASE_ANON_PUBLIC_KEY';
+window.SUPABASE_URL = 'https://vexlqzojvjmjdcuniwlw.supabase.co';
+window.SUPABASE_ANON_KEY = 'sb_publishable_PjSS8PPDfVPVoFjLhyVMdQ_sa9l-Him';
