@@ -226,6 +226,16 @@ section,header,footer,.topbar{position:relative;z-index:1;}
 }
 .amen-fee .amen-fee-icon{font-size:1.6rem;line-height:1;}
 .amen-fee p{margin:0;font-size:.92rem;line-height:1.5;}
+.escnna-warning{
+  display:flex;gap:14px;align-items:center;cursor:pointer;
+  border:1px solid #c0392b;border-radius:16px;
+  padding:16px 20px;background:rgba(192,57,43,.06);
+  transition:background .2s;
+}
+.escnna-warning:hover{background:rgba(192,57,43,.12);}
+.escnna-warning .escnna-icon{font-size:1.6rem;line-height:1;flex-shrink:0;}
+.escnna-warning strong{display:block;color:#c0392b;font-size:.92rem;margin-bottom:2px;}
+.escnna-warning small{display:block;font-size:.78rem;color:#5a4666;opacity:.85;}
 .amen-hours{border:1px solid #efe6db;border-radius:16px;overflow:hidden;margin-bottom:24px;}
 .amen-hour-row{display:flex;align-items:center;gap:12px;padding:12px 18px;font-size:.88rem;}
 .amen-hour-row:not(:last-child){border-bottom:1px solid #efe6db;}
@@ -770,6 +780,13 @@ footer a{color:var(--gold);text-decoration:none;}
   <div class="amen-fee">
     <span class="amen-fee-icon">📋</span>
     <p data-es="Al reservar y/o hacer check-in, aceptas estas reglas de la casa. 77Rentals y los anfitriones no se hacen responsables por lesiones, pérdidas o robo de pertenencias personales, salvo negligencia comprobada del anfitrión, en la medida permitida por la ley aplicable. El incumplimiento de estas reglas (fiestas, fumar, huéspedes no registrados, daños a la propiedad) puede resultar en la terminación inmediata de la estadía sin reembolso, conforme a los términos de la plataforma de reserva (Airbnb / Booking.com). Cargos por daños o depósito de seguridad pueden tramitarse a través del Centro de Resolución de la plataforma correspondiente." data-en="By booking and/or checking in, you agree to these house rules. 77Rentals and the hosts are not liable for guest injury, loss, or theft of personal belongings, except where caused by proven host negligence, to the extent permitted by applicable law. Violation of these rules (parties, smoking, unregistered guests, property damage) may result in immediate termination of the stay without refund, per the booking platform's terms (Airbnb / Booking.com). Damage charges or security deposit claims may be processed through the relevant platform's Resolution Center." data-fr="En réservant et/ou en effectuant le check-in, vous acceptez ce règlement intérieur. 77Rentals et les hôtes ne sont pas responsables des blessures, pertes ou vols d'effets personnels, sauf négligence prouvée de l'hôte, dans la mesure permise par la loi applicable. Le non-respect de ces règles (fêtes, tabac, invités non enregistrés, dommages à la propriété) peut entraîner la résiliation immédiate du séjour sans remboursement, conformément aux conditions de la plateforme de réservation (Airbnb / Booking.com). Les frais de dommages ou de dépôt de garantie peuvent être traités via le centre de résolution de la plateforme concernée.">Al reservar y/o hacer check-in, aceptas estas reglas de la casa. 77Rentals y los anfitriones no se hacen responsables por lesiones, pérdidas o robo de pertenencias personales, salvo negligencia comprobada del anfitrión, en la medida permitida por la ley aplicable. El incumplimiento de estas reglas (fiestas, fumar, huéspedes no registrados, daños a la propiedad) puede resultar en la terminación inmediata de la estadía sin reembolso, conforme a los términos de la plataforma de reserva (Airbnb / Booking.com). Cargos por daños o depósito de seguridad pueden tramitarse a través del Centro de Resolución de la plataforma correspondiente.</p>
+  </div>
+  <div class="escnna-warning" onclick="openLB('escnna_poster.jpg')">
+    <span class="escnna-icon">⚠️</span>
+    <div>
+      <strong data-es="Advertencia ESCNNA" data-en="ESCNNA Warning" data-fr="Avertissement ESCNNA">Advertencia ESCNNA</strong>
+      <small data-es="Toca para ver el aviso completo sobre prevención de explotación sexual de niños, niñas y adolescentes" data-en="Tap to view the full notice on preventing sexual exploitation of children and adolescents" data-fr="Appuyez pour voir l'avis complet sur la prévention de l'exploitation sexuelle des enfants et adolescents">Toca para ver el aviso completo sobre prevención de explotación sexual de niños, niñas y adolescentes</small>
+    </div>
   </div>
 </section>
 
