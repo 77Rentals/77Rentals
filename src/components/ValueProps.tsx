@@ -1,5 +1,6 @@
 import { useLanguage } from '@/contexts/LanguageContext';
 import { ShieldCheck, Sofa, HeadphonesIcon, Star } from 'lucide-react';
+import SectionHeading from '@/components/SectionHeading';
 
 const ValueProps = () => {
   const { t } = useLanguage();
@@ -38,18 +39,15 @@ const ValueProps = () => {
 
       <div className="container mx-auto px-4 relative z-10">
         {/* Header */}
-        <div className="text-center mb-14">
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <div className="h-px w-8 bg-[#D4A843]" />
-            <span className="text-[#D4A843] text-xs font-semibold uppercase tracking-[0.2em]">
-              {t('value.title')}
-            </span>
-            <div className="h-px w-8 bg-[#D4A843]" />
-          </div>
-          <h2 className="text-3xl md:text-4xl font-serif font-bold text-white">
-            La diferencia 77 Rentals
-          </h2>
-        </div>
+        <SectionHeading
+          variant="left"
+          eyebrow={t('value.title')}
+          heading="La diferencia 77 Rentals"
+          eyebrowClassName="text-[#D4A843]"
+          headingClassName="text-white"
+          ruleClassName="bg-[#D4A843]"
+          className="mb-14"
+        />
 
         {/* Cards */}
         <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">

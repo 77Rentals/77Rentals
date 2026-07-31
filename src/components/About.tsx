@@ -1,5 +1,6 @@
 import { useLanguage } from '@/contexts/LanguageContext';
 import logo from '@/assets/logo77.jpeg';
+import SectionHeading from '@/components/SectionHeading';
 
 const About = () => {
   const { t } = useLanguage();
@@ -7,12 +8,15 @@ const About = () => {
   return (
     <section id="about" className="py-20 bg-background">
       <div className="container mx-auto px-4 max-w-5xl">
+        <SectionHeading
+          variant="split"
+          eyebrow={t('about.subtitle')}
+          heading={t('about.title')}
+          supporting={t('about.text1')}
+          className="mb-12"
+        />
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <div>
-            <p className="text-secondary font-semibold uppercase tracking-widest text-sm mb-2">{t('about.subtitle')}</p>
-            <h2 className="text-3xl md:text-4xl font-serif font-bold text-foreground mb-6">{t('about.title')}</h2>
-            <div className="w-16 h-1 bg-secondary mb-6 rounded-full" />
-            <p className="text-muted-foreground leading-relaxed mb-4">{t('about.text1')}</p>
             <p className="text-muted-foreground leading-relaxed">{t('about.text2')}</p>
           </div>
           <div className="relative">

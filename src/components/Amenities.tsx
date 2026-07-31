@@ -1,5 +1,6 @@
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Waves, Droplets, Dumbbell, Wifi, UtensilsCrossed, Sun, Tv, Umbrella, Car, Wind, WashingMachine, ShieldCheck } from 'lucide-react';
+import SectionHeading from '@/components/SectionHeading';
 
 const amenityIcons = [
   { key: 'oceanView', icon: Waves },
@@ -17,14 +18,18 @@ const amenityIcons = [
 ];
 
 const Amenities = () => {
-  const { t } = useLanguage();
+  const { lang, t } = useLanguage();
 
   return (
     <section className="py-20 bg-background">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl md:text-4xl font-serif font-bold text-center text-foreground mb-2">{t('amenities.title')}</h2>
-        <p className="text-center text-muted-foreground mb-2">{t('amenities.subtitle')}</p>
-        <div className="w-16 h-1 bg-secondary mx-auto mb-12 rounded-full" />
+        <SectionHeading
+          variant="split"
+          eyebrow={lang === 'es' ? 'COMODIDADES' : 'AMENITIES'}
+          heading={t('amenities.title')}
+          supporting={t('amenities.subtitle')}
+          className="mb-12"
+        />
 
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6 max-w-5xl mx-auto">
           {amenityIcons.map(({ key, icon: Icon }) => (

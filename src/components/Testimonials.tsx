@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { ChevronLeft, ChevronRight, Star, Quote } from 'lucide-react';
+import SectionHeading from '@/components/SectionHeading';
 
 const testimonials = [
   {
@@ -82,18 +83,15 @@ const Testimonials = () => {
     <section className="py-24 bg-[#F8F6FF]">
       <div className="container mx-auto px-4 max-w-4xl">
         {/* Header */}
-        <div className="text-center mb-14">
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <div className="h-px w-8 bg-[#D4A843]" />
-            <span className="text-[#D4A843] text-xs font-semibold uppercase tracking-[0.2em]">
-              Reseñas verificadas
-            </span>
-            <div className="h-px w-8 bg-[#D4A843]" />
-          </div>
-          <h2 className="text-3xl md:text-4xl font-serif font-bold text-[#2D1B69]">
-            {t('testimonials.title')}
-          </h2>
-        </div>
+        <SectionHeading
+          variant="left"
+          eyebrow="Reseñas verificadas"
+          heading={t('testimonials.title')}
+          eyebrowClassName="text-[#D4A843]"
+          headingClassName="text-[#2D1B69]"
+          ruleClassName="bg-[#D4A843]"
+          className="mb-14"
+        />
 
         {/* Card */}
         <div className="relative bg-white rounded-3xl shadow-lg shadow-[#2D1B69]/5 p-8 md:p-12 border border-[#2D1B69]/5">

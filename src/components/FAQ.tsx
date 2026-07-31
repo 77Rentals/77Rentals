@@ -1,8 +1,9 @@
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import SectionHeading from '@/components/SectionHeading';
 
 const FAQ = () => {
-  const { t } = useLanguage();
+  const { lang, t } = useLanguage();
 
   const faqs = [
     { q: t('faq.q1'), a: t('faq.a1') },
@@ -16,8 +17,12 @@ const FAQ = () => {
   return (
     <section className="py-20 bg-background">
       <div className="container mx-auto px-4 max-w-3xl">
-        <h2 className="text-3xl md:text-4xl font-serif font-bold text-center text-foreground mb-2">{t('faq.title')}</h2>
-        <div className="w-16 h-1 bg-secondary mx-auto mb-12 rounded-full" />
+        <SectionHeading
+          variant="center"
+          eyebrow={lang === 'es' ? 'SOPORTE' : 'SUPPORT'}
+          heading={t('faq.title')}
+          className="mb-12"
+        />
 
         <Accordion type="single" collapsible className="space-y-3">
           {faqs.map((faq, i) => (

@@ -1,6 +1,7 @@
 import { useLanguage } from '@/contexts/LanguageContext';
 import { MapPin, UtensilsCrossed, Waves, PartyPopper } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import SectionHeading from '@/components/SectionHeading';
 
 const cities = {
   Cartagena: {
@@ -35,9 +36,13 @@ const LocalAttractions = () => {
   return (
     <section className="py-20 bg-muted">
       <div className="container mx-auto px-4 max-w-4xl">
-        <h2 className="text-3xl md:text-4xl font-serif font-bold text-center text-foreground mb-2">{t('attractions.title')}</h2>
-        <p className="text-center text-muted-foreground mb-2">{t('attractions.subtitle')}</p>
-        <div className="w-16 h-1 bg-secondary mx-auto mb-12 rounded-full" />
+        <SectionHeading
+          variant="split"
+          eyebrow={lang === 'es' ? 'EXPLORA' : 'EXPLORE'}
+          heading={t('attractions.title')}
+          supporting={t('attractions.subtitle')}
+          className="mb-12"
+        />
 
         <Tabs defaultValue="Cartagena" className="w-full">
           <TabsList className="w-full grid grid-cols-3 mb-8">

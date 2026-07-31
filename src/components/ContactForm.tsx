@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
+import SectionHeading from '@/components/SectionHeading';
 
 const WEB3FORMS_KEY = '6979f913-1573-41ce-bbdd-1df63fa27f73';
 
@@ -64,13 +65,15 @@ const ContactForm = () => {
 
       <div className="container mx-auto px-4 max-w-2xl relative z-10">
         {/* Header */}
-        <p className="text-center text-[#D4A843] text-xs font-semibold tracking-widest uppercase mb-2">
-          ¿Listo para tu próxima aventura?
-        </p>
-        <h2 className="text-3xl md:text-4xl font-serif font-bold text-center text-white mb-2">
-          Contáctanos
-        </h2>
-        <div className="w-16 h-1 bg-[#D4A843] mx-auto mb-10 rounded-full" />
+        <SectionHeading
+          variant="left"
+          eyebrow="¿Listo para tu próxima aventura?"
+          heading="Contáctanos"
+          eyebrowClassName="text-[#D4A843]"
+          headingClassName="text-white"
+          ruleClassName="bg-[#D4A843]"
+          className="mb-10"
+        />
 
         {/* Form card */}
         <form

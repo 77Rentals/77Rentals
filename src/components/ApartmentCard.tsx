@@ -5,6 +5,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { apartments } from '@/data/apartments';
 import { Users, BedDouble, Bath, ChevronLeft, ChevronRight, Star, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import SectionHeading from '@/components/SectionHeading';
 
 // ── Image Carousel ──────────────────────────────────────────────────────────
 const ImageCarousel = ({ images, name }: { images: string[]; name: string }) => {
@@ -86,16 +87,15 @@ const ApartmentCard = () => {
       <div className="container mx-auto px-4 max-w-6xl">
 
         {/* Section header */}
-        <div className="flex flex-col items-center mb-10">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="h-px w-8 bg-[#D4A843]" />
-            <span className="text-[#D4A843] text-xs font-semibold uppercase tracking-[0.2em]">DESTINOS</span>
-            <div className="h-px w-8 bg-[#D4A843]" />
-          </div>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif font-bold text-[#2D1B69] text-center">
-            {t('apartments.title')}
-          </h2>
-        </div>
+        <SectionHeading
+          variant="center"
+          eyebrow="DESTINOS"
+          heading={t('apartments.title')}
+          eyebrowClassName="text-[#D4A843]"
+          headingClassName="text-[#2D1B69]"
+          ruleClassName="bg-[#D4A843]"
+          className="mb-10"
+        />
 
         {/* City tiles — Santa Marta featured */}
         <div className="grid grid-cols-[1.6fr_1fr] gap-3 mb-6 max-w-4xl mx-auto">

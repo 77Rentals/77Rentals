@@ -1,14 +1,19 @@
 import { useLanguage } from '@/contexts/LanguageContext';
+import SectionHeading from '@/components/SectionHeading';
 
 const MapSection = () => {
-  const { t } = useLanguage();
+  const { lang, t } = useLanguage();
 
   return (
     <section className="py-20 bg-background">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl md:text-4xl font-serif font-bold text-center text-foreground mb-2">{t('map.title')}</h2>
-        <p className="text-center text-muted-foreground mb-2">{t('map.subtitle')}</p>
-        <div className="w-16 h-1 bg-secondary mx-auto mb-12 rounded-full" />
+        <SectionHeading
+          variant="left"
+          eyebrow={lang === 'es' ? 'UBICACIÓN' : 'LOCATION'}
+          heading={t('map.title')}
+          supporting={t('map.subtitle')}
+          className="mb-12"
+        />
 
         <div className="max-w-4xl mx-auto rounded-xl overflow-hidden shadow-lg">
           <iframe
