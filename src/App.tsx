@@ -9,6 +9,7 @@ import Index from "./pages/Index.tsx";
 import Gracias from "./pages/Gracias.tsx";
 import PropertyDetail from "./pages/PropertyDetail.tsx";
 import PartnerHub from "./pages/PartnerHub";
+import Catalog from "./pages/Catalog.tsx";
 import Cotizacion from "./pages/Cotizacion.tsx";
 import ReservaConfirmada from "./pages/ReservaConfirmada.tsx";
 import CompletarDatos from "./pages/CompletarDatos.tsx";
@@ -30,6 +31,7 @@ const App = () => (
             <Route path="/gracias" element={<Gracias />} />
             <Route path="/propiedades/:slug" element={<PropertyDetail />} />
             <Route path="/partner-hub/*" element={<PartnerHub />} />
+            <Route path="/catalogo" element={<Catalog />} />
             <Route path="/cotizacion" element={<Cotizacion />} />
             <Route path="/reserva-confirmada" element={<ReservaConfirmada />} />
             <Route path="/completar-datos" element={<CompletarDatos />} />

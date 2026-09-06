@@ -127,6 +127,15 @@ html {
 /* Selection */
 ::selection { background: hsl(var(--secondary) / 0.25); color: hsl(var(--foreground)); }
 
+/* Hide scrollbar (still scrollable) */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
 /* Line clamp utility */
 .line-clamp-2 {
   display: -webkit-box;
