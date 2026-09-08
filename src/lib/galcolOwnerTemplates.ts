@@ -46,7 +46,7 @@ export function generateGalcolContractText(
   const today = (signedAt ?? new Date()).toLocaleDateString('es-CO');
 
   return `
-CONTRATO DE ARRIENDO A TARIFA FIJA — USO EXCLUSIVO TEMPORAL
+CONTRATO DE SERVICIO DE ALQUILER TURÍSTICO DE INMUEBLE — ALOJAMIENTO TEMPORAL
 ${cfg.quoteNo} · ${cfg.label} · Pozos Colorados, Santa Marta
 
 Entre los suscritos, a saber, de una parte ROBERTO CARLOS RUIZ GÓMEZ, identificado con cédula de
@@ -55,25 +55,30 @@ dueño del establecimiento de comercio 77RENTALS, quien en adelante se denominar
 y de otra parte ${data.ownerName}, identificado(a) con cédula de ciudadanía No. ${data.ownerIdNumber},
 con datos de contacto ${data.ownerContactEmail} y ${data.ownerContactPhone}, propietario(a) de la
 unidad descrita en la Cláusula Segunda, quien en adelante se denominará EL PROPIETARIO; hemos
-convenido celebrar el presente contrato de arriendo a tarifa fija para uso exclusivo temporal, el
-cual se regirá por las siguientes cláusulas:
+convenido celebrar el presente contrato de servicio de alquiler turístico de inmueble para
+alojamiento temporal, el cual se regirá por las siguientes cláusulas:
 
 CLÁUSULA PRIMERA — NATURALEZA DEL CONTRATO
-El presente es un contrato de arriendo comercial de un bien inmueble con destinación distinta a
-vivienda urbana permanente, mediante el cual EL PROPIETARIO pone a disposición de EL ARRENDATARIO,
-de forma exclusiva, la unidad descrita en la Cláusula Segunda durante el período pactado en la
-Cláusula Tercera, para que EL ARRENDATARIO la destine exclusivamente al desarrollo de su actividad
-comercial de renta corta de apartamentos a terceros, dejando expresa constancia de que EL
-ARRENDATARIO no ocupará la unidad como vivienda propia sino que subarrendará su uso temporal en
-desarrollo de dicha actividad comercial. En consecuencia, por tratarse de un arrendamiento con
-destinación comercial y no de vivienda urbana permanente, no le son aplicables las disposiciones
-de la Ley 820 de 2003 sobre arrendamiento de vivienda urbana, rigiéndose en su lugar por las
-disposiciones generales del Código de Comercio y del Código Civil aplicables al arrendamiento de
-bienes inmuebles con destinación distinta a la vivienda urbana permanente. Las partes reconocen y
-aceptan expresamente esta calificación jurídica como base de la relación contractual.
+El presente es un contrato de prestación de servicios turísticos, en la modalidad de servicio de
+alquiler turístico de inmueble amoblado para alojamiento temporal, mediante el cual EL PROPIETARIO
+pone a disposición de EL ARRENDATARIO, de forma exclusiva, la unidad descrita en la Cláusula
+Segunda durante el período pactado en la Cláusula Tercera, para que EL ARRENDATARIO la explote en
+desarrollo de su actividad de alojamiento y hospedaje no permanente a favor de terceros huéspedes,
+regida por la Ley 300 de 1996 (Ley General de Turismo), modificada por la Ley 1558 de 2012, y por
+el Decreto 1074 de 2015 (Decreto Único Reglamentario del Sector Comercio, Industria y Turismo).
+Las partes reconocen que quien opera la actividad turística y contrata directamente con los
+huéspedes finales es EL ARRENDATARIO, por lo que ostenta la calidad de prestador de servicios
+turísticos y declara que cuenta, o contará antes del check-in, con Registro Nacional de Turismo
+(RNT) vigente, siendo el único responsable del cumplimiento de las obligaciones derivadas de dicha
+normativa. EL PROPIETARIO declara y garantiza que el destino turístico de la unidad no contraviene
+el reglamento de propiedad horizontal del edificio (Ley 675 de 2001) ni restricción alguna de uso
+del suelo o del POT aplicable al inmueble. Por tratarse de un servicio de alojamiento turístico y
+no de arrendamiento de vivienda urbana permanente, no le son aplicables las disposiciones de la
+Ley 820 de 2003. Las partes reconocen y aceptan expresamente esta calificación jurídica como base
+de la relación contractual.
 
 CLÁUSULA SEGUNDA — OBJETO
-EL PROPIETARIO pone a disposición de EL ARRENDATARIO, en calidad de arriendo exclusivo, la(s)
+EL PROPIETARIO pone a disposición de EL ARRENDATARIO, en calidad de uso exclusivo, la(s)
 siguiente(s) unidad(es):
    Tipo de unidad: ${cfg.label}
    Edificio / Conjunto: ${data.buildingName}
@@ -96,7 +101,7 @@ equipo hospedado, información que se mantiene bajo reserva conforme al Acuerdo 
 reservas que se traslapen con las fechas aquí pactadas.
 
 CLÁUSULA CUARTA — VALOR Y FORMA DE PAGO
-El valor del arriendo se calcula sobre la tarifa por noche pactada para esta unidad, multiplicada
+El valor del servicio se calcula sobre la tarifa por noche pactada para esta unidad, multiplicada
 por el número de unidades y las 35 noches del período pactado:
    Tipo de unidad: ${cfg.label} — Tarifa/noche: ${formatCOP(cfg.rate)} — Noches: 35 — Valor total
    por unidad: ${formatCOP(cfg.rate * NIGHTS)}
@@ -128,7 +133,7 @@ los 15 días del check-in) corre por cuenta de EL ARRENDATARIO.
 Aseo adicional durante la estadía. EL ARRENDATARIO podrá programar, de mutuo acuerdo con EL
 PROPIETARIO, aseos adicionales durante la estadía, estimados en uno (1) a dos (2) aseos por
 semana por unidad. Cada aseo adicional será pagado por EL ARRENDATARIO a razón de $70.000 COP por
-aseo, valor adicional al arriendo pactado en esta cláusula, y se pagará el día hábil siguiente a
+aseo, valor adicional al servicio pactado en esta cláusula, y se pagará el día hábil siguiente a
 la realización de cada aseo.
 
 CLÁUSULA QUINTA — OBLIGACIONES DE EL PROPIETARIO
@@ -262,23 +267,23 @@ export function generateGalcolNDAText(
 
   return `
 ACUERDO DE CONFIDENCIALIDAD (NDA)
-77Rentals-NDA-2026 · Plantilla para propietarios · Anexo al Contrato de Arriendo a Tarifa Fija
-(${cfg.quoteNo})
+77Rentals-NDA-2026 · Plantilla para propietarios · Anexo al Contrato de Servicio de Alquiler
+Turístico de Inmueble (${cfg.quoteNo})
 
 Entre los suscritos, a saber, de una parte ROBERTO CARLOS RUIZ GÓMEZ, identificado con cédula de
 ciudadanía No. 79.719.972, con domicilio en Cartagena, persona natural (régimen simplificado),
 dueño del establecimiento de comercio 77RENTALS, quien en adelante se denominará 77RENTALS; y de
 otra parte ${data.ownerName}, identificado(a) con cédula de ciudadanía No. ${data.ownerIdNumber},
-propietario(a) de la unidad descrita en el Contrato de Arriendo a Tarifa Fija ${cfg.quoteNo},
-quien en adelante se denominará EL PROPIETARIO; hemos convenido celebrar el presente Acuerdo de
-Confidencialidad, anexo e integral al contrato de arriendo antes referido, el cual se regirá por
-las siguientes cláusulas:
+propietario(a) de la unidad descrita en el Contrato de Servicio de Alquiler Turístico de Inmueble
+${cfg.quoteNo}, quien en adelante se denominará EL PROPIETARIO; hemos convenido celebrar el
+presente Acuerdo de Confidencialidad, anexo e integral al contrato de servicio antes referido, el
+cual se regirá por las siguientes cláusulas:
 
 CLÁUSULA PRIMERA — OBJETO
 El presente Acuerdo tiene por objeto establecer las obligaciones de confidencialidad que EL
 PROPIETARIO debe observar en relación con la información a la que tenga acceso con ocasión del
-arriendo de su unidad a 77RENTALS para el alojamiento de un grupo corporativo durante el período
-comprendido entre el 13 de diciembre de 2026 y el 17 de enero de 2027.
+alquiler turístico de su unidad a 77RENTALS para el alojamiento de un grupo corporativo durante el
+período comprendido entre el 13 de diciembre de 2026 y el 17 de enero de 2027.
 
 CLÁUSULA SEGUNDA — INFORMACIÓN CONFIDENCIAL
 Para efectos de este Acuerdo, se considera Información Confidencial, de forma enunciativa y no
@@ -287,7 +292,8 @@ a) La identidad del huésped/cliente corporativo, así como cualquier dato relat
 que integran el grupo hospedado, incluyendo información relacionada con su esquema de seguridad,
 movimientos, horarios o rutinas.
 b) Los términos comerciales pactados entre 77RENTALS y EL PROPIETARIO, incluyendo tarifas,
-condiciones de pago, fechas y cualquier otro término del Contrato de Arriendo a Tarifa Fija.
+condiciones de pago, fechas y cualquier otro término del Contrato de Servicio de Alquiler
+Turístico de Inmueble.
 c) Cualquier fotografía, video, grabación de audio, imagen o contenido audiovisual del interior
 de la unidad, o de los huéspedes, captado por cualquier medio durante el período en que esté
 ocupada por el grupo hospedado.
@@ -321,19 +327,20 @@ CLÁUSULA QUINTA — VIGENCIA
 Las obligaciones de confidencialidad aquí pactadas estarán vigentes desde la firma del presente
 Acuerdo y se mantendrán indefinidamente respecto de la identidad y datos del huésped y su esquema
 de seguridad, y por un término de dos (2) años respecto de los términos comerciales del contrato,
-contados a partir de la terminación del período de arriendo.
+contados a partir de la terminación del período de alquiler.
 
 CLÁUSULA SEXTA — INCUMPLIMIENTO
 El incumplimiento de cualquiera de las obligaciones establecidas en este Acuerdo facultará a
 77RENTALS para (i) exigir el retiro inmediato de cualquier contenido publicado en contravención a
 la Cláusula Tercera; (ii) reclamar la indemnización de los perjuicios que dicho incumplimiento le
-cause a 77RENTALS o a su cliente corporativo; y (iii) dar por terminado el Contrato de Arriendo a
-Tarifa Fija vigente entre las partes, sin perjuicio de las demás acciones legales a que haya
-lugar.
+cause a 77RENTALS o a su cliente corporativo; y (iii) dar por terminado el Contrato de Servicio de
+Alquiler Turístico de Inmueble vigente entre las partes, sin perjuicio de las demás acciones
+legales a que haya lugar.
 
 CLÁUSULA SÉPTIMA — ACEPTACIÓN Y PERFECCIONAMIENTO
 El presente Acuerdo se perfecciona con la firma de ambas partes y hace parte integral del
-Contrato de Arriendo a Tarifa Fija ${cfg.quoteNo}. Las partes declaran haber leído, entendido y
+Contrato de Servicio de Alquiler Turístico de Inmueble ${cfg.quoteNo}. Las partes declaran haber
+leído, entendido y
 aceptado la totalidad de las cláusulas aquí contenidas, y lo suscriben en dos ejemplares del
 mismo tenor y valor el ${today}.
 

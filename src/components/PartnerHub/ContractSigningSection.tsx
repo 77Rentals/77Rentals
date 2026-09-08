@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useToast } from '@/components/ui/use-toast';
 import { useLanguage } from '@/contexts/LanguageContext';
-import type { GuestRequirement, PartnershipResponse, ContractSignature } from '@/data/partnerHub';
+import type { GuestRequirement, PartnershipResponse, ContractSignature, SigningStatus } from '@/data/partnerHub';
 import {
   generateContractTemplate,
   formatContractForDisplay,
@@ -16,7 +16,7 @@ interface ContractSigningSectionProps {
   requirement: GuestRequirement;
   adminName?: string;
   isAdmin: boolean;
-  onSign: (signerName: string, signerIdNumber: string, contractHash: string) => Promise<void>;
+  onSign: (signerName: string, signerIdNumber: string, contractHash: string) => Promise<SigningStatus>;
 }
 
 // Colombian cédula/NIT: digits, optionally with dots and a NIT check digit
@@ -94,11 +94,10 @@ export function ContractSigningSection({
       // Hash the exact text this party is agreeing to right now, so a later
       // edit to the template can never silently change what was signed.
       const contractHash = await hashContractText(contractTemplate);
-      await onSign(trimmedName, trimmedId, contractHash);
+      // The RPC recomputes status server-side from the actual signature
+      // rows and returns it -- trust that instead of guessing client-side.
+      const newStatus = await onSign(trimmedName, trimmedId, contractHash);
 
-      const newStatus: PartnershipResponse['contractStatus'] = isAdmin
-        ? hasOwnerSigned ? 'both_signed' : 'admin_signed'
-        : hasAdminSigned ? 'both_signed' : 'not_started';
       const signature: ContractSignature = {
         signedBy: isAdmin ? 'admin' : 'owner',
         signerName: trimmedName,
@@ -112,8 +111,11 @@ export function ContractSigningSection({
         ...(isAdmin ? { adminContractSignature: signature } : { ownerContractSignature: signature }),
         contractStatus: newStatus,
       };
-      const emailEvent = newStatus === 'both_signed' ? 'both_signed' : 'admin_signed';
-      sendContractNotificationEmail(emailEvent, responseWithNewSig, requirement).catch(() => {});
+      sendContractNotificationEmail(
+        newStatus as 'admin_signed' | 'owner_signed' | 'both_signed',
+        responseWithNewSig,
+        requirement
+      ).catch(() => {});
 
       toast({
         title: language === 'es' ? 'Éxito' : 'Success',
@@ -143,7 +145,7 @@ export function ContractSigningSection({
       <div className="space-y-6 p-6">
         <div>
           <h3 className="text-lg font-semibold text-gray-900 mb-1">
-            {language === 'es' ? 'Contrato de Arriendo a Tarifa Fija' : 'Fixed-Rate Lease Contract'}
+            {language === 'es' ? 'Contrato de Servicio de Alquiler Turístico de Inmueble' : 'Fixed-Rate Lease Contract'}
           </h3>
           <p className="text-xs text-gray-500 mb-4">
             {language === 'es'
@@ -247,7 +249,7 @@ export function ContractSigningSection({
                 />
                 <label htmlFor="agree-contract" className="text-sm text-gray-700">
                   {language === 'es'
-                    ? 'He leído y acepto la totalidad de las cláusulas del Contrato de Arriendo a Tarifa Fija. Entiendo que mi nombre, documento de identidad y la aceptación aquí registrada constituyen firma electrónica válida y vinculante (Ley 527 de 1999).'
+                    ? 'He leído y acepto la totalidad de las cláusulas del Contrato de Servicio de Alquiler Turístico de Inmueble. Entiendo que mi nombre, documento de identidad y la aceptación aquí registrada constituyen firma electrónica válida y vinculante (Ley 527 de 1999).'
                     : 'I have read and accept all clauses of the Fixed-Rate Lease Contract. I understand my name, ID number, and this acceptance constitute a valid, binding electronic signature (Ley 527 de 1999).'}
                 </label>
               </div>
@@ -269,7 +271,7 @@ export function ContractSigningSection({
             <div className="p-4 bg-green-50 rounded-lg border border-green-200 mt-4">
               <p className="font-semibold text-green-900">
                 ✓ {language === 'es'
-                  ? 'Ambas partes han firmado el Contrato de Arriendo a Tarifa Fija'
+                  ? 'Ambas partes han firmado el Contrato de Servicio de Alquiler Turístico de Inmueble'
                   : 'Both parties have signed the Fixed-Rate Lease Contract'}
               </p>
             </div>
@@ -285,7 +287,7 @@ function downloadSignedContract(contractTemplate: string, response: PartnershipR
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
   link.href = url;
-  link.download = `Contrato_Arriendo_${response.propertyName.replace(/\s+/g, '_')}_${Date.now()}.txt`;
+  link.download = `Contrato_Servicio_Alquiler_Turistico_${response.propertyName.replace(/\s+/g, '_')}_${Date.now()}.txt`;
   link.click();
   URL.revokeObjectURL(url);
 }

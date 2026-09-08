@@ -436,7 +436,7 @@ function MyResponses({
               <div className="border-t p-4 bg-green-50 space-y-3">
                 <p className="text-green-800 font-medium text-sm">
                   ✓ {language === 'es'
-                    ? 'Contrato de Arriendo completamente firmado.'
+                    ? 'Contrato de Servicio de Alquiler Turístico completamente firmado.'
                     : 'Lease contract fully signed.'}
                 </p>
                 <button
@@ -453,7 +453,7 @@ function MyResponses({
                       const url = URL.createObjectURL(blob);
                       const link = document.createElement('a');
                       link.href = url;
-                      link.download = `Contrato_Arriendo_${response.propertyName.replace(/\s+/g, '_')}_${Date.now()}.txt`;
+                      link.download = `Contrato_Servicio_Alquiler_Turistico_${response.propertyName.replace(/\s+/g, '_')}_${Date.now()}.txt`;
                       link.click();
                       URL.revokeObjectURL(url);
                     });

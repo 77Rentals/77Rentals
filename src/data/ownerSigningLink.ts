@@ -1,5 +1,5 @@
 // A public, no-login link sent to a Galcol-deal apartment owner so they can
-// review and sign the Contrato de Arriendo a Tarifa Fija + NDA for their
+// review and sign the Contrato de Servicio de Alquiler Turístico de Inmueble + NDA for their
 // unit type (Tipo B or Tipo D). The link's id is the only credential.
 
 export type OwnerUnitType = 'B' | 'D';

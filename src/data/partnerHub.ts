@@ -10,7 +10,7 @@ export interface NDASignature {
   timestamp: Date;
 }
 
-// Contract (Contrato de Arriendo a Tarifa Fija) signature data.
+// Contract (Contrato de Servicio de Alquiler Turístico de Inmueble) signature data.
 // Stronger than NDASignature — the contract carries payment/penalty
 // obligations, so it captures an ID number and a hash of the exact
 // contract text signed, for evidentiary weight under Ley 527 de 1999.
@@ -70,14 +70,19 @@ export interface PartnershipResponse {
   rejectionNote?: string; // Optional note from admin explaining why offer was rejected
   respondedAt: Date;
   // NDA signing fields
-  ndaStatus: 'not_started' | 'admin_signed' | 'both_signed';
+  ndaStatus: SigningStatus;
   adminSignature?: NDASignature;
   ownerSignature?: NDASignature;
-  // Contrato de Arriendo a Tarifa Fija signing fields
-  contractStatus: 'not_started' | 'admin_signed' | 'both_signed';
+  // Contrato de Servicio de Alquiler Turístico de Inmueble signing fields
+  contractStatus: SigningStatus;
   adminContractSignature?: ContractSignature;
   ownerContractSignature?: ContractSignature;
 }
+
+// 'owner_signed' covers the case where the owner signs before the admin
+// does -- previously mislabeled 'not_started', which hid the fact a
+// signature already existed.
+export type SigningStatus = 'not_started' | 'admin_signed' | 'owner_signed' | 'both_signed';
 
 // Partner auth (simple email-based MVP)
 export interface PartnerAuth {

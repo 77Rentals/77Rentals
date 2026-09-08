@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useToast } from '@/components/ui/use-toast';
 import { useLanguage } from '@/contexts/LanguageContext';
-import type { GuestRequirement, PartnershipResponse, NDASignature } from '@/data/partnerHub';
+import type { GuestRequirement, PartnershipResponse, NDASignature, SigningStatus } from '@/data/partnerHub';
 import { generateNDATemplate, formatNDAForDisplay } from '@/lib/ndaGenerator';
 import { generateWhatsAppLink } from '@/lib/whatsappHelper';
 import { sendNDANotificationEmail } from '@/lib/emailService';
@@ -13,7 +13,7 @@ interface NDASigningSectionProps {
   requirement: GuestRequirement;
   adminName?: string;
   isAdmin: boolean;
-  onSign: (signerName: string) => Promise<void>;
+  onSign: (signerName: string) => Promise<SigningStatus>;
 }
 
 export function NDASigningSection({
@@ -63,16 +63,13 @@ export function NDASigningSection({
 
     setIsSigning(true);
     try {
-      await onSign(signerName.trim());
+      // The RPC recomputes status server-side from the actual signature
+      // rows and returns it -- trust that instead of guessing client-side
+      // from (possibly stale) props, which previously mislabeled "owner
+      // signed first" as 'not_started' and could send the wrong email.
+      const newStatus = await onSign(signerName.trim());
 
       // Fire-and-forget email notification — never blocks signing flow
-      const newStatus: PartnershipResponse['ndaStatus'] = isAdmin
-        ? hasOwnerSigned
-          ? 'both_signed'
-          : 'admin_signed'
-        : hasAdminSigned
-          ? 'both_signed'
-          : 'not_started';
       const signature: NDASignature = {
         signedBy: isAdmin ? 'admin' : 'owner',
         signerName: signerName.trim(),
@@ -83,8 +80,11 @@ export function NDASigningSection({
         ...(isAdmin ? { adminSignature: signature } : { ownerSignature: signature }),
         ndaStatus: newStatus,
       };
-      const emailEvent = newStatus === 'both_signed' ? 'both_signed' : 'admin_signed';
-      sendNDANotificationEmail(emailEvent, responseWithNewSig, requirement).catch(() => {});
+      sendNDANotificationEmail(
+        newStatus as 'admin_signed' | 'owner_signed' | 'both_signed',
+        responseWithNewSig,
+        requirement
+      ).catch(() => {});
 
       toast({
         title: language === 'es' ? 'Éxito' : 'Success',

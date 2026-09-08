@@ -21,7 +21,7 @@ function addDays(date: Date, days: number): Date {
 }
 
 /**
- * Generates the full "Contrato de Arriendo a Tarifa Fija" between 77Rentals
+ * Generates the full "Contrato de Servicio de Alquiler Turístico de Inmueble" between 77Rentals
  * (EL ARRENDATARIO) and the apartment owner (EL PROPIETARIO) for one accepted
  * Partner Hub offer. Generic by design — all dates/amounts are derived from
  * the requirement/offer, no hardcoded client-specific terms.
@@ -47,12 +47,20 @@ export function generateContractTemplate(
     )
   );
 
-  // Economics — derived entirely from the accepted offer
+  // Economics — derived entirely from the accepted offer.
+  // response.commissionAmount is stored PER NIGHT for the 10%-deduction
+  // model (it's 10% of the nightly rate, from calculateCommission() in
+  // OwnerResponseForm.tsx) but as a flat TOTAL for the markup model — the
+  // same inconsistency the admin pricing breakdown already works around
+  // (AdminOfferDetailModal.tsx). Recompute the true total commission here
+  // rather than trusting the stored field directly, or a multi-night
+  // contract understates what 77Rentals actually retains from the owner.
   const nightlyRate = response.proposedPrice;
   const cleaningFee = response.cleaningFee || 0;
   const lodgingTotal = nightlyRate * nightCount;
-  const commissionAmount = response.commissionAmount || 0;
   const commissionPercent = response.commissionPercent || 0;
+  const commissionAmount =
+    commissionPercent > 0 ? lodgingTotal * (commissionPercent / 100) : response.commissionAmount || 0;
   const contractTotal = lodgingTotal + cleaningFee; // valor bruto del contrato
   const ownerNetTotal = contractTotal - commissionAmount; // neto a favor de EL PROPIETARIO
   const pay10 = ownerNetTotal * 0.1;
@@ -86,8 +94,8 @@ export function generateContractTemplate(
   const cityName = (requirement.city || '').split(',')[0].trim() || 'la ciudad indicada';
 
   return `
-CONTRATO DE ARRIENDO A TARIFA FIJA
-(Arriendo comercial de inmueble amoblado con destinación distinta a vivienda urbana permanente)
+CONTRATO DE SERVICIO DE ALQUILER TURÍSTICO DE INMUEBLE
+(Alquiler turístico de inmueble amoblado para alojamiento temporal, a tarifa fija)
 
 Referencia: Requerimiento ${requirement.id} / Oferta ${response.id}
 Ciudad y fecha de elaboración: ${cityName}, ${today}
@@ -110,10 +118,11 @@ de disposición del inmueble descrito a continuación, en adelante "EL PROPIETAR
 Correo: ${response.ownerContact.email}
 Teléfono: ${response.ownerContact.phone}
 
-Conjuntamente "LAS PARTES", hemos convenido celebrar el presente Contrato de Arriendo a Tarifa
-Fija, que se regirá por las cláusulas que siguen y, en lo no previsto, por los artículos 1602,
-1618 y siguientes y 1973 y siguientes del Código Civil colombiano y las normas del Código de
-Comercio aplicables al arrendamiento de inmuebles con destinación comercial.
+Conjuntamente "LAS PARTES", hemos convenido celebrar el presente Contrato de Servicio de Alquiler
+Turístico de Inmueble a tarifa fija, que se regirá por las cláusulas que siguen y, en lo no
+previsto, por la Ley 300 de 1996 (Ley General de Turismo), modificada por la Ley 1558 de 2012, el
+Decreto 1074 de 2015 (Decreto Único Reglamentario del Sector Comercio, Industria y Turismo), y
+subsidiariamente por los artículos 1602, 1618 y siguientes del Código Civil colombiano.
 
 DETALLES DEL INMUEBLE Y DE LA RESERVA:
 Nombre de la propiedad: ${response.propertyName}
@@ -130,20 +139,27 @@ Aseo de salida (check-out): ${formatCOP(cleaningFee)}
 CLÁUSULAS:
 
 PRIMERA. OBJETO
-EL PROPIETARIO entrega a EL ARRENDATARIO, a título de arriendo, el uso y goce del inmueble
-amoblado y dotado descrito arriba (en adelante "EL INMUEBLE"), por el período y a la tarifa fija
-aquí pactados, para que EL ARRENDATARIO lo destine al alojamiento temporal de los huéspedes que
-él mismo designe en el marco de su actividad de intermediación de alojamiento.
-LAS PARTES declaran expresamente que el presente contrato es un arriendo comercial de un bien
-inmueble con destinación distinta a vivienda urbana permanente, celebrado en ejercicio de la
-autonomía de la voluntad privada (artículos 1602 y 1618 del Código Civil). En consecuencia, no
-le son aplicables las normas de la Ley 820 de 2003 sobre arrendamiento de vivienda urbana, y
-EL PROPIETARIO no presta a EL ARRENDATARIO un servicio de hospedaje o alojamiento turístico
-en los términos de la Ley 300 de 1996 y del Decreto 1074 de 2015, siendo EL ARRENDATARIO quien
-asume, frente a sus propios clientes, la relación de intermediación de alojamiento.
+EL PROPIETARIO entrega a EL ARRENDATARIO, a título de servicio de alquiler turístico, el uso y
+goce del inmueble amoblado y dotado descrito arriba (en adelante "EL INMUEBLE"), por el período y
+a la tarifa fija aquí pactados, para que EL ARRENDATARIO lo destine al alojamiento temporal de los
+huéspedes que él mismo designe en el marco de su actividad de alojamiento y hospedaje no
+permanente.
+LAS PARTES declaran expresamente que el presente es un contrato de prestación de servicios
+turísticos, en la modalidad de servicio de alquiler turístico de inmueble amoblado para
+alojamiento temporal, regido por la Ley 300 de 1996 (Ley General de Turismo), modificada por la
+Ley 1558 de 2012, y por el Decreto 1074 de 2015 (Decreto Único Reglamentario del Sector Comercio,
+Industria y Turismo). LAS PARTES reconocen que quien opera la actividad turística y contrata
+directamente con los huéspedes finales es EL ARRENDATARIO, por lo que ostenta la calidad de
+prestador de servicios turísticos y declara que cuenta, o contará antes del check-in de cada
+reserva, con Registro Nacional de Turismo (RNT) vigente, siendo el único responsable del
+cumplimiento de las obligaciones derivadas de dicha normativa. EL PROPIETARIO declara y garantiza
+que el destino turístico de EL INMUEBLE no contraviene el reglamento de propiedad horizontal del
+edificio (Ley 675 de 2001) ni restricción alguna de uso del suelo o del POT aplicable. Por
+tratarse de un servicio de alojamiento turístico y no de arrendamiento de vivienda urbana
+permanente, no le son aplicables las disposiciones de la Ley 820 de 2003.
 
 SEGUNDA. DURACIÓN Y USO
-2.1. El arriendo tiene una duración fija de ${nightCount} noche(s), desde las 15:00 horas del
+2.1. El servicio tiene una duración fija de ${nightCount} noche(s), desde las 15:00 horas del
 ${checkInDate} hasta las 11:00 horas del ${checkOutDate}, salvo que LAS PARTES acuerden por
 escrito (incluido correo electrónico o mensaje en la plataforma) horarios distintos.
 2.2. EL INMUEBLE se destinará exclusivamente a alojamiento temporal de un máximo de
@@ -351,8 +367,8 @@ de él se deriven.
 ---
 
 Declaro que he leído, entendido y acepto en su integridad las cláusulas del presente Contrato
-de Arriendo a Tarifa Fija, así como el Acuerdo de Confidencialidad e Intermediación que lo
-complementa.
+de Servicio de Alquiler Turístico de Inmueble, así como el Acuerdo de Confidencialidad e
+Intermediación que lo complementa.
 
 POR EL ARRENDATARIO (${ARRENDATARIO_BRAND}): ___________________________
 Nombre: ${adminSigName}

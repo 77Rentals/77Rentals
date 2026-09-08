@@ -8,10 +8,11 @@ const WEB3FORMS_KEY = '6979f913-1573-41ce-bbdd-1df63fa27f73';
  *
  * Usage:
  *   sendNDANotificationEmail('admin_signed', response, requirement).catch(() => {});
+ *   sendNDANotificationEmail('owner_signed', response, requirement).catch(() => {});
  *   sendNDANotificationEmail('both_signed', response, requirement).catch(() => {});
  */
 export async function sendNDANotificationEmail(
-  event: 'admin_signed' | 'both_signed',
+  event: 'admin_signed' | 'owner_signed' | 'both_signed',
   response: PartnershipResponse,
   requirement: GuestRequirement
 ): Promise<void> {
@@ -47,6 +48,23 @@ INTERMEDIARIO (ya firmó):
   Fecha firma: ${response.adminSignature ? new Date(response.adminSignature.timestamp).toLocaleString('es-CO') : '—'}
 
 Accede al Partner Hub para ver el estado completo.
+    `.trim();
+  } else if (event === 'owner_signed') {
+    subject = `✍️ NDA Firmado por Propietario — ${response.propertyName}`;
+    message = `
+El propietario ha firmado el NDA para la siguiente propiedad.
+Se requiere la firma del intermediario para completar el proceso.
+
+PROPIEDAD: ${response.propertyName} (${response.apartmentType})
+TORRE / APTO: ${response.torreApartamento || 'No especificado'}
+FECHAS: ${checkIn} → ${checkOut} (${nightCount} noches)
+TARIFA: ${priceFormatted}
+
+PROPIETARIO (ya firmó):
+  Nombre: ${response.ownerSignature?.signerName ?? '—'}
+  Fecha firma: ${response.ownerSignature ? new Date(response.ownerSignature.timestamp).toLocaleString('es-CO') : '—'}
+
+Accede al Partner Hub para completar la firma.
     `.trim();
   } else {
     subject = `✅ NDA Completamente Firmado — ${response.propertyName}`;
@@ -85,16 +103,17 @@ Accede al Partner Hub para descargar el NDA firmado.
 }
 
 /**
- * Sends an automated Contrato de Arriendo a Tarifa Fija notification email
+ * Sends an automated Contrato de Servicio de Alquiler Turístico de Inmueble notification email
  * to team@77rentals.com via Web3Forms.
  * Fire-and-forget — call without await and catch silently so signing flow is never blocked.
  *
  * Usage:
  *   sendContractNotificationEmail('admin_signed', response, requirement).catch(() => {});
+ *   sendContractNotificationEmail('owner_signed', response, requirement).catch(() => {});
  *   sendContractNotificationEmail('both_signed', response, requirement).catch(() => {});
  */
 export async function sendContractNotificationEmail(
-  event: 'admin_signed' | 'both_signed',
+  event: 'admin_signed' | 'owner_signed' | 'both_signed',
   response: PartnershipResponse,
   requirement: GuestRequirement
 ): Promise<void> {
@@ -110,9 +129,9 @@ export async function sendContractNotificationEmail(
   let message: string;
 
   if (event === 'admin_signed') {
-    subject = `✍️ Contrato de Arriendo Firmado por 77Rentals — ${response.propertyName}`;
+    subject = `✍️ Contrato de Servicio de Alquiler Turístico Firmado por 77Rentals — ${response.propertyName}`;
     message = `
-77Rentals ha firmado el Contrato de Arriendo a Tarifa Fija para la siguiente propiedad.
+77Rentals ha firmado el Contrato de Servicio de Alquiler Turístico de Inmueble para la siguiente propiedad.
 Se requiere la firma del propietario para completar el proceso.
 
 PROPIEDAD: ${response.propertyName} (${response.apartmentType})
@@ -132,10 +151,28 @@ PROPIETARIO (pendiente de firma):
 
 Accede al Partner Hub para ver el estado completo.
     `.trim();
-  } else {
-    subject = `✅ Contrato de Arriendo Completamente Firmado — ${response.propertyName}`;
+  } else if (event === 'owner_signed') {
+    subject = `✍️ Contrato de Servicio de Alquiler Turístico Firmado por Propietario — ${response.propertyName}`;
     message = `
-Ambas partes han firmado el Contrato de Arriendo a Tarifa Fija. La reserva queda formalizada.
+El propietario ha firmado el Contrato de Servicio de Alquiler Turístico de Inmueble para la siguiente propiedad.
+Se requiere la firma de 77Rentals para completar el proceso.
+
+PROPIEDAD: ${response.propertyName} (${response.apartmentType})
+TORRE / APTO: ${response.torreApartamento || 'No especificado'}
+FECHAS: ${checkIn} → ${checkOut} (${nightCount} noches)
+TARIFA: ${priceFormatted}
+
+PROPIETARIO (ya firmó):
+  Nombre: ${response.ownerContractSignature?.signerName ?? '—'}
+  Documento: ${response.ownerContractSignature?.signerIdNumber ?? '—'}
+  Fecha firma: ${response.ownerContractSignature ? new Date(response.ownerContractSignature.timestamp).toLocaleString('es-CO') : '—'}
+
+Accede al Partner Hub para completar la firma.
+    `.trim();
+  } else {
+    subject = `✅ Contrato de Servicio de Alquiler Turístico Completamente Firmado — ${response.propertyName}`;
+    message = `
+Ambas partes han firmado el Contrato de Servicio de Alquiler Turístico de Inmueble. La reserva queda formalizada.
 
 PROPIEDAD: ${response.propertyName} (${response.apartmentType})
 TORRE / APTO: ${response.torreApartamento || 'No especificado'}

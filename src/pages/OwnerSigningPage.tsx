@@ -171,7 +171,7 @@ export default function OwnerSigningPage() {
       <div className="max-w-3xl mx-auto space-y-6">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-gray-900">
-            Contrato de Arriendo + NDA — {cfg.label}
+            Contrato de Servicio de Alquiler Turístico + NDA — {cfg.label}
           </h1>
           <p className="text-gray-600 text-sm mt-1">77Rentals · Pozos Colorados, Santa Marta</p>
         </div>
@@ -192,7 +192,7 @@ export default function OwnerSigningPage() {
                 variant="outline"
                 onClick={() =>
                   downloadText(
-                    `Contrato_Arriendo_${cfg.label.replace(/\s+/g, '_')}.txt`,
+                    `Contrato_Servicio_Alquiler_Turistico_${cfg.label.replace(/\s+/g, '_')}.txt`,
                     link.contractText ?? contractText
                   )
                 }
@@ -220,7 +220,7 @@ export default function OwnerSigningPage() {
             </Card>
 
             <Card className="p-6 space-y-3">
-              <h2 className="text-lg font-semibold text-gray-900">Contrato de Arriendo a Tarifa Fija</h2>
+              <h2 className="text-lg font-semibold text-gray-900">Contrato de Servicio de Alquiler Turístico de Inmueble</h2>
               <div className="bg-white border border-gray-200 rounded-lg p-6 max-h-[32rem] overflow-y-auto shadow-inner">
                 <DocumentText text={contractText} />
               </div>
@@ -322,8 +322,9 @@ export default function OwnerSigningPage() {
                   className="mt-1"
                 />
                 <label htmlFor="agree-all" className="text-sm text-gray-700">
-                  He leído y acepto la totalidad de las cláusulas del Contrato de Arriendo a Tarifa
-                  Fija y del Acuerdo de Confidencialidad (NDA) anteriores. Entiendo que mi nombre,
+                  He leído y acepto la totalidad de las cláusulas del Contrato de Servicio de
+                  Alquiler Turístico de Inmueble y del Acuerdo de Confidencialidad (NDA)
+                  anteriores. Entiendo que mi nombre,
                   cédula y esta aceptación constituyen firma electrónica válida y vinculante para
                   ambos documentos (Ley 527 de 1999).
                 </label>

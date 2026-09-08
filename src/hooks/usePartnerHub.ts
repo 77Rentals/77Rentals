@@ -330,62 +330,48 @@ export function usePartnerHub() {
     await invalidateOffers();
   };
 
-  /** Records one party's NDA signature and recomputes nda_status. */
-  const signNDA = async (offerId: string, signedBy: 'admin' | 'owner', signerName: string) => {
-    const { error: insertError } = await supabase
-      .from('nda_signatures')
-      .insert({ offer_id: offerId, signed_by: signedBy, signer_name: signerName });
-    if (insertError) throw insertError;
-
-    const offer = responses.find((r) => r.id === offerId);
-    const otherPartySigned = signedBy === 'admin' ? !!offer?.ownerSignature : !!offer?.adminSignature;
-    const newStatus: PartnershipResponse['ndaStatus'] = otherPartySigned
-      ? 'both_signed'
-      : signedBy === 'admin'
-        ? 'admin_signed'
-        : 'not_started';
-
-    const { error: updateError } = await supabase
-      .from('partner_offers')
-      .update({ nda_status: newStatus })
-      .eq('id', offerId);
-    if (updateError) throw updateError;
+  /**
+   * Records one party's NDA signature and recomputes nda_status, via a
+   * SECURITY DEFINER RPC (public/shared/partner-hub-signing-rpc-migration.sql).
+   * A direct client-side `update partner_offers` here would silently affect
+   * 0 rows for an owner signing first -- there is no RLS policy letting an
+   * owner update partner_offers -- so the status recompute has to happen
+   * server-side, atomically with the signature insert, authorized per-call.
+   */
+  const signNDA = async (
+    offerId: string,
+    signedBy: 'admin' | 'owner',
+    signerName: string
+  ): Promise<PartnershipResponse['ndaStatus']> => {
+    const { data, error } = await supabase.rpc('sign_nda', {
+      p_offer_id: offerId,
+      p_signed_by: signedBy,
+      p_signer_name: signerName,
+    });
+    if (error) throw error;
     await invalidateOffers();
+    return data as PartnershipResponse['ndaStatus'];
   };
 
-  /** Records one party's contract signature and recomputes contract_status. */
+  /** Records one party's contract signature and recomputes contract_status (see signNDA). */
   const signContract = async (
     offerId: string,
     signedBy: 'admin' | 'owner',
     signerName: string,
     signerIdNumber: string,
     contractHash: string
-  ) => {
-    const { error: insertError } = await supabase.from('contract_signatures').insert({
-      offer_id: offerId,
-      signed_by: signedBy,
-      signer_name: signerName,
-      signer_id_number: signerIdNumber,
-      contract_hash: contractHash,
-      user_agent: typeof navigator !== 'undefined' ? navigator.userAgent : null,
+  ): Promise<PartnershipResponse['contractStatus']> => {
+    const { data, error } = await supabase.rpc('sign_contract', {
+      p_offer_id: offerId,
+      p_signed_by: signedBy,
+      p_signer_name: signerName,
+      p_signer_id_number: signerIdNumber,
+      p_contract_hash: contractHash,
+      p_user_agent: typeof navigator !== 'undefined' ? navigator.userAgent : null,
     });
-    if (insertError) throw insertError;
-
-    const offer = responses.find((r) => r.id === offerId);
-    const otherPartySigned =
-      signedBy === 'admin' ? !!offer?.ownerContractSignature : !!offer?.adminContractSignature;
-    const newStatus: PartnershipResponse['contractStatus'] = otherPartySigned
-      ? 'both_signed'
-      : signedBy === 'admin'
-        ? 'admin_signed'
-        : 'not_started';
-
-    const { error: updateError } = await supabase
-      .from('partner_offers')
-      .update({ contract_status: newStatus })
-      .eq('id', offerId);
-    if (updateError) throw updateError;
+    if (error) throw error;
     await invalidateOffers();
+    return data as PartnershipResponse['contractStatus'];
   };
 
   const getResponseCountForRequirement = (requirementId: string): number =>

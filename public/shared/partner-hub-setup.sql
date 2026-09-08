@@ -30,6 +30,8 @@ drop table if exists public.admins cascade;
 drop function if exists public.is_admin();
 drop function if exists public.is_approved_owner();
 drop function if exists public.protect_owner_approval();
+drop function if exists public.sign_nda(uuid, text, text);
+drop function if exists public.sign_contract(uuid, text, text, text, text, text);
 
 -- ── Admins allowlist ──
 -- After creating your admin account in Authentication → Users, find its UUID
@@ -235,8 +237,8 @@ create table public.partner_offers (
   status text not null default 'pending' check (status in ('pending', 'accepted', 'rejected')),
   rejection_note text,
   responded_at timestamptz not null default now(),
-  nda_status text not null default 'not_started' check (nda_status in ('not_started', 'admin_signed', 'both_signed')),
-  contract_status text not null default 'not_started' check (contract_status in ('not_started', 'admin_signed', 'both_signed'))
+  nda_status text not null default 'not_started' check (nda_status in ('not_started', 'admin_signed', 'owner_signed', 'both_signed')),
+  contract_status text not null default 'not_started' check (contract_status in ('not_started', 'admin_signed', 'owner_signed', 'both_signed'))
 );
 
 create index partner_offers_requirement_idx on public.partner_offers (requirement_id);
@@ -341,6 +343,108 @@ create policy "owner can insert own contract signature"
       where o.id = offer_id and o.owner_id = auth.uid()
     )
   );
+
+-- ── Signing RPCs ──
+-- Records a signature and recomputes nda_status/contract_status in the same
+-- transaction. Client code should call these instead of inserting into
+-- nda_signatures/contract_signatures and updating partner_offers directly --
+-- there is deliberately NO general "owner can update offers" policy, so a
+-- direct client-side status update from an owner would silently affect 0
+-- rows under RLS. These SECURITY DEFINER functions authorize each call
+-- explicitly and always derive status from the actual signature rows.
+
+create function public.sign_nda(p_offer_id uuid, p_signed_by text, p_signer_name text)
+returns text
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_owner_id uuid;
+  v_other_signed boolean;
+  v_new_status text;
+begin
+  if p_signed_by not in ('admin', 'owner') then
+    raise exception 'invalid signed_by: %', p_signed_by;
+  end if;
+
+  select owner_id into v_owner_id from public.partner_offers where id = p_offer_id;
+  if v_owner_id is null then
+    raise exception 'offer not found';
+  end if;
+
+  if p_signed_by = 'admin' and not public.is_admin() then
+    raise exception 'not authorized to sign as admin';
+  end if;
+  if p_signed_by = 'owner' and v_owner_id <> auth.uid() then
+    raise exception 'not authorized to sign as this owner';
+  end if;
+
+  insert into public.nda_signatures (offer_id, signed_by, signer_name)
+  values (p_offer_id, p_signed_by, p_signer_name);
+
+  select exists (
+    select 1 from public.nda_signatures
+    where offer_id = p_offer_id
+      and signed_by = (case when p_signed_by = 'admin' then 'owner' else 'admin' end)
+  ) into v_other_signed;
+
+  v_new_status := case when v_other_signed then 'both_signed' else p_signed_by || '_signed' end;
+
+  update public.partner_offers set nda_status = v_new_status where id = p_offer_id;
+  return v_new_status;
+end;
+$$;
+
+create function public.sign_contract(
+  p_offer_id uuid,
+  p_signed_by text,
+  p_signer_name text,
+  p_signer_id_number text,
+  p_contract_hash text,
+  p_user_agent text
+)
+returns text
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_owner_id uuid;
+  v_other_signed boolean;
+  v_new_status text;
+begin
+  if p_signed_by not in ('admin', 'owner') then
+    raise exception 'invalid signed_by: %', p_signed_by;
+  end if;
+
+  select owner_id into v_owner_id from public.partner_offers where id = p_offer_id;
+  if v_owner_id is null then
+    raise exception 'offer not found';
+  end if;
+
+  if p_signed_by = 'admin' and not public.is_admin() then
+    raise exception 'not authorized to sign as admin';
+  end if;
+  if p_signed_by = 'owner' and v_owner_id <> auth.uid() then
+    raise exception 'not authorized to sign as this owner';
+  end if;
+
+  insert into public.contract_signatures (offer_id, signed_by, signer_name, signer_id_number, contract_hash, user_agent)
+  values (p_offer_id, p_signed_by, p_signer_name, p_signer_id_number, p_contract_hash, p_user_agent);
+
+  select exists (
+    select 1 from public.contract_signatures
+    where offer_id = p_offer_id
+      and signed_by = (case when p_signed_by = 'admin' then 'owner' else 'admin' end)
+  ) into v_other_signed;
+
+  v_new_status := case when v_other_signed then 'both_signed' else p_signed_by || '_signed' end;
+
+  update public.partner_offers set contract_status = v_new_status where id = p_offer_id;
+  return v_new_status;
+end;
+$$;
 
 -- ── Base table/function privileges ──
 -- "Automatically expose new tables" was left OFF when this project was created
