@@ -6,8 +6,9 @@ import { useToast } from '@/components/ui/use-toast';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { usePartnerHub } from '@/hooks/usePartnerHub';
 import { X, Check, AlertCircle, ExternalLink } from 'lucide-react';
-import type { GuestRequirement, PartnershipResponse, NDASignature } from '@/data/partnerHub';
+import type { GuestRequirement, PartnershipResponse } from '@/data/partnerHub';
 import { NDASigningSection } from './NDASigningSection';
+import { ContractSigningSection } from './ContractSigningSection';
 
 const MONTHS_ES = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
 const MONTHS_EN = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -48,28 +49,21 @@ interface AdminOfferDetailModalProps {
   response: PartnershipResponse;
   requirement: GuestRequirement;
   onClose: () => void;
-  onStatusChange?: () => void;
 }
 
 export function AdminOfferDetailModal({
   response,
   requirement,
   onClose,
-  onStatusChange,
 }: AdminOfferDetailModalProps) {
   const [rejectionNote, setRejectionNote] = useState('');
   const { language } = useLanguage();
-  const { updateResponse } = usePartnerHub();
+  const { updateResponse, signNDA, signContract } = usePartnerHub();
   const { toast } = useToast();
 
-  const handleAccept = () => {
+  const handleAccept = async () => {
     try {
-      updateResponse(response.id, {
-        status: 'accepted',
-        ndaStatus: 'not_started',
-        adminSignature: undefined,
-        ownerSignature: undefined,
-      });
+      await updateResponse(response.id, { status: 'accepted' });
       toast({
         title: language === 'es' ? 'Éxito' : 'Success',
         description: language === 'es'
@@ -77,7 +71,6 @@ export function AdminOfferDetailModal({
           : 'Offer accepted',
         variant: 'default',
       });
-      onStatusChange?.();
     } catch (error) {
       toast({
         title: language === 'es' ? 'Error' : 'Error',
@@ -89,9 +82,9 @@ export function AdminOfferDetailModal({
     }
   };
 
-  const handleReject = () => {
+  const handleReject = async () => {
     try {
-      updateResponse(response.id, {
+      await updateResponse(response.id, {
         status: 'rejected',
         ...(rejectionNote.trim() ? { rejectionNote: rejectionNote.trim() } : {}),
       });
@@ -102,7 +95,6 @@ export function AdminOfferDetailModal({
           : 'Offer rejected',
         variant: 'default',
       });
-      onStatusChange?.();
       onClose();
     } catch (error) {
       toast({
@@ -351,23 +343,20 @@ export function AdminOfferDetailModal({
               requirement={requirement}
               adminName={requirement.adminContact.name}
               isAdmin={true}
-              onSignatureUpdate={(updates) => {
-                try {
-                  updateResponse(response.id, updates);
-                  toast({
-                    title: language === 'es' ? 'Éxito' : 'Success',
-                    description: language === 'es' ? 'NDA actualizado' : 'NDA updated',
-                    variant: 'default',
-                  });
-                  onStatusChange?.();
-                } catch (error) {
-                  toast({
-                    title: language === 'es' ? 'Error' : 'Error',
-                    description: language === 'es' ? 'No se pudo actualizar NDA' : 'Failed to update NDA',
-                    variant: 'destructive',
-                  });
-                }
-              }}
+              onSign={(signerName) => signNDA(response.id, 'admin', signerName)}
+            />
+          )}
+
+          {/* Contract Signing Section - Appears after acceptance */}
+          {response.status === 'accepted' && (
+            <ContractSigningSection
+              response={response}
+              requirement={requirement}
+              adminName={requirement.adminContact.name}
+              isAdmin={true}
+              onSign={(signerName, signerIdNumber, contractHash) =>
+                signContract(response.id, 'admin', signerName, signerIdNumber, contractHash)
+              }
             />
           )}
 

@@ -5,16 +5,16 @@ import { Card } from '@/components/ui/card';
 import { Plus, TrendingUp, MessageSquare, CheckCircle } from 'lucide-react';
 import { AdminRequirementForm } from './AdminRequirementForm';
 import { AdminRequirementsList } from './AdminRequirementsList';
+import { AdminOwnerApprovals } from './AdminOwnerApprovals';
+import { AdminPropertyListings } from './AdminPropertyListings';
+import { AdminGalcolLinkGenerator } from './AdminGalcolLinkGenerator';
 
 export function AdminDashboard() {
   const [showForm, setShowForm] = useState(false);
-  const { getRequirements, getResponses } = usePartnerHub();
-
-  const requirements = getRequirements();
-  const responses = getResponses();
+  const { requirements, responses, isLoading } = usePartnerHub();
 
   const openCount = requirements.filter((r) => r.status === 'open').length;
-  const closedCount = requirements.filter((r) => r.status === 'closed').length;
+  const closedCount = requirements.filter((r) => r.status === 'cancelled').length;
   const acceptedResponses = responses.filter((r) => r.status === 'accepted').length;
 
   const stats = [
@@ -43,6 +43,10 @@ export function AdminDashboard() {
       color: 'from-amber-500 to-amber-600',
     },
   ];
+
+  if (isLoading) {
+    return <div className="text-gray-600">Loading…</div>;
+  }
 
   return (
     <div className="space-y-8">
@@ -87,6 +91,15 @@ export function AdminDashboard() {
           );
         })}
       </div>
+
+      {/* Galcol contract/NDA signing links (no owner login required) */}
+      <AdminGalcolLinkGenerator />
+
+      {/* Pending Owner Approvals */}
+      <AdminOwnerApprovals />
+
+      {/* Listed Properties (self-serve submissions) */}
+      <AdminPropertyListings />
 
       {/* Requirements List */}
       <div>

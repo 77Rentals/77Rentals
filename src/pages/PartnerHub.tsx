@@ -12,6 +12,14 @@ import { OwnerRequirementBrowser } from '@/components/PartnerHub/OwnerRequiremen
 function PartnerHubContent() {
   const auth = useContext(PartnerAuthContext);
 
+  if (auth?.loading) {
+    return (
+      <div className="min-h-screen bg-[#f8f7ff] flex items-center justify-center text-[#2D1B69]">
+        Loading…
+      </div>
+    );
+  }
+
   if (!auth?.isLoggedIn) {
     return <Login />;
   }

@@ -4,11 +4,12 @@ import { PartnerAuthContext } from '@/contexts/PartnerAuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useToast } from '@/components/ui/use-toast';
 import { Card } from '@/components/ui/card';
-import { TrendingUp, MessageSquare, CheckCircle, Clock } from 'lucide-react';
+import { TrendingUp, MessageSquare, CheckCircle, Clock, AlertCircle } from 'lucide-react';
 import { OwnerRequirementBrowser } from './OwnerRequirementBrowser';
 import { OwnerProfile } from './OwnerProfile';
 import { OwnerPropertyManager } from './OwnerPropertyManager';
 import { NDASigningSection } from './NDASigningSection';
+import { ContractSigningSection } from './ContractSigningSection';
 import type { PartnershipResponse, GuestRequirement } from '@/data/partnerHub';
 import { generateNDATemplate } from '@/lib/ndaGenerator';
 
@@ -18,15 +19,13 @@ type ResponseFilter = 'all' | 'pending' | 'accepted' | 'rejected';
 export function OwnerDashboard() {
   const [activeTab, setActiveTab] = useState<TabType>('browse');
   const [responseFilter, setResponseFilter] = useState<ResponseFilter>('all');
-  const [responseRefreshKey, setResponseRefreshKey] = useState(0);
   const auth = useContext(PartnerAuthContext);
-  const { getRequirements, getResponses, updateResponse } = usePartnerHub();
+  const { language } = useLanguage();
+  const { requirements, responses, signNDA, signContract } = usePartnerHub();
 
-  const requirements = getRequirements();
-  const allResponses = getResponses();
-  const ownerResponses = allResponses.filter(
-    (r) => r.ownerContact.email === auth?.userEmail
-  );
+  // RLS already scopes partner_offers to this owner's own rows, so no
+  // client-side filter by email is needed here.
+  const ownerResponses = responses;
 
   const openRequirements = requirements.filter((r) => r.status === 'open').length;
   const pendingResponses = ownerResponses.filter((r) => r.status === 'pending').length;
@@ -69,6 +68,20 @@ export function OwnerDashboard() {
           Browse guest requirements and submit your property offers
         </p>
       </div>
+
+      {/* Pending approval banner */}
+      {auth && !auth.isApprovedOwner && (
+        <Card className="p-4 border-0 shadow-md bg-amber-50 border-l-4 border-l-amber-500">
+          <div className="flex items-start gap-3">
+            <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+            <p className="text-sm text-amber-900">
+              {language === 'es'
+                ? 'Tu cuenta está pendiente de aprobación por un administrador. Puedes explorar los requisitos, pero no podrás agregar propiedades ni enviar ofertas hasta que tu cuenta sea aprobada.'
+                : "Your account is pending admin approval. You can browse requirements, but you won't be able to add properties or submit offers until your account is approved."}
+            </p>
+          </div>
+        </Card>
+      )}
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -160,18 +173,17 @@ export function OwnerDashboard() {
         {activeTab === 'browse' && <OwnerRequirementBrowser />}
         {activeTab === 'responses' && (
           <MyResponses
-            key={responseRefreshKey}
             responses={ownerResponses}
             requirements={requirements}
             initialFilter={responseFilter}
-            onNDAUpdate={(responseId, updates) => {
-              updateResponse(responseId, updates);
-              setResponseRefreshKey((k) => k + 1);
-            }}
+            onSignNDA={(responseId, signerName) => signNDA(responseId, 'owner', signerName)}
+            onSignContract={(responseId, signerName, signerIdNumber, contractHash) =>
+              signContract(responseId, 'owner', signerName, signerIdNumber, contractHash)
+            }
           />
         )}
-        {activeTab === 'properties' && auth?.userEmail && <OwnerPropertyManager ownerId={auth.userEmail} />}
-        {activeTab === 'profile' && auth?.userEmail && <OwnerProfile ownerId={auth.userEmail} />}
+        {activeTab === 'properties' && auth?.userId && <OwnerPropertyManager ownerId={auth.userId} />}
+        {activeTab === 'profile' && auth?.userId && <OwnerProfile ownerId={auth.userId} />}
       </div>
     </div>
   );
@@ -189,15 +201,21 @@ function MyResponses({
   responses,
   requirements,
   initialFilter = 'all',
-  onNDAUpdate,
+  onSignNDA,
+  onSignContract,
 }: {
   responses: PartnershipResponse[];
   requirements: GuestRequirement[];
   initialFilter?: 'all' | 'pending' | 'accepted' | 'rejected';
-  onNDAUpdate: (responseId: string, updates: Partial<PartnershipResponse>) => void;
+  onSignNDA: (responseId: string, signerName: string) => Promise<void>;
+  onSignContract: (
+    responseId: string,
+    signerName: string,
+    signerIdNumber: string,
+    contractHash: string
+  ) => Promise<void>;
 }) {
   const { language } = useLanguage();
-  const { toast } = useToast();
   const [filter, setFilter] = useState<'all' | 'pending' | 'accepted' | 'rejected'>(initialFilter);
 
   const visible = filter === 'all' ? responses : responses.filter((r) => r.status === filter);
@@ -269,6 +287,13 @@ function MyResponses({
         const needsOwnerSignature = response.status === 'accepted' && adminHasSigned && !ownerHasSigned;
         const bothSigned = ndaStatus === 'both_signed';
 
+        const contractStatus = response.contractStatus || 'not_started';
+        const adminHasSignedContract = !!response.adminContractSignature;
+        const ownerHasSignedContract = !!response.ownerContractSignature;
+        const needsOwnerContractSignature =
+          response.status === 'accepted' && adminHasSignedContract && !ownerHasSignedContract;
+        const bothSignedContract = contractStatus === 'both_signed';
+
         return (
           <Card key={response.id} className="border-0 shadow-md overflow-hidden">
             <div className="p-6">
@@ -290,20 +315,34 @@ function MyResponses({
                     </p>
                   </div>
 
-                  {/* NDA status indicator for accepted offers */}
+                  {/* NDA + Contract status indicators for accepted offers */}
                   {response.status === 'accepted' && (
-                    <div className="mt-3">
+                    <div className="mt-3 flex flex-wrap gap-2">
                       {bothSigned ? (
                         <span className="inline-flex items-center gap-1 px-2 py-1 bg-green-100 text-green-800 rounded text-xs font-medium">
                           ✓ {language === 'es' ? 'NDA Firmado' : 'NDA Signed'}
                         </span>
                       ) : needsOwnerSignature ? (
                         <span className="inline-flex items-center gap-1 px-2 py-1 bg-orange-100 text-orange-800 rounded text-xs font-medium animate-pulse">
-                          ⚠ {language === 'es' ? 'Tu firma requerida' : 'Your signature required'}
+                          ⚠ {language === 'es' ? 'Tu firma de NDA requerida' : 'Your NDA signature required'}
                         </span>
                       ) : (
                         <span className="inline-flex items-center gap-1 px-2 py-1 bg-gray-100 text-gray-600 rounded text-xs font-medium">
-                          📄 {language === 'es' ? 'Esperando firma del admin' : 'Awaiting admin signature'}
+                          📄 {language === 'es' ? 'NDA: esperando firma del admin' : 'NDA: awaiting admin signature'}
+                        </span>
+                      )}
+
+                      {bothSignedContract ? (
+                        <span className="inline-flex items-center gap-1 px-2 py-1 bg-green-100 text-green-800 rounded text-xs font-medium">
+                          ✓ {language === 'es' ? 'Contrato Firmado' : 'Contract Signed'}
+                        </span>
+                      ) : needsOwnerContractSignature ? (
+                        <span className="inline-flex items-center gap-1 px-2 py-1 bg-orange-100 text-orange-800 rounded text-xs font-medium animate-pulse">
+                          ⚠ {language === 'es' ? 'Tu firma de contrato requerida' : 'Your contract signature required'}
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 px-2 py-1 bg-gray-100 text-gray-600 rounded text-xs font-medium">
+                          📄 {language === 'es' ? 'Contrato: esperando firma del admin' : 'Contract: awaiting admin signature'}
                         </span>
                       )}
                     </div>
@@ -347,22 +386,7 @@ function MyResponses({
                   response={response}
                   requirement={requirement}
                   isAdmin={false}
-                  onSignatureUpdate={(updates) => {
-                    try {
-                      onNDAUpdate(response.id, updates);
-                      toast({
-                        title: language === 'es' ? 'Éxito' : 'Success',
-                        description: language === 'es' ? 'NDA firmado correctamente' : 'NDA signed successfully',
-                        variant: 'default',
-                      });
-                    } catch {
-                      toast({
-                        title: language === 'es' ? 'Error' : 'Error',
-                        description: language === 'es' ? 'No se pudo firmar el NDA' : 'Failed to sign NDA',
-                        variant: 'destructive',
-                      });
-                    }
-                  }}
+                  onSign={(signerName) => onSignNDA(response.id, signerName)}
                 />
               </div>
             )}
@@ -389,6 +413,54 @@ function MyResponses({
                   className="text-sm font-medium text-green-800 underline hover:text-green-900"
                 >
                   📄 {language === 'es' ? 'Descargar NDA Firmado' : 'Download Signed NDA'}
+                </button>
+              </div>
+            )}
+
+            {/* Contract Signing Section for owner — appears when admin has signed */}
+            {response.status === 'accepted' && requirement && needsOwnerContractSignature && (
+              <div className="border-t">
+                <ContractSigningSection
+                  response={response}
+                  requirement={requirement}
+                  isAdmin={false}
+                  onSign={(signerName, signerIdNumber, contractHash) =>
+                    onSignContract(response.id, signerName, signerIdNumber, contractHash)
+                  }
+                />
+              </div>
+            )}
+
+            {/* Contract both signed — confirmation + download */}
+            {response.status === 'accepted' && bothSignedContract && requirement && (
+              <div className="border-t p-4 bg-green-50 space-y-3">
+                <p className="text-green-800 font-medium text-sm">
+                  ✓ {language === 'es'
+                    ? 'Contrato de Arriendo completamente firmado.'
+                    : 'Lease contract fully signed.'}
+                </p>
+                <button
+                  onClick={() => {
+                    import('@/lib/contractGenerator').then(({ generateContractTemplate }) => {
+                      const contractText = generateContractTemplate(
+                        requirement,
+                        response,
+                        undefined,
+                        response.adminContractSignature,
+                        response.ownerContractSignature
+                      );
+                      const blob = new Blob([contractText], { type: 'text/plain;charset=utf-8' });
+                      const url = URL.createObjectURL(blob);
+                      const link = document.createElement('a');
+                      link.href = url;
+                      link.download = `Contrato_Arriendo_${response.propertyName.replace(/\s+/g, '_')}_${Date.now()}.txt`;
+                      link.click();
+                      URL.revokeObjectURL(url);
+                    });
+                  }}
+                  className="text-sm font-medium text-green-800 underline hover:text-green-900"
+                >
+                  📄 {language === 'es' ? 'Descargar Contrato Firmado' : 'Download Signed Contract'}
                 </button>
               </div>
             )}

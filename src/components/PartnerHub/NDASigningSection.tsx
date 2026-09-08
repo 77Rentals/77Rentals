@@ -13,11 +13,7 @@ interface NDASigningSectionProps {
   requirement: GuestRequirement;
   adminName?: string;
   isAdmin: boolean;
-  onSignatureUpdate: (updates: {
-    ndaStatus: PartnershipResponse['ndaStatus'];
-    adminSignature?: NDASignature;
-    ownerSignature?: NDASignature;
-  }) => void;
+  onSign: (signerName: string) => Promise<void>;
 }
 
 export function NDASigningSection({
@@ -25,10 +21,11 @@ export function NDASigningSection({
   requirement,
   adminName,
   isAdmin,
-  onSignatureUpdate,
+  onSign,
 }: NDASigningSectionProps) {
   const [signerName, setSignerName] = useState('');
   const [isAgreed, setIsAgreed] = useState(false);
+  const [isSigning, setIsSigning] = useState(false);
   const { language } = useLanguage();
   const { toast } = useToast();
 
@@ -41,7 +38,7 @@ export function NDASigningSection({
   const canDownload =
     (isAdmin && hasAdminSigned) || (!isAdmin && hasOwnerSigned) || isBothSigned;
 
-  const handleSign = () => {
+  const handleSign = async () => {
     if (!signerName.trim()) {
       toast({
         title: 'Error',
@@ -64,49 +61,48 @@ export function NDASigningSection({
       return;
     }
 
-    const signature: NDASignature = {
-      signedBy: isAdmin ? 'admin' : 'owner',
-      signerName,
-      timestamp: new Date(),
-    };
+    setIsSigning(true);
+    try {
+      await onSign(signerName.trim());
 
-    const newStatus: PartnershipResponse['ndaStatus'] = isAdmin
-      ? 'admin_signed'
-      : hasAdminSigned
-      ? 'both_signed'
-      : 'not_started';
+      // Fire-and-forget email notification — never blocks signing flow
+      const newStatus: PartnershipResponse['ndaStatus'] = isAdmin
+        ? hasOwnerSigned
+          ? 'both_signed'
+          : 'admin_signed'
+        : hasAdminSigned
+          ? 'both_signed'
+          : 'not_started';
+      const signature: NDASignature = {
+        signedBy: isAdmin ? 'admin' : 'owner',
+        signerName: signerName.trim(),
+        timestamp: new Date(),
+      };
+      const responseWithNewSig: PartnershipResponse = {
+        ...response,
+        ...(isAdmin ? { adminSignature: signature } : { ownerSignature: signature }),
+        ndaStatus: newStatus,
+      };
+      const emailEvent = newStatus === 'both_signed' ? 'both_signed' : 'admin_signed';
+      sendNDANotificationEmail(emailEvent, responseWithNewSig, requirement).catch(() => {});
 
-    const updates: Parameters<typeof onSignatureUpdate>[0] = {
-      ndaStatus: newStatus,
-    };
+      toast({
+        title: language === 'es' ? 'Éxito' : 'Success',
+        description: language === 'es' ? 'NDA firmado correctamente' : 'NDA signed successfully',
+        variant: 'default',
+      });
 
-    if (isAdmin) {
-      updates.adminSignature = signature;
-    } else {
-      updates.ownerSignature = signature;
+      setSignerName('');
+      setIsAgreed(false);
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: language === 'es' ? 'No se pudo firmar el NDA' : 'Failed to sign NDA',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsSigning(false);
     }
-
-    onSignatureUpdate(updates);
-
-    // Fire-and-forget email notification — never blocks signing flow
-    const emailEvent = newStatus === 'both_signed' ? 'both_signed' : 'admin_signed';
-    const responseWithNewSig: PartnershipResponse = {
-      ...response,
-      ...(isAdmin ? { adminSignature: signature } : { ownerSignature: signature }),
-      ndaStatus: newStatus,
-    };
-    sendNDANotificationEmail(emailEvent, responseWithNewSig, requirement).catch(() => {});
-
-    toast({
-      title: language === 'es' ? 'Éxito' : 'Success',
-      description: language === 'es'
-        ? 'NDA firmado correctamente'
-        : 'NDA signed successfully',
-      variant: 'default',
-    });
-
-    setSignerName('');
-    setIsAgreed(false);
   };
 
   const showSignatureForm =
@@ -215,9 +211,12 @@ export function NDASigningSection({
 
               <Button
                 onClick={handleSign}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                disabled={isSigning}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white disabled:opacity-60"
               >
-                {language === 'es' ? 'Firmar NDA' : 'Sign NDA'}
+                {isSigning
+                  ? (language === 'es' ? 'Firmando...' : 'Signing...')
+                  : (language === 'es' ? 'Firmar NDA' : 'Sign NDA')}
               </Button>
             </div>
           )}

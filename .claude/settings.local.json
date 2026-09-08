@@ -34,7 +34,13 @@
       "Bash(mv \"santa-marta.jpg.jpg\" \"santa-marta.jpg\")",
       "Bash(mv \"Bogota.jpg.jpg\" \"bogota.jpg\")",
       "Bash(xargs grep:*)",
-      "Bash(dir \"C:\\\\Users\\\\57350\\\\Downloads\")"
+      "Bash(dir \"C:\\\\Users\\\\57350\\\\Downloads\")",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Bash(npm ls *)",
+      "Bash(npm install *)",
+      "Bash(node scripts/gen-favicon.cjs)"
     ]
   }
 }

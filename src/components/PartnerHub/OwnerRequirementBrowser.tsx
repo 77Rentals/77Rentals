@@ -8,7 +8,7 @@ import { OwnerResponseForm } from './OwnerResponseForm';
 import type { GuestRequirement } from '@/data/partnerHub';
 
 export function OwnerRequirementBrowser() {
-  const { getRequirements, getResponseCountForRequirement } = usePartnerHub();
+  const { requirements: allRequirements, getResponseCountForRequirement } = usePartnerHub();
   const [selectedRequirement, setSelectedRequirement] = useState<GuestRequirement | null>(null);
   const [showForm, setShowForm] = useState(false);
 
@@ -19,8 +19,6 @@ export function OwnerRequirementBrowser() {
   const [maxGuests, setMaxGuests] = useState(20);
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');
-
-  const allRequirements = getRequirements();
 
   // Filter requirements
   const filtered = useMemo(() => {

@@ -11,7 +11,6 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { t } from '@/lib/translations';
 import { calculateCommission, calculateFinalPriceWithCleaning } from '@/lib/commissionCalculator';
 import { formatDateRange, formatCOP } from '@/lib/dateFormatter';
-import { generateUUID } from '@/lib/uuid';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
@@ -74,9 +73,8 @@ export function OwnerResponseForm({
   const { addResponse } = usePartnerHub();
   const { language } = useLanguage();
   const auth = useContext(PartnerAuthContext);
-  const { getProperties } = useOwnerProperties(auth?.userEmail || '');
-  const ownerProperties = getProperties();
-  const { getProfile } = useOwnerProfile(auth?.userEmail || '');
+  const { properties: ownerProperties } = useOwnerProperties(auth?.userId || '');
+  const { profile } = useOwnerProfile(auth?.userId || '');
 
   const {
     register,
@@ -119,13 +117,12 @@ export function OwnerResponseForm({
 
   // Auto-fill owner contact information from saved profile
   useEffect(() => {
-    const profile = getProfile();
     if (profile) {
       setValue('ownerName', profile.name);
       setValue('ownerPhone', profile.phone);
       setValue('ownerEmail', profile.email);
     }
-  }, [getProfile, setValue]);
+  }, [profile, setValue]);
 
   // Calculate commission based on inputs
   const commissionCalc = calculateCommission(
@@ -144,51 +141,9 @@ export function OwnerResponseForm({
         return;
       }
 
-      // Type-matching validation: auto-reject if apartment type doesn't match requirement
-      if (!requirement.allowedApartmentTypes.includes(data.apartmentType as any)) {
-        setIsSubmitting(true);
-        setSubmitError(
-          `Your apartment type (${data.apartmentType}) does not match the requirement's accepted types: ${requirement.allowedApartmentTypes.join(', ')}. Your offer will be automatically rejected.`
-        );
-        // Still submit but with rejected status
-        const response = {
-          id: generateUUID(),
-          requirementId: requirement.id,
-          ownerId: data.ownerEmail,
-          propertyName: property.propertyName,
-          proposedPrice: data.proposedPrice,
-          cleaningFee: data.cleaningFee || 0,
-          commissionPercent: data.commissionType === '10percent' ? 10 : 0,
-          commissionAmount: commissionCalc.commission,
-          finalPrice: calculateFinalPriceWithCleaning(commissionCalc.finalPrice, data.cleaningFee || 0),
-          apartmentType: data.apartmentType,
-          torreApartamento: data.torreApartamento,
-          googleDriveLink: property.googleDriveLink,
-          iCalLink: property.iCalLink,
-          apartmentBio: data.apartmentBio,
-          notes: data.notes,
-          ownerContact: {
-            name: data.ownerName,
-            phone: data.ownerPhone,
-            email: data.ownerEmail,
-          },
-          status: 'rejected' as const,
-          respondedAt: new Date(),
-          ndaStatus: 'not_started' as const,
-        };
-        addResponse(response);
-        setTimeout(() => {
-          onSubmit();
-        }, 2000);
-        return;
-      }
-
-      setIsSubmitting(true);
-
-      const response = {
-        id: generateUUID(),
+      const baseOffer = {
         requirementId: requirement.id,
-        ownerId: data.ownerEmail,
+        propertyId: property.id,
         propertyName: property.propertyName,
         proposedPrice: data.proposedPrice,
         cleaningFee: data.cleaningFee || 0,
@@ -206,13 +161,25 @@ export function OwnerResponseForm({
           phone: data.ownerPhone,
           email: data.ownerEmail,
         },
-        status: 'pending' as const,
-        respondedAt: new Date(),
-        ndaStatus: 'not_started' as const,
       };
 
-      addResponse(response);
-      console.log('Response submitted successfully');
+      // Type-matching validation: auto-reject if apartment type doesn't match requirement
+      if (!requirement.allowedApartmentTypes.includes(data.apartmentType as any)) {
+        setIsSubmitting(true);
+        setSubmitError(
+          `Your apartment type (${data.apartmentType}) does not match the requirement's accepted types: ${requirement.allowedApartmentTypes.join(', ')}. Your offer will be automatically rejected.`
+        );
+        // Still submit but with rejected status
+        await addResponse({ ...baseOffer, status: 'rejected' });
+        setTimeout(() => {
+          onSubmit();
+        }, 2000);
+        return;
+      }
+
+      setIsSubmitting(true);
+
+      await addResponse({ ...baseOffer, status: 'pending' });
       onSubmit();
     } catch (error) {
       setSubmitError('Failed to submit response. Please try again.');

@@ -1,14 +1,16 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useOwnerProperties } from '@/hooks/useOwnerProperties';
+import { PartnerAuthContext } from '@/contexts/PartnerAuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 import { useToast } from '@/components/ui/use-toast';
 import { Trash2, Edit2, Plus, X } from 'lucide-react';
 import type { ApartmentType, OwnerProperty } from '@/data/partnerHub';
+import { OwnerPropertyWizard } from './OwnerPropertyWizard';
 
 const APARTMENT_TYPES: ApartmentType[] = ['Tipo A', 'Tipo B', 'Tipo C', 'Tipo D'];
 
@@ -34,9 +36,10 @@ export function OwnerPropertyManager({ ownerId }: OwnerPropertyManagerProps) {
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
-  const { getProperties, addProperty, updateProperty, deleteProperty } = useOwnerProperties(ownerId);
+  const { properties, addProperty, updateProperty, deleteProperty } = useOwnerProperties(ownerId);
   const { toast } = useToast();
-  const properties = getProperties();
+  const auth = useContext(PartnerAuthContext);
+  const isApproved = !!auth?.isApprovedOwner;
 
   const editingProperty = editingId ? properties.find((p) => p.id === editingId) : null;
 
@@ -86,7 +89,7 @@ export function OwnerPropertyManager({ ownerId }: OwnerPropertyManagerProps) {
       setIsSaving(true);
 
       if (editingId) {
-        updateProperty(editingId, {
+        await updateProperty(editingId, {
           propertyName: data.propertyName,
           apartmentType: data.apartmentType,
           googleDriveLink: data.googleDriveLink,
@@ -98,8 +101,7 @@ export function OwnerPropertyManager({ ownerId }: OwnerPropertyManagerProps) {
           variant: 'default',
         });
       } else {
-        addProperty({
-          ownerId,
+        await addProperty({
           propertyName: data.propertyName,
           apartmentType: data.apartmentType,
           googleDriveLink: data.googleDriveLink,
@@ -126,10 +128,10 @@ export function OwnerPropertyManager({ ownerId }: OwnerPropertyManagerProps) {
     }
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (confirm('Are you sure you want to delete this property?')) {
       try {
-        deleteProperty(id);
+        await deleteProperty(id);
         toast({
           title: 'Success',
           description: 'Property deleted successfully.',
@@ -169,8 +171,20 @@ export function OwnerPropertyManager({ ownerId }: OwnerPropertyManagerProps) {
                   <div className="flex-1">
                     <h4 className="font-semibold text-gray-900">{prop.propertyName}</h4>
                     <p className="text-sm text-gray-600">
-                      {prop.apartmentType} • {prop.googleDriveLink.substring(0, 50)}...
+                      {prop.apartmentType}
+                      {prop.city && <> • {prop.city}</>}
+                      {prop.maxGuests > 0 && (
+                        <>
+                          {' '}
+                          • {prop.maxGuests} guests • {prop.bedrooms} bed • {prop.bathrooms} bath
+                        </>
+                      )}
                     </p>
+                    {prop.nightlyRate !== undefined && (
+                      <p className="text-sm text-gray-600">
+                        {new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(prop.nightlyRate)}/night
+                      </p>
+                    )}
                     {prop.iCalLink && (
                       <p className="text-xs text-gray-500 mt-1">
                         📅 Calendar link available
@@ -204,13 +218,16 @@ export function OwnerPropertyManager({ ownerId }: OwnerPropertyManagerProps) {
         </Card>
       )}
 
-      {/* Add/Edit Form */}
-      {showForm && (
+      {/* Add: full step-by-step wizard */}
+      {showForm && !editingId && (
+        <OwnerPropertyWizard onClose={handleCloseForm} onSubmitProperty={addProperty} />
+      )}
+
+      {/* Edit: quick single-page form for core fields */}
+      {showForm && editingId && (
         <Card className="p-6 border-[#D4A843]">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="font-semibold text-gray-900 text-lg">
-              {editingId ? 'Edit Property' : 'Add New Property'}
-            </h3>
+            <h3 className="font-semibold text-gray-900 text-lg">Edit Property</h3>
             <button
               onClick={handleCloseForm}
               className="p-1 hover:bg-gray-100 rounded-lg transition-colors"
@@ -312,10 +329,16 @@ export function OwnerPropertyManager({ ownerId }: OwnerPropertyManagerProps) {
             <p className="text-sm text-gray-500">
               Create your first property to get started with offering on requirements.
             </p>
+            {!isApproved && (
+              <p className="text-sm text-amber-700">
+                Your account must be approved by an admin before you can add properties.
+              </p>
+            )}
             <Button
               type="button"
               onClick={() => setShowForm(true)}
-              className="bg-[#D4A843] hover:bg-[#c9963e] text-black font-semibold"
+              disabled={!isApproved}
+              className="bg-[#D4A843] hover:bg-[#c9963e] text-black font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Plus size={18} className="mr-2" />
               Add Your First Property
@@ -326,14 +349,22 @@ export function OwnerPropertyManager({ ownerId }: OwnerPropertyManagerProps) {
 
       {/* Add Button (when not showing form) */}
       {properties.length > 0 && !showForm && (
-        <Button
-          type="button"
-          onClick={() => setShowForm(true)}
-          className="bg-[#D4A843] hover:bg-[#c9963e] text-black font-semibold"
-        >
-          <Plus size={18} className="mr-2" />
-          Add Property
-        </Button>
+        <div className="space-y-2">
+          {!isApproved && (
+            <p className="text-sm text-amber-700">
+              Your account must be approved by an admin before you can add more properties.
+            </p>
+          )}
+          <Button
+            type="button"
+            onClick={() => setShowForm(true)}
+            disabled={!isApproved}
+            className="bg-[#D4A843] hover:bg-[#c9963e] text-black font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <Plus size={18} className="mr-2" />
+            Add Property
+          </Button>
+        </div>
       )}
     </div>
   );

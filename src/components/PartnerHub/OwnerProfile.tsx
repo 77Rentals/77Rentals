@@ -27,7 +27,7 @@ export function OwnerProfile({ ownerId }: OwnerProfileProps) {
   const [isSaving, setIsSaving] = useState(false);
   const { language } = useLanguage();
   const { toast } = useToast();
-  const { getProfile, saveProfile } = useOwnerProfile(ownerId);
+  const { profile: existingProfile, saveProfile } = useOwnerProfile(ownerId);
 
   const {
     register,
@@ -38,9 +38,8 @@ export function OwnerProfile({ ownerId }: OwnerProfileProps) {
     resolver: zodResolver(profileSchema),
   });
 
-  // Load existing profile on mount
+  // Load existing profile once it arrives from Supabase
   useEffect(() => {
-    const existingProfile = getProfile();
     if (existingProfile) {
       reset({
         name: existingProfile.name,
@@ -49,7 +48,7 @@ export function OwnerProfile({ ownerId }: OwnerProfileProps) {
         delVenttoId: existingProfile.delVenttoId,
       });
     }
-  }, [ownerId, getProfile, reset]);
+  }, [existingProfile, reset]);
 
   const onSubmit = async (data: ProfileFormData) => {
     try {
@@ -60,8 +59,8 @@ export function OwnerProfile({ ownerId }: OwnerProfileProps) {
         email: data.email,
         delVenttoId: data.delVenttoId,
       };
-      saveProfile(profile);
-      
+      await saveProfile(profile);
+
       toast({
         title: language === 'es' ? 'Éxito' : 'Success',
         description: language === 'es' 

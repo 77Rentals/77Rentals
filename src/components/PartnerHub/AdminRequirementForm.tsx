@@ -7,7 +7,6 @@ import { z } from 'zod';
 import { usePartnerHub } from '@/hooks/usePartnerHub';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { t } from '@/lib/translations';
-import { generateUUID } from '@/lib/uuid';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
@@ -104,16 +103,13 @@ export function AdminRequirementForm({ onClose, onSubmit }: AdminRequirementForm
 
       setIsSubmitting(true);
 
-      const requirement = {
-        id: generateUUID(),
-        createdAt: new Date(),
+      await addRequirement({
         guestCount: data.guestCount,
         checkInDate: data.checkInDate,
         checkOutDate: data.checkOutDate,
         budget: data.budget,
         notes: data.notes,
         city: data.city,
-        status: 'open' as const,
         allowedApartmentTypes: data.allowedApartmentTypes as any,
         commissionType: data.commissionType,
         commissionValue: data.commissionValue,
@@ -122,12 +118,8 @@ export function AdminRequirementForm({ onClose, onSubmit }: AdminRequirementForm
           phone: '+573046736241',
           email: 'team@77rentals.com',
         },
-      };
+      });
 
-      addRequirement(requirement);
-
-      // Show success (in real app would be toast)
-      console.log('Requirement posted successfully');
       handleSubmitDone();
     } catch (error) {
       setSubmitError('Failed to post requirement. Please try again.');

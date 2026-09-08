@@ -10,6 +10,19 @@ export interface NDASignature {
   timestamp: Date;
 }
 
+// Contract (Contrato de Arriendo a Tarifa Fija) signature data.
+// Stronger than NDASignature — the contract carries payment/penalty
+// obligations, so it captures an ID number and a hash of the exact
+// contract text signed, for evidentiary weight under Ley 527 de 1999.
+export interface ContractSignature {
+  signedBy: 'admin' | 'owner';
+  signerName: string;
+  signerIdNumber: string; // Cédula de ciudadanía / NIT
+  timestamp: Date;
+  contractHash: string; // SHA-256 of the exact rendered contract text at signing time
+  userAgent?: string;
+}
+
 // Partner requirement posted by admin
 export interface GuestRequirement {
   id: string; // UUID
@@ -60,6 +73,10 @@ export interface PartnershipResponse {
   ndaStatus: 'not_started' | 'admin_signed' | 'both_signed';
   adminSignature?: NDASignature;
   ownerSignature?: NDASignature;
+  // Contrato de Arriendo a Tarifa Fija signing fields
+  contractStatus: 'not_started' | 'admin_signed' | 'both_signed';
+  adminContractSignature?: ContractSignature;
+  ownerContractSignature?: ContractSignature;
 }
 
 // Partner auth (simple email-based MVP)
@@ -77,7 +94,8 @@ export interface OwnerProfile {
   delVenttoId: string;
 }
 
-// Owner property (pre-created properties for quick selection)
+// Owner property (self-serve listing, also used for quick selection when
+// offering against a guest requirement)
 export interface OwnerProperty {
   id: string; // UUID
   ownerId: string;
@@ -85,6 +103,14 @@ export interface OwnerProperty {
   apartmentType: ApartmentType;
   googleDriveLink: string;
   iCalLink?: string; // Optional: Google Calendar or iCal link for availability
+  city: string;
+  address: string;
+  maxGuests: number;
+  bedrooms: number;
+  bathrooms: number;
+  nightlyRate?: number; // COP, optional (owner may not have a fixed rate)
+  description: string;
+  amenities: string; // Free-text list, comma or line separated
   createdAt: Date;
   updatedAt: Date;
 }

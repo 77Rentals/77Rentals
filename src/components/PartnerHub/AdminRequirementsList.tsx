@@ -26,65 +26,67 @@ function formatCOP(amount: number): string {
 export function AdminRequirementsList() {
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [selectedResponse, setSelectedResponse] = useState<PartnershipResponse | null>(null);
-  const [selectedRequirement, setSelectedRequirement] = useState<GuestRequirement | null>(null);
+  const [selectedResponseId, setSelectedResponseId] = useState<string | null>(null);
+  const [selectedRequirementId, setSelectedRequirementId] = useState<string | null>(null);
   const { language } = useLanguage();
-  const { getRequirements, getResponses, updateRequirement, updateResponse, deleteRequirement } =
+  const { requirements, responses: allResponses, updateRequirement, updateResponse, deleteRequirement } =
     usePartnerHub();
 
-  const requirements = getRequirements();
-  const allResponses = getResponses();
+  // Derived fresh from the shared query cache every render, so the modal
+  // always reflects the latest status/NDA state without a manual re-fetch.
+  const selectedResponse = allResponses.find((r) => r.id === selectedResponseId) ?? null;
+  const selectedRequirement = requirements.find((r) => r.id === selectedRequirementId) ?? null;
 
-  const handleAcceptResponse = (responseId: string, requirementId: string) => {
-    updateResponse(responseId, { status: 'accepted' });
+  const handleAcceptResponse = async (responseId: string, requirementId: string) => {
+    await updateResponse(responseId, { status: 'accepted' });
     // Mark requirement as successful when first response is accepted
     const req = requirements.find((r) => r.id === requirementId);
     if (req?.status === 'open') {
-      updateRequirement(requirementId, { status: 'successful' });
+      await updateRequirement(requirementId, { status: 'successful' });
     }
   };
 
-  const handleRejectResponse = (responseId: string) => {
-    updateResponse(responseId, { status: 'rejected' });
+  const handleRejectResponse = async (responseId: string) => {
+    await updateResponse(responseId, { status: 'rejected' });
   };
 
-  const handleMarkSuccessful = (requirementId: string) => {
+  const handleMarkSuccessful = async (requirementId: string) => {
     if (window.confirm(language === 'es'
       ? '¿Marcar como exitoso?'
       : 'Mark as successful?')) {
-      updateRequirement(requirementId, { status: 'successful' });
+      await updateRequirement(requirementId, { status: 'successful' });
     }
   };
 
-  const handleCancel = (requirementId: string) => {
+  const handleCancel = async (requirementId: string) => {
     if (window.confirm(language === 'es'
       ? '¿Cancelar este requisito?'
       : 'Cancel this requirement?')) {
-      updateRequirement(requirementId, { status: 'cancelled' });
+      await updateRequirement(requirementId, { status: 'cancelled' });
     }
   };
 
-  const handleDelete = (requirementId: string) => {
+  const handleDelete = async (requirementId: string) => {
     if (window.confirm(language === 'es'
       ? '¿Eliminar este requisito permanentemente?'
       : 'Permanently delete this requirement?')) {
-      deleteRequirement(requirementId);
+      await deleteRequirement(requirementId);
     }
   };
 
-  const handleEditSave = (requirementId: string, updates: Partial<GuestRequirement>) => {
-    updateRequirement(requirementId, updates);
+  const handleEditSave = async (requirementId: string, updates: Partial<GuestRequirement>) => {
+    await updateRequirement(requirementId, updates);
     setEditingId(null);
   };
 
   const handleViewOfferDetails = (response: PartnershipResponse, requirement: GuestRequirement) => {
-    setSelectedResponse(response);
-    setSelectedRequirement(requirement);
+    setSelectedResponseId(response.id);
+    setSelectedRequirementId(requirement.id);
   };
 
   const handleCloseModal = () => {
-    setSelectedResponse(null);
-    setSelectedRequirement(null);
+    setSelectedResponseId(null);
+    setSelectedRequirementId(null);
   };
 
   if (requirements.length === 0) {
@@ -345,14 +347,6 @@ export function AdminRequirementsList() {
         response={selectedResponse}
         requirement={selectedRequirement}
         onClose={handleCloseModal}
-        onStatusChange={() => {
-          // Re-read fresh from localStorage so modal reflects updated status/NDA immediately
-          const freshResponses = getResponses();
-          const latestResponse = freshResponses.find((r) => r.id === selectedResponse.id);
-          if (latestResponse) {
-            setSelectedResponse({ ...latestResponse });
-          }
-        }}
       />
     )}
     </>
