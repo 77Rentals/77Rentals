@@ -24,6 +24,14 @@ import NotFound from "./pages/NotFound.tsx";
 const PartnerHub = lazy(() => import("./pages/PartnerHub"));
 const OwnerSigningPage = lazy(() => import("./pages/OwnerSigningPage.tsx"));
 
+function RouteLoadingScreen() {
+  return (
+    <div className="min-h-screen bg-[#f8f7ff] flex items-center justify-center">
+      <div className="w-8 h-8 border-2 border-[#2D1B69]/20 border-t-[#2D1B69] rounded-full animate-spin" />
+    </div>
+  );
+}
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -42,7 +50,7 @@ const App = () => (
               path="/partner-hub/*"
               element={
                 <RouteErrorBoundary>
-                  <Suspense fallback={<div className="min-h-screen" />}>
+                  <Suspense fallback={<RouteLoadingScreen />}>
                     <PartnerHub />
                   </Suspense>
                 </RouteErrorBoundary>
@@ -57,7 +65,7 @@ const App = () => (
               path="/firmar/:linkId"
               element={
                 <RouteErrorBoundary>
-                  <Suspense fallback={<div className="min-h-screen" />}>
+                  <Suspense fallback={<RouteLoadingScreen />}>
                     <OwnerSigningPage />
                   </Suspense>
                 </RouteErrorBoundary>

@@ -45,6 +45,13 @@ create table public.owner_signing_links (
   unit_count integer,
   contract_hash text,
   nda_hash text,
+  -- The exact rendered contract/NDA text at signing time, stored verbatim so
+  -- re-reading a signed link (e.g. a page reload) never has to regenerate
+  -- the document from partial data -- and so contract_hash always matches
+  -- exactly what's shown/downloaded, with no drift from "today's date"
+  -- being re-evaluated on a later render.
+  contract_text text,
+  nda_text text,
   user_agent text,
   signed_at timestamptz
 );
@@ -77,7 +84,9 @@ returns table (
   building_name text,
   apartment_number text,
   unit_count integer,
-  signed_at timestamptz
+  signed_at timestamptz,
+  contract_text text,
+  nda_text text
 )
 language sql
 security definer
@@ -85,7 +94,7 @@ stable
 set search_path = public
 as $$
   select l.id, l.unit_type, l.status, l.owner_name, l.building_name,
-         l.apartment_number, l.unit_count, l.signed_at
+         l.apartment_number, l.unit_count, l.signed_at, l.contract_text, l.nda_text
   from public.owner_signing_links l
   where l.id = p_id;
 $$;
@@ -105,7 +114,9 @@ create function public.sign_owner_signing_link(
   p_unit_count integer,
   p_contract_hash text,
   p_nda_hash text,
-  p_user_agent text
+  p_user_agent text,
+  p_contract_text text,
+  p_nda_text text
 )
 returns void
 language plpgsql
@@ -125,6 +136,8 @@ begin
       contract_hash = p_contract_hash,
       nda_hash = p_nda_hash,
       user_agent = p_user_agent,
+      contract_text = p_contract_text,
+      nda_text = p_nda_text,
       signed_at = now()
   where id = p_id and status = 'pending';
 
@@ -134,7 +147,7 @@ begin
 end;
 $$;
 
-grant execute on function public.sign_owner_signing_link(uuid, text, text, text, text, text, text, integer, text, text, text) to anon, authenticated;
+grant execute on function public.sign_owner_signing_link(uuid, text, text, text, text, text, text, integer, text, text, text, text, text) to anon, authenticated;
 
 -- ── Base table privileges ──
 -- Same reasoning as partner-hub-setup.sql: "Automatically expose new tables"

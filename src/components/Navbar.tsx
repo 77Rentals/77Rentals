@@ -20,7 +20,10 @@ const Navbar = () => {
     { href: '#about', label: t('nav.about') },
     { href: '#management', label: t('nav.management') },
     { href: '#contact', label: t('nav.contact') },
-    { href: '/partner-hub', label: 'Partner Hub' },
+    // onMouseEnter prefetches its JS chunk (React.lazy in App.tsx) so the
+    // click itself doesn't have to wait for the download — the chunk is
+    // usually already warm by the time the click event fires.
+    { href: '/partner-hub', label: 'Partner Hub', onMouseEnter: () => { import('@/pages/PartnerHub'); } },
   ];
 
   return (
@@ -46,6 +49,7 @@ const Navbar = () => {
             <a
               key={link.href}
               href={link.href}
+              onMouseEnter={link.onMouseEnter}
               className="text-white/75 hover:text-[#D4A843] transition-colors duration-200 text-sm font-medium tracking-wide"
             >
               {link.label}
@@ -83,6 +87,7 @@ const Navbar = () => {
             <a
               key={link.href}
               href={link.href}
+              onTouchStart={link.onMouseEnter}
               className="flex py-3 text-white/80 hover:text-[#D4A843] transition-colors text-sm font-medium border-b border-white/5 last:border-0"
               onClick={() => setIsOpen(false)}
             >

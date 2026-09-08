@@ -3,10 +3,10 @@ import { useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useToast } from '@/components/ui/use-toast';
+import { DocumentText } from '@/components/DocumentText';
 import type { OwnerSigningFormData, OwnerSigningLink } from '@/data/ownerSigningLink';
 import { getOwnerSigningLink, signOwnerSigningLink } from '@/lib/ownerSigningLinkClient';
 import {
-  formatForDisplay,
   generateGalcolContractText,
   generateGalcolNDAText,
   getUnitConfig,
@@ -106,14 +106,15 @@ export default function OwnerSigningPage() {
 
     setIsSigning(true);
     try {
-      const finalContractText = generateGalcolContractText(link.unitType, form);
-      const finalNdaText = generateGalcolNDAText(link.unitType, form);
+      const signTimestamp = new Date();
+      const finalContractText = generateGalcolContractText(link.unitType, form, signTimestamp);
+      const finalNdaText = generateGalcolNDAText(link.unitType, form, signTimestamp);
       const [contractHash, ndaHash] = await Promise.all([
         hashText(finalContractText),
         hashText(finalNdaText),
       ]);
 
-      await signOwnerSigningLink(linkId, form, contractHash, ndaHash);
+      await signOwnerSigningLink(linkId, form, contractHash, ndaHash, finalContractText, finalNdaText);
 
       setLink({
         id: linkId,
@@ -123,7 +124,9 @@ export default function OwnerSigningPage() {
         buildingName: form.buildingName,
         apartmentNumber: form.apartmentNumber,
         unitCount: form.unitCount,
-        signedAt: new Date(),
+        signedAt: signTimestamp,
+        contractText: finalContractText,
+        ndaText: finalNdaText,
       });
 
       toast({
@@ -187,13 +190,20 @@ export default function OwnerSigningPage() {
             <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
               <Button
                 variant="outline"
-                onClick={() => downloadText(`Contrato_Arriendo_${cfg.label.replace(/\s+/g, '_')}.txt`, contractText)}
+                onClick={() =>
+                  downloadText(
+                    `Contrato_Arriendo_${cfg.label.replace(/\s+/g, '_')}.txt`,
+                    link.contractText ?? contractText
+                  )
+                }
               >
                 📄 Descargar Contrato Firmado
               </Button>
               <Button
                 variant="outline"
-                onClick={() => downloadText(`NDA_${cfg.label.replace(/\s+/g, '_')}.txt`, ndaText)}
+                onClick={() =>
+                  downloadText(`NDA_${cfg.label.replace(/\s+/g, '_')}.txt`, link.ndaText ?? ndaText)
+                }
               >
                 📄 Descargar NDA Firmado
               </Button>
@@ -211,19 +221,15 @@ export default function OwnerSigningPage() {
 
             <Card className="p-6 space-y-3">
               <h2 className="text-lg font-semibold text-gray-900">Contrato de Arriendo a Tarifa Fija</h2>
-              <div className="bg-gray-50 rounded-lg p-4 max-h-96 overflow-y-auto">
-                <pre className="text-xs text-gray-700 whitespace-pre-wrap font-mono">
-                  {formatForDisplay(contractText)}
-                </pre>
+              <div className="bg-white border border-gray-200 rounded-lg p-6 max-h-[32rem] overflow-y-auto shadow-inner">
+                <DocumentText text={contractText} />
               </div>
             </Card>
 
             <Card className="p-6 space-y-3">
               <h2 className="text-lg font-semibold text-gray-900">Acuerdo de Confidencialidad (NDA)</h2>
-              <div className="bg-gray-50 rounded-lg p-4 max-h-96 overflow-y-auto">
-                <pre className="text-xs text-gray-700 whitespace-pre-wrap font-mono">
-                  {formatForDisplay(ndaText)}
-                </pre>
+              <div className="bg-white border border-gray-200 rounded-lg p-6 max-h-[32rem] overflow-y-auto shadow-inner">
+                <DocumentText text={ndaText} />
               </div>
             </Card>
 

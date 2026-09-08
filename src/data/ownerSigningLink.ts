@@ -13,6 +13,10 @@ export interface OwnerSigningLink {
   apartmentNumber?: string;
   unitCount?: number;
   signedAt?: Date;
+  // Exact rendered text at signing time, stored verbatim so a reload never
+  // has to regenerate the document from partial data.
+  contractText?: string;
+  ndaText?: string;
 }
 
 // Fields the owner fills in when signing.
