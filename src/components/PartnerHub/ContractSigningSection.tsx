@@ -11,6 +11,7 @@ import {
   hashContractText,
 } from '@/lib/contractGenerator';
 import { sendContractNotificationEmail } from '@/lib/emailService';
+import { downloadDocumentPdf, type PdfSignature } from '@/lib/pdfGenerator';
 
 interface ContractSigningSectionProps {
   response: PartnershipResponse;
@@ -325,11 +326,16 @@ export function ContractSigningSection({
 }
 
 function downloadSignedContract(contractTemplate: string, response: PartnershipResponse) {
-  const blob = new Blob([contractTemplate], { type: 'text/plain;charset=utf-8' });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = `Contrato_Servicio_Alquiler_Turistico_${response.propertyName.replace(/\s+/g, '_')}_${Date.now()}.txt`;
-  link.click();
-  URL.revokeObjectURL(url);
+  const signatures: PdfSignature[] = [];
+  if (response.adminContractSignature?.signatureImage) {
+    signatures.push({ roleLabel: '77RENTALS', signatureImage: response.adminContractSignature.signatureImage });
+  }
+  if (response.ownerContractSignature?.signatureImage) {
+    signatures.push({ roleLabel: 'PROPIETARIO', signatureImage: response.ownerContractSignature.signatureImage });
+  }
+  downloadDocumentPdf(
+    contractTemplate,
+    `Contrato_Servicio_Alquiler_Turistico_${response.propertyName.replace(/\s+/g, '_')}_${Date.now()}.pdf`,
+    signatures
+  );
 }

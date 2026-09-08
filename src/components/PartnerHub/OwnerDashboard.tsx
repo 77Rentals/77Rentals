@@ -12,6 +12,7 @@ import { NDASigningSection } from './NDASigningSection';
 import { ContractSigningSection } from './ContractSigningSection';
 import type { PartnershipResponse, GuestRequirement, SigningStatus } from '@/data/partnerHub';
 import { generateNDATemplate } from '@/lib/ndaGenerator';
+import { downloadDocumentPdf, type PdfSignature } from '@/lib/pdfGenerator';
 
 type TabType = 'browse' | 'responses' | 'profile' | 'properties';
 type ResponseFilter = 'all' | 'pending' | 'accepted' | 'rejected';
@@ -405,13 +406,18 @@ function MyResponses({
                 <button
                   onClick={() => {
                     const ndaText = generateNDATemplate(requirement, response);
-                    const blob = new Blob([ndaText], { type: 'text/plain;charset=utf-8' });
-                    const url = URL.createObjectURL(blob);
-                    const link = document.createElement('a');
-                    link.href = url;
-                    link.download = `NDA_Firmado_${response.propertyName.replace(/\s+/g, '_')}_${Date.now()}.txt`;
-                    link.click();
-                    URL.revokeObjectURL(url);
+                    const signatures: PdfSignature[] = [];
+                    if (response.adminSignature?.signatureImage) {
+                      signatures.push({ roleLabel: 'INTERMEDIARIO', signatureImage: response.adminSignature.signatureImage });
+                    }
+                    if (response.ownerSignature?.signatureImage) {
+                      signatures.push({ roleLabel: 'PROPIETARIO', signatureImage: response.ownerSignature.signatureImage });
+                    }
+                    downloadDocumentPdf(
+                      ndaText,
+                      `NDA_Firmado_${response.propertyName.replace(/\s+/g, '_')}_${Date.now()}.pdf`,
+                      signatures
+                    );
                   }}
                   className="text-sm font-medium text-green-800 underline hover:text-green-900"
                 >
@@ -452,13 +458,18 @@ function MyResponses({
                         response.adminContractSignature,
                         response.ownerContractSignature
                       );
-                      const blob = new Blob([contractText], { type: 'text/plain;charset=utf-8' });
-                      const url = URL.createObjectURL(blob);
-                      const link = document.createElement('a');
-                      link.href = url;
-                      link.download = `Contrato_Servicio_Alquiler_Turistico_${response.propertyName.replace(/\s+/g, '_')}_${Date.now()}.txt`;
-                      link.click();
-                      URL.revokeObjectURL(url);
+                      const signatures: PdfSignature[] = [];
+                      if (response.adminContractSignature?.signatureImage) {
+                        signatures.push({ roleLabel: '77RENTALS', signatureImage: response.adminContractSignature.signatureImage });
+                      }
+                      if (response.ownerContractSignature?.signatureImage) {
+                        signatures.push({ roleLabel: 'PROPIETARIO', signatureImage: response.ownerContractSignature.signatureImage });
+                      }
+                      downloadDocumentPdf(
+                        contractText,
+                        `Contrato_Servicio_Alquiler_Turistico_${response.propertyName.replace(/\s+/g, '_')}_${Date.now()}.pdf`,
+                        signatures
+                      );
                     });
                   }}
                   className="text-sm font-medium text-green-800 underline hover:text-green-900"

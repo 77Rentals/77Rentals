@@ -8,6 +8,7 @@ import type { GuestRequirement, PartnershipResponse, NDASignature, SigningStatus
 import { generateNDATemplate, formatNDAForDisplay } from '@/lib/ndaGenerator';
 import { generateWhatsAppLink } from '@/lib/whatsappHelper';
 import { sendNDANotificationEmail } from '@/lib/emailService';
+import { downloadDocumentPdf, type PdfSignature } from '@/lib/pdfGenerator';
 
 interface NDASigningSectionProps {
   response: PartnershipResponse;
@@ -296,11 +297,16 @@ export function NDASigningSection({
 }
 
 function downloadSignedNDA(ndaTemplate: string, response: PartnershipResponse) {
-  const blob = new Blob([ndaTemplate], { type: 'text/plain;charset=utf-8' });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = `NDA_Firmado_${response.propertyName.replace(/\s+/g, '_')}_${new Date().getTime()}.txt`;
-  link.click();
-  URL.revokeObjectURL(url);
+  const signatures: PdfSignature[] = [];
+  if (response.adminSignature?.signatureImage) {
+    signatures.push({ roleLabel: 'INTERMEDIARIO', signatureImage: response.adminSignature.signatureImage });
+  }
+  if (response.ownerSignature?.signatureImage) {
+    signatures.push({ roleLabel: 'PROPIETARIO', signatureImage: response.ownerSignature.signatureImage });
+  }
+  downloadDocumentPdf(
+    ndaTemplate,
+    `NDA_Firmado_${response.propertyName.replace(/\s+/g, '_')}_${Date.now()}.pdf`,
+    signatures
+  );
 }

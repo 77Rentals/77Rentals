@@ -7,6 +7,7 @@ import { DocumentText } from '@/components/DocumentText';
 import { SignaturePad } from '@/components/SignaturePad';
 import type { OwnerSigningFormData, OwnerSigningLink } from '@/data/ownerSigningLink';
 import { getOwnerSigningLink, signOwnerSigningLink } from '@/lib/ownerSigningLinkClient';
+import { downloadDocumentPdf } from '@/lib/pdfGenerator';
 import {
   generateGalcolContractText,
   generateGalcolNDAText,
@@ -25,16 +26,6 @@ const EMPTY_FORM: OwnerSigningFormData = {
 };
 
 const ID_NUMBER_PATTERN = /^\d[\d.]{4,}(-\d)?$/;
-
-function downloadText(filename: string, text: string) {
-  const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = filename;
-  link.click();
-  URL.revokeObjectURL(url);
-}
 
 export default function OwnerSigningPage() {
   const { linkId } = useParams<{ linkId: string }>();
@@ -212,9 +203,12 @@ export default function OwnerSigningPage() {
               <Button
                 variant="outline"
                 onClick={() =>
-                  downloadText(
-                    `Contrato_Servicio_Alquiler_Turistico_${cfg.label.replace(/\s+/g, '_')}.txt`,
-                    link.contractText ?? contractText
+                  downloadDocumentPdf(
+                    link.contractText ?? contractText,
+                    `Contrato_Servicio_Alquiler_Turistico_${cfg.label.replace(/\s+/g, '_')}.pdf`,
+                    link.signatureImage
+                      ? [{ roleLabel: 'EL PROPIETARIO', signatureImage: link.signatureImage }]
+                      : []
                   )
                 }
               >
@@ -223,7 +217,13 @@ export default function OwnerSigningPage() {
               <Button
                 variant="outline"
                 onClick={() =>
-                  downloadText(`NDA_${cfg.label.replace(/\s+/g, '_')}.txt`, link.ndaText ?? ndaText)
+                  downloadDocumentPdf(
+                    link.ndaText ?? ndaText,
+                    `NDA_${cfg.label.replace(/\s+/g, '_')}.pdf`,
+                    link.signatureImage
+                      ? [{ roleLabel: 'EL PROPIETARIO', signatureImage: link.signatureImage }]
+                      : []
+                  )
                 }
               >
                 📄 Descargar NDA Firmado
