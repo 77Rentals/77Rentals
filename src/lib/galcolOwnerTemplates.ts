@@ -51,7 +51,7 @@ ${cfg.quoteNo} · ${cfg.label} · Pozos Colorados, Santa Marta
 
 Entre los suscritos, a saber, de una parte ROBERTO CARLOS RUIZ GÓMEZ, identificado con cédula de
 ciudadanía No. 79.719.972, con domicilio en Cartagena, persona natural (régimen simplificado),
-dueño del establecimiento de comercio 77RENTALS, quien en adelante se denominará EL ARRENDATARIO;
+dueño del establecimiento de comercio 77RENTALS, quien en adelante se denominará EL TITULAR DE DERECHOS DE ALQUILER;
 y de otra parte ${data.ownerName}, identificado(a) con cédula de ciudadanía No. ${data.ownerIdNumber},
 con datos de contacto ${data.ownerContactEmail} y ${data.ownerContactPhone}, propietario(a) de la
 unidad descrita en la Cláusula Segunda, quien en adelante se denominará EL PROPIETARIO; hemos
@@ -61,13 +61,13 @@ alojamiento temporal, el cual se regirá por las siguientes cláusulas:
 CLÁUSULA PRIMERA — NATURALEZA DEL CONTRATO
 El presente es un contrato de prestación de servicios turísticos, en la modalidad de servicio de
 alquiler turístico de inmueble amoblado para alojamiento temporal, mediante el cual EL PROPIETARIO
-pone a disposición de EL ARRENDATARIO, de forma exclusiva, la unidad descrita en la Cláusula
-Segunda durante el período pactado en la Cláusula Tercera, para que EL ARRENDATARIO la explote en
-desarrollo de su actividad de alojamiento y hospedaje no permanente a favor de terceros huéspedes,
-regida por la Ley 300 de 1996 (Ley General de Turismo), modificada por la Ley 1558 de 2012, y por
+pone a disposición de EL TITULAR DE DERECHOS DE ALQUILER, de forma exclusiva, la unidad descrita en la Cláusula
+Segunda durante el período pactado en la Cláusula Tercera, para que EL TITULAR DE DERECHOS DE ALQUILER desarrolle la
+actividad de alojamiento y hospedaje temporal a favor de terceros huéspedes, regida por la Ley 300
+de 1996 (Ley General de Turismo), modificada por la Ley 1558 de 2012, y por
 el Decreto 1074 de 2015 (Decreto Único Reglamentario del Sector Comercio, Industria y Turismo).
 Las partes reconocen que quien opera la actividad turística y contrata directamente con los
-huéspedes finales es EL ARRENDATARIO, por lo que ostenta la calidad de prestador de servicios
+huéspedes finales es EL TITULAR DE DERECHOS DE ALQUILER, por lo que ostenta la calidad de prestador de servicios
 turísticos y declara que cuenta, o contará antes del check-in, con Registro Nacional de Turismo
 (RNT) vigente, siendo el único responsable del cumplimiento de las obligaciones derivadas de dicha
 normativa. EL PROPIETARIO declara y garantiza que el destino turístico de la unidad no contraviene
@@ -78,7 +78,7 @@ Ley 820 de 2003. Las partes reconocen y aceptan expresamente esta calificación 
 de la relación contractual.
 
 CLÁUSULA SEGUNDA — OBJETO
-EL PROPIETARIO pone a disposición de EL ARRENDATARIO, en calidad de uso exclusivo, la(s)
+EL PROPIETARIO pone a disposición de EL TITULAR DE DERECHOS DE ALQUILER, en calidad de uso exclusivo, la(s)
 siguiente(s) unidad(es):
    Tipo de unidad: ${cfg.label}
    Edificio / Conjunto: ${data.buildingName}
@@ -92,7 +92,7 @@ CLÁUSULA TERCERA — DURACIÓN Y USO EXCLUSIVO
    Check-in: Domingo, 13 de diciembre de 2026 — 3:00 p. m.
    Check-out: Domingo, 17 de enero de 2027 — 12:00 m.
    Duración total: 35 noches
-Durante este período, la unidad quedará reservada de manera exclusiva para EL ARRENDATARIO, quien
+Durante este período, la unidad quedará reservada de manera exclusiva para EL TITULAR DE DERECHOS DE ALQUILER, quien
 la destinará al alojamiento de un equipo de personal de seguridad privada (escoltas) al servicio
 de un cliente corporativo. EL PROPIETARIO declara conocer y aceptar esta destinación específica,
 sin que ello implique revelar la identidad del cliente corporativo ni de los integrantes del
@@ -115,24 +115,24 @@ del valor total, en las siguientes fechas:
    50% restante — 16 de diciembre de 2026 — ${formatCOP(pay50)}
 Los pagos se realizarán a la cuenta bancaria que EL PROPIETARIO indique por escrito antes de la
 fecha del primer pago.
-Las fechas anteriores corresponden a la fecha en que EL ARRENDATARIO efectúa el giro a EL
+Las fechas anteriores corresponden a la fecha en que EL TITULAR DE DERECHOS DE ALQUILER efectúa el giro a EL
 PROPIETARIO, y son posteriores a las fechas de pago de su cliente. Esto obedece a los tiempos
-propios del proceso bancario: los fondos pagados por el cliente de EL ARRENDATARIO tardan
-aproximadamente un (1) día hábil en quedar disponibles en la cuenta de EL ARRENDATARIO, y el giro
+propios del proceso bancario: los fondos pagados por el cliente de EL TITULAR DE DERECHOS DE ALQUILER tardan
+aproximadamente un (1) día hábil en quedar disponibles en la cuenta de EL TITULAR DE DERECHOS DE ALQUILER, y el giro
 posterior a EL PROPIETARIO requiere un tiempo adicional de procesamiento bancario. En particular,
-el pago del 50% restante lo recibe EL ARRENDATARIO el mismo día de check-in (13 de diciembre de
+el pago del 50% restante lo recibe EL TITULAR DE DERECHOS DE ALQUILER el mismo día de check-in (13 de diciembre de
 2026), por lo que el giro correspondiente a EL PROPIETARIO se realizará el día hábil siguiente a
 la disponibilidad efectiva de dichos fondos.
 Los servicios de aseo, kit de bienvenida y demás costos operativos asociados a la estadía del
-grupo corporativo corren por cuenta de EL ARRENDATARIO y no generan costo adicional para EL
+grupo corporativo corren por cuenta de EL TITULAR DE DERECHOS DE ALQUILER y no generan costo adicional para EL
 PROPIETARIO, salvo lo indicado a continuación. El valor pactado en esta cláusula incluye el aseo
 de check-out, las manillas del edificio para los huéspedes y el primer kit de bienvenida (de los
 dos kits contemplados durante la estadía), los cuales son responsabilidad de EL PROPIETARIO y no
-generan cobro adicional a EL ARRENDATARIO. El segundo kit de bienvenida (de cortesía, entregado a
-los 15 días del check-in) corre por cuenta de EL ARRENDATARIO.
-Aseo adicional durante la estadía. EL ARRENDATARIO podrá programar, de mutuo acuerdo con EL
+generan cobro adicional a EL TITULAR DE DERECHOS DE ALQUILER. El segundo kit de bienvenida (de cortesía, entregado a
+los 15 días del check-in) corre por cuenta de EL TITULAR DE DERECHOS DE ALQUILER.
+Aseo adicional durante la estadía. EL TITULAR DE DERECHOS DE ALQUILER podrá programar, de mutuo acuerdo con EL
 PROPIETARIO, aseos adicionales durante la estadía, estimados en uno (1) a dos (2) aseos por
-semana por unidad. Cada aseo adicional será pagado por EL ARRENDATARIO a razón de $70.000 COP por
+semana por unidad. Cada aseo adicional será pagado por EL TITULAR DE DERECHOS DE ALQUILER a razón de $70.000 COP por
 aseo, valor adicional al servicio pactado en esta cláusula, y se pagará el día hábil siguiente a
 la realización de cada aseo.
 
@@ -140,7 +140,7 @@ CLÁUSULA QUINTA — OBLIGACIONES DE EL PROPIETARIO
 EL PROPIETARIO se obliga a: (i) entregar la unidad limpia, funcional y completamente dotada en la
 fecha de check-in, conforme al detalle de dotación descrito a continuación; (ii) garantizar que la
 unidad esté libre de reservas o compromisos de terceros durante todo el período pactado; (iii)
-permitir el acceso de EL ARRENDATARIO y su personal de aseo/mantenimiento durante la vigencia del
+permitir el acceso de EL TITULAR DE DERECHOS DE ALQUILER y su personal de aseo/mantenimiento durante la vigencia del
 contrato para la correcta prestación del servicio; (iv) informar con la mayor anticipación
 posible cualquier situación que pueda afectar la disponibilidad de la unidad.
 Dotación mínima para el check-in. La unidad deberá estar provista, como mínimo, de lo siguiente:
@@ -154,27 +154,25 @@ Dotación mínima para el check-in. La unidad deberá estar provista, como míni
    • Una esponja para lavar la loza.
    • 3 litros de agua natural, en botella.
    • Manillas de acceso del edificio para cada huésped.
-   • Primer kit de bienvenida (el segundo kit, de cortesía a los 15 días, corre por cuenta de EL
-     ARRENDATARIO).
-Entrega del apartamento. El equipo operativo de EL ARRENDATARIO realizará la entrega de la
+   • Primer kit de bienvenida (el segundo kit, de cortesía a los 15 días, corre por cuenta de EL TITULAR DE DERECHOS DE ALQUILER).
+Entrega del apartamento. El equipo operativo de EL TITULAR DE DERECHOS DE ALQUILER realizará la entrega de la
 unidad, acompañado por la persona encargada del aseo o por una persona de confianza designada por
 EL PROPIETARIO, con el fin de verificar conjuntamente que la unidad se encuentre en las
 condiciones aquí acordadas y que todo esté listo para recibir a los huéspedes.
 
-CLÁUSULA SEXTA — OBLIGACIONES DE EL ARRENDATARIO
-EL ARRENDATARIO se obliga a: (i) pagar oportunamente el valor pactado en la Cláusula Cuarta; (ii)
+CLÁUSULA SEXTA — OBLIGACIONES DE EL TITULAR DE DERECHOS DE ALQUILER
+EL TITULAR DE DERECHOS DE ALQUILER se obliga a: (i) pagar oportunamente el valor pactado en la Cláusula Cuarta; (ii)
 hacer uso adecuado de la unidad; (iii) devolver la unidad en el mismo estado en que fue recibida,
 salvo el desgaste normal por uso; (iv) reportar de inmediato a EL PROPIETARIO cualquier daño
 ocasionado en la unidad durante la estadía, y gestionar ante su cliente corporativo el trámite
 correspondiente para la reparación o indemnización de dicho daño. La responsabilidad económica
 por los daños causados por los huéspedes durante la estadía corresponde al cliente corporativo de
-EL ARRENDATARIO conforme a lo pactado entre ellos, sin que el presente contrato genere
-responsabilidad económica directa de EL ARRENDATARIO frente a EL PROPIETARIO por dichos daños.
+EL TITULAR DE DERECHOS DE ALQUILER conforme a lo pactado entre ellos, sin que el presente contrato genere
+responsabilidad económica directa de EL TITULAR DE DERECHOS DE ALQUILER frente a EL PROPIETARIO por dichos daños.
 
 CLÁUSULA SÉPTIMA — REDUCCIÓN DE NOCHES
-Esta cláusula replica, en términos espejo, la escala de reducción de noches pactada entre EL
-ARRENDATARIO y su cliente, de forma que EL PROPIETARIO reciba exactamente el mismo porcentaje que
-EL ARRENDATARIO reciba de su cliente por dicho concepto. Las siguientes reglas se evalúan de forma
+Esta cláusula replica, en términos espejo, la escala de reducción de noches pactada entre EL TITULAR DE DERECHOS DE ALQUILER y su cliente, de forma que EL PROPIETARIO reciba exactamente el mismo porcentaje que
+EL TITULAR DE DERECHOS DE ALQUILER reciba de su cliente por dicho concepto. Las siguientes reglas se evalúan de forma
 independiente por cada unidad:
 a) Reducción de hasta 7 noches por unidad: EL PROPIETARIO recibirá, por cada noche reducida, el
 siguiente porcentaje de la tarifa por noche pactada en la Cláusula Cuarta, según la fecha del
@@ -193,30 +191,28 @@ PROPIETARIO las arriende libremente a terceros, sin restricción de exclusividad
 
 CLÁUSULA OCTAVA — CANCELACIÓN TOTAL DE LA RESERVA
 Esta cláusula replica, en términos espejo y para ambos sentidos, la escala de cancelación total
-pactada entre EL ARRENDATARIO y su cliente.
-a) Cancelación por decisión del cliente de EL ARRENDATARIO. Si el cliente de EL ARRENDATARIO
+pactada entre EL TITULAR DE DERECHOS DE ALQUILER y su cliente.
+a) Cancelación por decisión del cliente de EL TITULAR DE DERECHOS DE ALQUILER. Si el cliente de EL TITULAR DE DERECHOS DE ALQUILER
 cancela en su totalidad la reserva de una o más unidades, EL PROPIETARIO tendrá derecho a
 recibir, sobre el valor total pactado en la Cláusula Cuarta para la(s) unidad(es) afectada(s), el
-mismo porcentaje que EL ARRENDATARIO reciba de su cliente por dicho concepto, según la fecha del
+mismo porcentaje que EL TITULAR DE DERECHOS DE ALQUILER reciba de su cliente por dicho concepto, según la fecha del
 aviso:
    Aviso escrito recibido hasta el 31 de octubre de 2026: 10%
    Aviso escrito recibido entre el 1 y el 30 de noviembre de 2026: 40%
    Aviso escrito recibido entre el 1 y el 12 de diciembre de 2026: 75%
    Aviso a partir del 13 de diciembre de 2026, no presentación (no-show) o abandono anticipado: 90%
-Las sumas ya pagadas por EL ARRENDATARIO a la fecha de la cancelación se imputarán al valor
+Las sumas ya pagadas por EL TITULAR DE DERECHOS DE ALQUILER a la fecha de la cancelación se imputarán al valor
 resultante de la tabla anterior. Cualquier diferencia a favor de una u otra parte se liquidará
 dentro de los 5 días hábiles siguientes al aviso de cancelación, y las fechas de la(s) unidad(es)
 afectada(s) quedarán liberadas de forma inmediata para EL PROPIETARIO.
 b) Cancelación o retiro por decisión de EL PROPIETARIO. Si EL PROPIETARIO retira la unidad de la
 disponibilidad pactada, la cancela o la ofrece a terceros durante el período de uso exclusivo sin
-causa de fuerza mayor debidamente acreditada, deberá: (i) reintegrar a EL ARRENDATARIO la
-totalidad de las sumas ya pagadas, dentro de los 5 días hábiles siguientes; y (ii) pagar a EL
-ARRENDATARIO, a título de cláusula penal por estimación anticipada de perjuicios (sin necesidad de
+causa de fuerza mayor debidamente acreditada, deberá: (i) reintegrar a EL TITULAR DE DERECHOS DE ALQUILER la
+totalidad de las sumas ya pagadas, dentro de los 5 días hábiles siguientes; y (ii) pagar a EL TITULAR DE DERECHOS DE ALQUILER, a título de cláusula penal por estimación anticipada de perjuicios (sin necesidad de
 probarlos), el mismo porcentaje del valor total pactado en la Cláusula Cuarta para la unidad
-retirada que EL ARRENDATARIO estaría expuesto a perder frente a su cliente en esa misma fecha,
+retirada que EL TITULAR DE DERECHOS DE ALQUILER estaría expuesto a perder frente a su cliente en esa misma fecha,
 conforme a la tabla anterior (10% / 40% / 75% / 90%, según corresponda a la fecha del retiro).
-La pena aquí pactada no exime a EL PROPIETARIO del pago de perjuicios adicionales que EL
-ARRENDATARIO acredite y que excedan el valor de la pena. El incumplimiento de EL PROPIETARIO
+La pena aquí pactada no exime a EL PROPIETARIO del pago de perjuicios adicionales que EL TITULAR DE DERECHOS DE ALQUILER acredite y que excedan el valor de la pena. El incumplimiento de EL PROPIETARIO
 causará intereses moratorios a la tasa máxima legal permitida en Colombia sobre las sumas a su
 cargo, sin necesidad de requerimiento previo para la constitución en mora.
 
@@ -234,8 +230,7 @@ estrictamente necesarios para dicho fin. Ambas partes se obligan a dar cumplimie
 de 2012 y demás normas concordantes sobre protección de datos personales, garantizando que dicha
 información se use exclusivamente para las finalidades aquí previstas, se mantenga bajo medidas
 razonables de seguridad, y no se comparta con terceros distintos de la administración del
-edificio o las autoridades competentes, salvo autorización expresa o mandato legal. EL
-ARRENDATARIO será responsable de obtener del huésped las autorizaciones de tratamiento de datos
+edificio o las autoridades competentes, salvo autorización expresa o mandato legal. EL TITULAR DE DERECHOS DE ALQUILER será responsable de obtener del huésped las autorizaciones de tratamiento de datos
 que resulten necesarias frente a su cliente corporativo.
 
 CLÁUSULA UNDÉCIMA — ACEPTACIÓN Y PERFECCIONAMIENTO
@@ -244,7 +239,7 @@ El presente contrato se perfecciona con la firma de ambas partes y el pago de la
 totalidad de las cláusulas aquí contenidas, y lo suscriben en dos ejemplares del mismo tenor y
 valor el ${today}.
 
-EL ARRENDATARIO — 77Rentals
+EL TITULAR DE DERECHOS DE ALQUILER — 77Rentals
 Nombre: Roberto Carlos Ruiz Gómez
 C.C.: 79.719.972
 Calidad: Persona natural, titular del nombre comercial 77Rentals
@@ -313,7 +308,7 @@ video o imagen dentro de la unidad durante el período en que esté ocupada por 
 incluyendo cámaras de seguridad interiores, asistentes de voz, cámaras ocultas o cualquier otro
 medio de captación. EL PROPIETARIO deberá desactivar o retirar cualquier dispositivo de este tipo
 que ya se encuentre instalado dentro de la unidad antes del check-in, y permitir su verificación
-por parte de EL ARRENDATARIO. El incumplimiento de esta prohibición se considerará una violación
+por parte de EL TITULAR DE DERECHOS DE ALQUILER. El incumplimiento de esta prohibición se considerará una violación
 grave del presente Acuerdo para todos los efectos de la Cláusula Sexta.
 
 CLÁUSULA CUARTA — EXCEPCIONES

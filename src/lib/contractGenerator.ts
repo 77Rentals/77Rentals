@@ -22,7 +22,7 @@ function addDays(date: Date, days: number): Date {
 
 /**
  * Generates the full "Contrato de Servicio de Alquiler Turístico de Inmueble" between 77Rentals
- * (EL ARRENDATARIO) and the apartment owner (EL PROPIETARIO) for one accepted
+ * (EL TITULAR DE DERECHOS DE ALQUILER) and the apartment owner (EL PROPIETARIO) for one accepted
  * Partner Hub offer. Generic by design — all dates/amounts are derived from
  * the requirement/offer, no hardcoded client-specific terms.
  */
@@ -102,11 +102,11 @@ Ciudad y fecha de elaboración: ${cityName}, ${today}
 
 Entre los suscritos, a saber:
 
-EL ARRENDATARIO:
+EL TITULAR DE DERECHOS DE ALQUILER:
 ${ARRENDATARIO_NAME}, mayor de edad, identificado con ${ARRENDATARIO_ID}, persona natural bajo
 régimen simplificado, quien actúa en nombre propio bajo el nombre comercial ${ARRENDATARIO_BRAND},
 en calidad de arrendatario e intermediario de alojamiento para sus propios clientes, en adelante
-"EL ARRENDATARIO".
+"EL TITULAR DE DERECHOS DE ALQUILER".
 Contacto operativo: ${adminName || requirement.adminContact.name}
 Correo: ${requirement.adminContact.email}
 Teléfono: ${requirement.adminContact.phone}
@@ -139,9 +139,9 @@ Aseo de salida (check-out): ${formatCOP(cleaningFee)}
 CLÁUSULAS:
 
 PRIMERA. OBJETO
-EL PROPIETARIO entrega a EL ARRENDATARIO, a título de servicio de alquiler turístico, el uso y
+EL PROPIETARIO entrega a EL TITULAR DE DERECHOS DE ALQUILER, a título de servicio de alquiler turístico, el uso y
 goce del inmueble amoblado y dotado descrito arriba (en adelante "EL INMUEBLE"), por el período y
-a la tarifa fija aquí pactados, para que EL ARRENDATARIO lo destine al alojamiento temporal de los
+a la tarifa fija aquí pactados, para que EL TITULAR DE DERECHOS DE ALQUILER lo destine al alojamiento temporal de los
 huéspedes que él mismo designe en el marco de su actividad de alojamiento y hospedaje no
 permanente.
 LAS PARTES declaran expresamente que el presente es un contrato de prestación de servicios
@@ -149,7 +149,7 @@ turísticos, en la modalidad de servicio de alquiler turístico de inmueble amob
 alojamiento temporal, regido por la Ley 300 de 1996 (Ley General de Turismo), modificada por la
 Ley 1558 de 2012, y por el Decreto 1074 de 2015 (Decreto Único Reglamentario del Sector Comercio,
 Industria y Turismo). LAS PARTES reconocen que quien opera la actividad turística y contrata
-directamente con los huéspedes finales es EL ARRENDATARIO, por lo que ostenta la calidad de
+directamente con los huéspedes finales es EL TITULAR DE DERECHOS DE ALQUILER, por lo que ostenta la calidad de
 prestador de servicios turísticos y declara que cuenta, o contará antes del check-in de cada
 reserva, con Registro Nacional de Turismo (RNT) vigente, siendo el único responsable del
 cumplimiento de las obligaciones derivadas de dicha normativa. EL PROPIETARIO declara y garantiza
@@ -165,7 +165,7 @@ escrito (incluido correo electrónico o mensaje en la plataforma) horarios disti
 2.2. EL INMUEBLE se destinará exclusivamente a alojamiento temporal de un máximo de
 ${requirement.guestCount} huésped(es), quedando prohibido cualquier uso distinto, la celebración
 de eventos o fiestas y el ingreso de personas no registradas.
-2.3. Vencido el plazo, EL ARRENDATARIO restituirá EL INMUEBLE en el estado en que lo recibió,
+2.3. Vencido el plazo, EL TITULAR DE DERECHOS DE ALQUILER restituirá EL INMUEBLE en el estado en que lo recibió,
 salvo el deterioro normal por el uso. No opera prórroga automática ni tácita reconducción; toda
 extensión requerirá acuerdo escrito y una nueva oferta aceptada en la plataforma.
 
@@ -175,9 +175,9 @@ TERCERA. VALOR Y FORMA DE PAGO
    - Aseo de salida (check-out): ${formatCOP(cleaningFee)}
 3.2. Sobre el valor del alojamiento (no sobre el aseo de salida) se aplica la comisión de
 intermediación aceptada por EL PROPIETARIO en su oferta, equivalente al ${commissionPercent}%,
-es decir ${formatCOP(commissionAmount)}, que EL ARRENDATARIO retendrá de los pagos. El valor
+es decir ${formatCOP(commissionAmount)}, que EL TITULAR DE DERECHOS DE ALQUILER retendrá de los pagos. El valor
 neto a favor de EL PROPIETARIO es de ${formatCOP(ownerNetTotal)}.
-3.3. EL ARRENDATARIO pagará a EL PROPIETARIO el valor neto en tres (3) cuotas, mediante
+3.3. EL TITULAR DE DERECHOS DE ALQUILER pagará a EL PROPIETARIO el valor neto en tres (3) cuotas, mediante
 transferencia electrónica a la cuenta que EL PROPIETARIO indique por escrito:
    a) Diez por ciento (10%) — ${formatCOP(pay10)} — a la firma del presente contrato por
       ambas partes.
@@ -187,24 +187,24 @@ transferencia electrónica a la cuenta que EL PROPIETARIO indique por escrito:
 públicos domiciliarios (agua, energía, gas si aplica), internet, la administración del conjunto
 o edificio y todo otro costo asociado a la tenencia de EL INMUEBLE. EL PROPIETARIO no podrá
 cobrar sumas adicionales a las aquí pactadas, salvo lo previsto en la cláusula CUARTA.
-3.5. El retardo de EL ARRENDATARIO en el pago de cualquiera de las cuotas causará intereses
+3.5. El retardo de EL TITULAR DE DERECHOS DE ALQUILER en el pago de cualquiera de las cuotas causará intereses
 moratorios a la tasa máxima legal permitida certificada por la Superintendencia Financiera de
 Colombia (artículo 884 del Código de Comercio), sin necesidad de requerimiento previo. EL
-PROPIETARIO no podrá negar el ingreso de los huéspedes mientras EL ARRENDATARIO se encuentre
+PROPIETARIO no podrá negar el ingreso de los huéspedes mientras EL TITULAR DE DERECHOS DE ALQUILER se encuentre
 al día en las cuotas exigibles a la fecha del check-in.
-3.6. En atención al régimen tributario de EL ARRENDATARIO (persona natural, régimen
+3.6. En atención al régimen tributario de EL TITULAR DE DERECHOS DE ALQUILER (persona natural, régimen
 simplificado), cada parte asumirá los impuestos que la ley le imponga por razón de su propia
 actividad. EL PROPIETARIO expedirá el documento soporte o factura que corresponda conforme a su
 régimen.
 
 CUARTA. ASEO ADICIONAL DURANTE LA ESTADÍA (DE APLICAR)
-4.1. Cuando EL ARRENDATARIO o sus huéspedes soliciten servicios de aseo adicionales durante la
+4.1. Cuando EL TITULAR DE DERECHOS DE ALQUILER o sus huéspedes soliciten servicios de aseo adicionales durante la
 estadía, distintos del aseo de salida ya incluido en la cláusula TERCERA, dichos servicios se
-prestarán únicamente previa solicitud escrita de EL ARRENDATARIO (correo electrónico o mensaje
+prestarán únicamente previa solicitud escrita de EL TITULAR DE DERECHOS DE ALQUILER (correo electrónico o mensaje
 en la plataforma) y a la tarifa por servicio que LAS PARTES acuerden por el mismo medio antes
 de su prestación.
 4.2. Cada aseo adicional se pagará a EL PROPIETARIO el día hábil siguiente a su prestación,
-contra confirmación de EL ARRENDATARIO de que el servicio fue efectivamente realizado.
+contra confirmación de EL TITULAR DE DERECHOS DE ALQUILER de que el servicio fue efectivamente realizado.
 4.3. Sobre el valor de los aseos adicionales no se aplica la comisión de intermediación.
 4.4. Si no se solicita ningún aseo adicional, esta cláusula no genera obligación alguna.
 
@@ -220,9 +220,9 @@ visitas no coordinadas ni disposición de EL INMUEBLE a terceros durante las fec
 cláusula TERCERA.
 5.4. Cuando el conjunto o edificio lo exija, gestionar y entregar oportunamente las manillas,
 tarjetas, códigos, registro ante portería o cualquier otro elemento o trámite de acceso
-necesario para el ingreso de los huéspedes, sin costo adicional para EL ARRENDATARIO.
-5.5. Cuando EL ARRENDATARIO lo haya coordinado con antelación, recibir y disponer en EL INMUEBLE
-los kits de bienvenida u otros elementos que EL ARRENDATARIO envíe para sus huéspedes, sin
+necesario para el ingreso de los huéspedes, sin costo adicional para EL TITULAR DE DERECHOS DE ALQUILER.
+5.5. Cuando EL TITULAR DE DERECHOS DE ALQUILER lo haya coordinado con antelación, recibir y disponer en EL INMUEBLE
+los kits de bienvenida u otros elementos que EL TITULAR DE DERECHOS DE ALQUILER envíe para sus huéspedes, sin
 costo adicional.
 5.6. Atender y resolver, en un plazo razonable y a su costo, cualquier falla en servicios
 públicos, internet, electrodomésticos, cerraduras o instalaciones que no sea imputable a los
@@ -231,12 +231,12 @@ huéspedes, y mantener un canal de contacto disponible durante la estadía.
 aquí pactado y que no existe prohibición del reglamento de propiedad horizontal que impida el
 alojamiento temporal de huéspedes, asumiendo íntegramente las sanciones o restricciones que la
 copropiedad llegue a imponer por este concepto.
-5.8. No contactar directamente a los huéspedes ni a los clientes de EL ARRENDATARIO con fines
+5.8. No contactar directamente a los huéspedes ni a los clientes de EL TITULAR DE DERECHOS DE ALQUILER con fines
 comerciales, ni ofrecerles alojamiento por fuera de la plataforma, durante la vigencia de este
 contrato y en los términos del Acuerdo de Confidencialidad referido en la cláusula NOVENA.
 
-SEXTA. OBLIGACIONES DE EL ARRENDATARIO
-EL ARRENDATARIO se obliga a:
+SEXTA. OBLIGACIONES DE EL TITULAR DE DERECHOS DE ALQUILER
+EL TITULAR DE DERECHOS DE ALQUILER se obliga a:
 6.1. Pagar el valor del contrato en la forma y plazos previstos en la cláusula TERCERA.
 6.2. Informar a EL PROPIETARIO, con antelación razonable al check-in, el número y nombres de
 los huéspedes que ocuparán EL INMUEBLE, dentro del máximo permitido.
@@ -247,19 +247,19 @@ que tenga conocimiento, cualquier daño a EL INMUEBLE o a su dotación ocasionad
 huéspedes, y coordinar con su propio cliente la atención de dicho reporte.
 6.5. Restituir EL INMUEBLE a la terminación del contrato.
 PARÁGRAFO PRIMERO — LIMITACIÓN DE RESPONSABILIDAD POR DAÑOS DE HUÉSPEDES. LAS PARTES acuerdan
-expresamente que EL ARRENDATARIO actúa como intermediario de alojamiento y que su obligación
+expresamente que EL TITULAR DE DERECHOS DE ALQUILER actúa como intermediario de alojamiento y que su obligación
 frente a daños causados por los huéspedes se limita exclusivamente al deber de reporte y
-coordinación descrito en el numeral 6.4. EL ARRENDATARIO no asume responsabilidad económica,
+coordinación descrito en el numeral 6.4. EL TITULAR DE DERECHOS DE ALQUILER no asume responsabilidad económica,
 directa ni solidaria, por daños, pérdidas o deterioros causados por los huéspedes a EL INMUEBLE,
 a su dotación o a las zonas comunes de la copropiedad, más allá del deterioro normal por el uso.
-La reclamación económica por tales daños corresponde a la relación entre EL ARRENDATARIO y su
+La reclamación económica por tales daños corresponde a la relación entre EL TITULAR DE DERECHOS DE ALQUILER y su
 propio cliente, ajena a este contrato, y EL PROPIETARIO podrá dirigirse directamente contra el
-huésped responsable con el apoyo documental que EL ARRENDATARIO le suministre.
-PARÁGRAFO SEGUNDO. EL ARRENDATARIO tampoco responde por hurto o pérdida de pertenencias de los
+huésped responsable con el apoyo documental que EL TITULAR DE DERECHOS DE ALQUILER le suministre.
+PARÁGRAFO SEGUNDO. EL TITULAR DE DERECHOS DE ALQUILER tampoco responde por hurto o pérdida de pertenencias de los
 huéspedes, ni por conductas de los huéspedes frente a la copropiedad o terceros.
 
 SÉPTIMA. REDUCCIÓN DE NOCHES
-7.1. Si EL ARRENDATARIO, por decisión propia o de su cliente, reduce el número de noches
+7.1. Si EL TITULAR DE DERECHOS DE ALQUILER, por decisión propia o de su cliente, reduce el número de noches
 contratadas, notificará por escrito a EL PROPIETARIO y reconocerá a su favor, sobre el valor de
 las noches suprimidas (tarifa por noche x noches suprimidas, sin incluir aseo de salida ni
 comisión), el porcentaje que corresponda según la antelación con que se reciba la notificación
@@ -273,18 +273,17 @@ respecto de la fecha de check-in:
      ciento (100%).
 7.2. Las noches efectivamente utilizadas se pagan en su totalidad. Los pagos ya realizados se
 imputarán primero a las noches vigentes y luego al porcentaje reconocido; si resulta un
-excedente a favor de EL ARRENDATARIO, EL PROPIETARIO lo reembolsará dentro de los cinco (5)
+excedente a favor de EL TITULAR DE DERECHOS DE ALQUILER, EL PROPIETARIO lo reembolsará dentro de los cinco (5)
 días hábiles siguientes a la notificación.
 7.3. Si es EL PROPIETARIO quien, por cualquier causa distinta de fuerza mayor o caso fortuito
 debidamente acreditados, deja de poner EL INMUEBLE a disposición durante una o más noches
-contratadas, deberá: (i) reembolsar a EL ARRENDATARIO, dentro de los tres (3) días hábiles
-siguientes, la totalidad de lo pagado por las noches no prestadas; y (ii) pagar a EL
-ARRENDATARIO, a título de cláusula penal, el mismo porcentaje de la escala del numeral 7.1
+contratadas, deberá: (i) reembolsar a EL TITULAR DE DERECHOS DE ALQUILER, dentro de los tres (3) días hábiles
+siguientes, la totalidad de lo pagado por las noches no prestadas; y (ii) pagar a EL TITULAR DE DERECHOS DE ALQUILER, a título de cláusula penal, el mismo porcentaje de la escala del numeral 7.1
 aplicado al valor de las noches afectadas, según la antelación con que EL PROPIETARIO haya
 notificado la no disponibilidad.
 
 OCTAVA. CANCELACIÓN TOTAL
-8.1. Cancelación por EL ARRENDATARIO. Si EL ARRENDATARIO, por decisión propia o de su cliente,
+8.1. Cancelación por EL TITULAR DE DERECHOS DE ALQUILER. Si EL TITULAR DE DERECHOS DE ALQUILER, por decisión propia o de su cliente,
 cancela totalmente el contrato antes del check-in, reconocerá a EL PROPIETARIO, a título de
 indemnización única y total, el porcentaje del valor total del alojamiento (${formatCOP(lodgingTotal)},
 sin incluir aseo de salida) que corresponda según la antelación de la notificación escrita:
@@ -297,19 +296,19 @@ sin incluir aseo de salida) que corresponda según la antelación de la notifica
    Los pagos ya realizados se imputarán a dicha suma y el excedente, si lo hubiere, será
    reembolsado por EL PROPIETARIO dentro de los cinco (5) días hábiles siguientes.
 8.2. Cancelación por EL PROPIETARIO. Si EL PROPIETARIO cancela total o parcialmente el contrato,
-o por cualquier causa no imputable a EL ARRENDATARIO deja de entregar EL INMUEBLE en la fecha
-pactada, deberá: (i) reembolsar a EL ARRENDATARIO, dentro de los tres (3) días hábiles
-siguientes, la totalidad de las sumas recibidas; y (ii) pagar a EL ARRENDATARIO, a título de
+o por cualquier causa no imputable a EL TITULAR DE DERECHOS DE ALQUILER deja de entregar EL INMUEBLE en la fecha
+pactada, deberá: (i) reembolsar a EL TITULAR DE DERECHOS DE ALQUILER, dentro de los tres (3) días hábiles
+siguientes, la totalidad de las sumas recibidas; y (ii) pagar a EL TITULAR DE DERECHOS DE ALQUILER, a título de
 cláusula penal (artículos 1592 a 1601 del Código Civil), el mismo porcentaje de la escala del
 numeral 8.1 aplicado al valor total del alojamiento, según la antelación con que haya
 notificado la cancelación. La cláusula penal se estima anticipadamente como resarcimiento de
-los perjuicios sufridos por EL ARRENDATARIO, incluido el mayor costo de reubicar a sus
+los perjuicios sufridos por EL TITULAR DE DERECHOS DE ALQUILER, incluido el mayor costo de reubicar a sus
 huéspedes, y podrá exigirse sin necesidad de probar perjuicio.
 8.3. Límite de la cláusula penal. En ningún caso la pena exigible a cualquiera de LAS PARTES
 excederá el valor de la obligación principal afectada, respetando así el límite del artículo
 1601 del Código Civil.
 8.4. Mora. Las sumas que EL PROPIETARIO deba reembolsar o pagar a título de pena, y las sumas
-que EL ARRENDATARIO deba reconocer bajo esta cláusula, causarán intereses moratorios a la tasa
+que EL TITULAR DE DERECHOS DE ALQUILER deba reconocer bajo esta cláusula, causarán intereses moratorios a la tasa
 máxima legal permitida certificada por la Superintendencia Financiera de Colombia desde la fecha
 en que sean exigibles y hasta su pago total, sin perjuicio de la pena.
 8.5. Fuerza mayor. No habrá lugar a pena cuando el incumplimiento obedezca a fuerza mayor o
@@ -324,7 +323,7 @@ El presente contrato se celebra en el marco del Acuerdo de Confidencialidad e In
 suscrito por LAS PARTES a través de la plataforma para esta misma reserva (en adelante "el NDA"),
 el cual forma parte integral de este contrato como documento complementario y cuyas
 obligaciones conservan plena vigencia. En particular, la información de contacto de los
-huéspedes, del cliente de EL ARRENDATARIO, los precios aquí pactados y los términos de la
+huéspedes, del cliente de EL TITULAR DE DERECHOS DE ALQUILER, los precios aquí pactados y los términos de la
 oferta son información confidencial que no podrá divulgarse ni utilizarse para fines distintos
 de la ejecución de este contrato. En caso de contradicción entre el NDA y este contrato en
 materia económica, prevalece este contrato; en materia de confidencialidad, prevalece el NDA.
@@ -335,17 +334,15 @@ contrato conforme a la Ley 1581 de 2012, el Decreto 1377 de 2013 y demás normas
 únicamente para la ejecución del presente contrato.
 10.2. EL PROPIETARIO reconoce que, para el ingreso de los huéspedes, puede requerirse compartir
 con la administración o portería del conjunto o edificio datos de identificación de los
-huéspedes (nombres, número de documento, placas de vehículos y datos de contacto). EL
-ARRENDATARIO entregará dichos datos únicamente en la medida necesaria y EL PROPIETARIO se obliga
+huéspedes (nombres, número de documento, placas de vehículos y datos de contacto). EL TITULAR DE DERECHOS DE ALQUILER entregará dichos datos únicamente en la medida necesaria y EL PROPIETARIO se obliga
 a: (i) transmitirlos solo a la administración o portería para el fin de control de acceso;
-(ii) no conservarlos ni reutilizarlos una vez finalizada la estadía; y (iii) informar a EL
-ARRENDATARIO de cualquier incidente de seguridad que los afecte.
-10.3. EL ARRENDATARIO garantiza que cuenta con la autorización de los titulares para la
+(ii) no conservarlos ni reutilizarlos una vez finalizada la estadía; y (iii) informar a EL TITULAR DE DERECHOS DE ALQUILER de cualquier incidente de seguridad que los afecte.
+10.3. EL TITULAR DE DERECHOS DE ALQUILER garantiza que cuenta con la autorización de los titulares para la
 transmisión de tales datos con el fin indicado.
 
 DÉCIMA PRIMERA. ACEPTACIÓN Y PERFECCIONAMIENTO
 11.1. Este contrato se perfecciona con la firma electrónica de ambas partes a través de la
-plataforma de EL ARRENDATARIO. LAS PARTES reconocen que la firma electrónica consistente en la
+plataforma de EL TITULAR DE DERECHOS DE ALQUILER. LAS PARTES reconocen que la firma electrónica consistente en la
 digitación de su nombre completo y número de documento de identidad, junto con la aceptación
 expresa mediante casilla de verificación, con registro de fecha y hora, constituye firma
 electrónica válida y vinculante en los términos de los artículos 7 y 11 de la Ley 527 de 1999
@@ -370,7 +367,7 @@ Declaro que he leído, entendido y acepto en su integridad las cláusulas del pr
 de Servicio de Alquiler Turístico de Inmueble, así como el Acuerdo de Confidencialidad e
 Intermediación que lo complementa.
 
-POR EL ARRENDATARIO (${ARRENDATARIO_BRAND}): ___________________________
+POR EL TITULAR DE DERECHOS DE ALQUILER (${ARRENDATARIO_BRAND}): ___________________________
 Nombre: ${adminSigName}
 Documento de identidad: ${adminSigId}
 Fecha: ${adminSigDate}
