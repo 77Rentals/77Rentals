@@ -12,6 +12,7 @@ interface SigningLinkRow {
   signed_at: string | null;
   contract_text?: string | null;
   nda_text?: string | null;
+  signature_image?: string | null;
 }
 
 function rowToLink(row: SigningLinkRow): OwnerSigningLink {
@@ -26,6 +27,7 @@ function rowToLink(row: SigningLinkRow): OwnerSigningLink {
     signedAt: row.signed_at ? new Date(row.signed_at) : undefined,
     contractText: row.contract_text ?? undefined,
     ndaText: row.nda_text ?? undefined,
+    signatureImage: row.signature_image ?? undefined,
   };
 }
 
@@ -45,7 +47,8 @@ export async function signOwnerSigningLink(
   contractHash: string,
   ndaHash: string,
   contractText: string,
-  ndaText: string
+  ndaText: string,
+  signatureImage: string
 ): Promise<void> {
   const { error } = await supabase.rpc('sign_owner_signing_link', {
     p_id: id,
@@ -61,6 +64,7 @@ export async function signOwnerSigningLink(
     p_user_agent: typeof navigator !== 'undefined' ? navigator.userAgent : null,
     p_contract_text: contractText,
     p_nda_text: ndaText,
+    p_signature_image: signatureImage,
   });
   if (error) throw error;
 }

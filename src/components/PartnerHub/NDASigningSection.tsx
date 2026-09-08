@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useToast } from '@/components/ui/use-toast';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { SignaturePad } from '@/components/SignaturePad';
 import type { GuestRequirement, PartnershipResponse, NDASignature, SigningStatus } from '@/data/partnerHub';
 import { generateNDATemplate, formatNDAForDisplay } from '@/lib/ndaGenerator';
 import { generateWhatsAppLink } from '@/lib/whatsappHelper';
@@ -13,7 +14,7 @@ interface NDASigningSectionProps {
   requirement: GuestRequirement;
   adminName?: string;
   isAdmin: boolean;
-  onSign: (signerName: string) => Promise<SigningStatus>;
+  onSign: (signerName: string, signatureImage: string) => Promise<SigningStatus>;
 }
 
 export function NDASigningSection({
@@ -25,6 +26,7 @@ export function NDASigningSection({
 }: NDASigningSectionProps) {
   const [signerName, setSignerName] = useState('');
   const [isAgreed, setIsAgreed] = useState(false);
+  const [signatureImage, setSignatureImage] = useState<string | null>(null);
   const [isSigning, setIsSigning] = useState(false);
   const { language } = useLanguage();
   const { toast } = useToast();
@@ -50,6 +52,15 @@ export function NDASigningSection({
       return;
     }
 
+    if (!signatureImage) {
+      toast({
+        title: 'Error',
+        description: language === 'es' ? 'Por favor dibuja tu firma' : 'Please draw your signature',
+        variant: 'destructive',
+      });
+      return;
+    }
+
     if (!isAgreed) {
       toast({
         title: 'Error',
@@ -67,13 +78,14 @@ export function NDASigningSection({
       // rows and returns it -- trust that instead of guessing client-side
       // from (possibly stale) props, which previously mislabeled "owner
       // signed first" as 'not_started' and could send the wrong email.
-      const newStatus = await onSign(signerName.trim());
+      const newStatus = await onSign(signerName.trim(), signatureImage);
 
       // Fire-and-forget email notification — never blocks signing flow
       const signature: NDASignature = {
         signedBy: isAdmin ? 'admin' : 'owner',
         signerName: signerName.trim(),
         timestamp: new Date(),
+        signatureImage,
       };
       const responseWithNewSig: PartnershipResponse = {
         ...response,
@@ -94,6 +106,7 @@ export function NDASigningSection({
 
       setSignerName('');
       setIsAgreed(false);
+      setSignatureImage(null);
     } catch (error) {
       toast({
         title: 'Error',
@@ -143,9 +156,18 @@ export function NDASigningSection({
                 {language === 'es' ? 'Firma del Intermediario' : 'Admin Signature'}
               </p>
               {hasAdminSigned && response.adminSignature ? (
-                <p className="font-medium text-green-600">
-                  ✓ {response.adminSignature.signerName}
-                </p>
+                <div>
+                  <p className="font-medium text-green-600">
+                    ✓ {response.adminSignature.signerName}
+                  </p>
+                  {response.adminSignature.signatureImage && (
+                    <img
+                      src={response.adminSignature.signatureImage}
+                      alt=""
+                      className="h-10 mt-1 border border-gray-200 rounded bg-white"
+                    />
+                  )}
+                </div>
               ) : (
                 <p className="text-gray-400">{language === 'es' ? 'Pendiente' : 'Pending'}</p>
               )}
@@ -156,9 +178,18 @@ export function NDASigningSection({
                 {language === 'es' ? 'Firma del Propietario' : 'Owner Signature'}
               </p>
               {hasOwnerSigned && response.ownerSignature ? (
-                <p className="font-medium text-green-600">
-                  ✓ {response.ownerSignature.signerName}
-                </p>
+                <div>
+                  <p className="font-medium text-green-600">
+                    ✓ {response.ownerSignature.signerName}
+                  </p>
+                  {response.ownerSignature.signatureImage && (
+                    <img
+                      src={response.ownerSignature.signatureImage}
+                      alt=""
+                      className="h-10 mt-1 border border-gray-200 rounded bg-white"
+                    />
+                  )}
+                </div>
               ) : (
                 <p className="text-gray-400">{language === 'es' ? 'Pendiente' : 'Pending'}</p>
               )}
@@ -193,6 +224,12 @@ export function NDASigningSection({
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg"
                 />
               </div>
+
+              <SignaturePad
+                label={language === 'es' ? 'Firma' : 'Signature'}
+                clearLabel={language === 'es' ? 'Borrar y firmar de nuevo' : 'Clear and sign again'}
+                onChange={setSignatureImage}
+              />
 
               <div className="flex items-start gap-3">
                 <input

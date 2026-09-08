@@ -10,7 +10,7 @@ import { OwnerProfile } from './OwnerProfile';
 import { OwnerPropertyManager } from './OwnerPropertyManager';
 import { NDASigningSection } from './NDASigningSection';
 import { ContractSigningSection } from './ContractSigningSection';
-import type { PartnershipResponse, GuestRequirement } from '@/data/partnerHub';
+import type { PartnershipResponse, GuestRequirement, SigningStatus } from '@/data/partnerHub';
 import { generateNDATemplate } from '@/lib/ndaGenerator';
 
 type TabType = 'browse' | 'responses' | 'profile' | 'properties';
@@ -176,9 +176,11 @@ export function OwnerDashboard() {
             responses={ownerResponses}
             requirements={requirements}
             initialFilter={responseFilter}
-            onSignNDA={(responseId, signerName) => signNDA(responseId, 'owner', signerName)}
-            onSignContract={(responseId, signerName, signerIdNumber, contractHash) =>
-              signContract(responseId, 'owner', signerName, signerIdNumber, contractHash)
+            onSignNDA={(responseId, signerName, signatureImage) =>
+              signNDA(responseId, 'owner', signerName, signatureImage)
+            }
+            onSignContract={(responseId, signerName, signerIdNumber, contractHash, signatureImage) =>
+              signContract(responseId, 'owner', signerName, signerIdNumber, contractHash, signatureImage)
             }
           />
         )}
@@ -207,13 +209,14 @@ function MyResponses({
   responses: PartnershipResponse[];
   requirements: GuestRequirement[];
   initialFilter?: 'all' | 'pending' | 'accepted' | 'rejected';
-  onSignNDA: (responseId: string, signerName: string) => Promise<void>;
+  onSignNDA: (responseId: string, signerName: string, signatureImage: string) => Promise<SigningStatus>;
   onSignContract: (
     responseId: string,
     signerName: string,
     signerIdNumber: string,
-    contractHash: string
-  ) => Promise<void>;
+    contractHash: string,
+    signatureImage: string
+  ) => Promise<SigningStatus>;
 }) {
   const { language } = useLanguage();
   const [filter, setFilter] = useState<'all' | 'pending' | 'accepted' | 'rejected'>(initialFilter);
@@ -386,7 +389,7 @@ function MyResponses({
                   response={response}
                   requirement={requirement}
                   isAdmin={false}
-                  onSign={(signerName) => onSignNDA(response.id, signerName)}
+                  onSign={(signerName, signatureImage) => onSignNDA(response.id, signerName, signatureImage)}
                 />
               </div>
             )}
@@ -424,8 +427,8 @@ function MyResponses({
                   response={response}
                   requirement={requirement}
                   isAdmin={false}
-                  onSign={(signerName, signerIdNumber, contractHash) =>
-                    onSignContract(response.id, signerName, signerIdNumber, contractHash)
+                  onSign={(signerName, signerIdNumber, contractHash, signatureImage) =>
+                    onSignContract(response.id, signerName, signerIdNumber, contractHash, signatureImage)
                   }
                 />
               </div>

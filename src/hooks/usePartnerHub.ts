@@ -58,6 +58,7 @@ interface NdaSignatureRow {
   offer_id: string;
   signed_by: 'admin' | 'owner';
   signer_name: string;
+  signature_image: string | null;
   signed_at: string;
 }
 
@@ -69,6 +70,7 @@ interface ContractSignatureRow {
   signer_id_number: string;
   contract_hash: string;
   user_agent: string | null;
+  signature_image: string | null;
   signed_at: string;
 }
 
@@ -103,6 +105,7 @@ function rowToOffer(
     signedBy: s.signed_by,
     signerName: s.signer_name,
     timestamp: new Date(s.signed_at),
+    signatureImage: s.signature_image ?? undefined,
   });
   const adminSig = signatures.find((s) => s.signed_by === 'admin');
   const ownerSig = signatures.find((s) => s.signed_by === 'owner');
@@ -114,6 +117,7 @@ function rowToOffer(
     timestamp: new Date(s.signed_at),
     contractHash: s.contract_hash,
     userAgent: s.user_agent ?? undefined,
+    signatureImage: s.signature_image ?? undefined,
   });
   const adminContractSig = contractSignatures.find((s) => s.signed_by === 'admin');
   const ownerContractSig = contractSignatures.find((s) => s.signed_by === 'owner');
@@ -341,12 +345,14 @@ export function usePartnerHub() {
   const signNDA = async (
     offerId: string,
     signedBy: 'admin' | 'owner',
-    signerName: string
+    signerName: string,
+    signatureImage?: string
   ): Promise<PartnershipResponse['ndaStatus']> => {
     const { data, error } = await supabase.rpc('sign_nda', {
       p_offer_id: offerId,
       p_signed_by: signedBy,
       p_signer_name: signerName,
+      p_signature_image: signatureImage ?? null,
     });
     if (error) throw error;
     await invalidateOffers();
@@ -359,7 +365,8 @@ export function usePartnerHub() {
     signedBy: 'admin' | 'owner',
     signerName: string,
     signerIdNumber: string,
-    contractHash: string
+    contractHash: string,
+    signatureImage?: string
   ): Promise<PartnershipResponse['contractStatus']> => {
     const { data, error } = await supabase.rpc('sign_contract', {
       p_offer_id: offerId,
@@ -368,6 +375,7 @@ export function usePartnerHub() {
       p_signer_id_number: signerIdNumber,
       p_contract_hash: contractHash,
       p_user_agent: typeof navigator !== 'undefined' ? navigator.userAgent : null,
+      p_signature_image: signatureImage ?? null,
     });
     if (error) throw error;
     await invalidateOffers();

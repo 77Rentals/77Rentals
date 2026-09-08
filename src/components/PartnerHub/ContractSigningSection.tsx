@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useToast } from '@/components/ui/use-toast';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { SignaturePad } from '@/components/SignaturePad';
 import type { GuestRequirement, PartnershipResponse, ContractSignature, SigningStatus } from '@/data/partnerHub';
 import {
   generateContractTemplate,
@@ -16,7 +17,12 @@ interface ContractSigningSectionProps {
   requirement: GuestRequirement;
   adminName?: string;
   isAdmin: boolean;
-  onSign: (signerName: string, signerIdNumber: string, contractHash: string) => Promise<SigningStatus>;
+  onSign: (
+    signerName: string,
+    signerIdNumber: string,
+    contractHash: string,
+    signatureImage: string
+  ) => Promise<SigningStatus>;
 }
 
 // Colombian cédula/NIT: digits, optionally with dots and a NIT check digit
@@ -34,6 +40,7 @@ export function ContractSigningSection({
   const [signerName, setSignerName] = useState('');
   const [signerIdNumber, setSignerIdNumber] = useState('');
   const [isAgreed, setIsAgreed] = useState(false);
+  const [signatureImage, setSignatureImage] = useState<string | null>(null);
   const [isSigning, setIsSigning] = useState(false);
   const { language } = useLanguage();
   const { toast } = useToast();
@@ -80,6 +87,15 @@ export function ContractSigningSection({
       return;
     }
 
+    if (!signatureImage) {
+      toast({
+        title: 'Error',
+        description: language === 'es' ? 'Por favor dibuja tu firma' : 'Please draw your signature',
+        variant: 'destructive',
+      });
+      return;
+    }
+
     if (!isAgreed) {
       toast({
         title: 'Error',
@@ -96,7 +112,7 @@ export function ContractSigningSection({
       const contractHash = await hashContractText(contractTemplate);
       // The RPC recomputes status server-side from the actual signature
       // rows and returns it -- trust that instead of guessing client-side.
-      const newStatus = await onSign(trimmedName, trimmedId, contractHash);
+      const newStatus = await onSign(trimmedName, trimmedId, contractHash, signatureImage);
 
       const signature: ContractSignature = {
         signedBy: isAdmin ? 'admin' : 'owner',
@@ -105,6 +121,7 @@ export function ContractSigningSection({
         timestamp: new Date(),
         contractHash,
         userAgent: navigator.userAgent,
+        signatureImage,
       };
       const responseWithNewSig: PartnershipResponse = {
         ...response,
@@ -126,6 +143,7 @@ export function ContractSigningSection({
       setSignerName('');
       setSignerIdNumber('');
       setIsAgreed(false);
+      setSignatureImage(null);
     } catch (error) {
       toast({
         title: 'Error',
@@ -167,9 +185,18 @@ export function ContractSigningSection({
                 {language === 'es' ? 'Firma de 77Rentals' : '77Rentals Signature'}
               </p>
               {hasAdminSigned && response.adminContractSignature ? (
-                <p className="font-medium text-green-600">
-                  ✓ {response.adminContractSignature.signerName}
-                </p>
+                <div>
+                  <p className="font-medium text-green-600">
+                    ✓ {response.adminContractSignature.signerName}
+                  </p>
+                  {response.adminContractSignature.signatureImage && (
+                    <img
+                      src={response.adminContractSignature.signatureImage}
+                      alt=""
+                      className="h-10 mt-1 border border-gray-200 rounded bg-white"
+                    />
+                  )}
+                </div>
               ) : (
                 <p className="text-gray-400">{language === 'es' ? 'Pendiente' : 'Pending'}</p>
               )}
@@ -180,9 +207,18 @@ export function ContractSigningSection({
                 {language === 'es' ? 'Firma del Propietario' : 'Owner Signature'}
               </p>
               {hasOwnerSigned && response.ownerContractSignature ? (
-                <p className="font-medium text-green-600">
-                  ✓ {response.ownerContractSignature.signerName}
-                </p>
+                <div>
+                  <p className="font-medium text-green-600">
+                    ✓ {response.ownerContractSignature.signerName}
+                  </p>
+                  {response.ownerContractSignature.signatureImage && (
+                    <img
+                      src={response.ownerContractSignature.signatureImage}
+                      alt=""
+                      className="h-10 mt-1 border border-gray-200 rounded bg-white"
+                    />
+                  )}
+                </div>
               ) : (
                 <p className="text-gray-400">{language === 'es' ? 'Pendiente' : 'Pending'}</p>
               )}
@@ -238,6 +274,12 @@ export function ContractSigningSection({
                   )}
                 </div>
               </div>
+
+              <SignaturePad
+                label={language === 'es' ? 'Firma' : 'Signature'}
+                clearLabel={language === 'es' ? 'Borrar y firmar de nuevo' : 'Clear and sign again'}
+                onChange={setSignatureImage}
+              />
 
               <div className="flex items-start gap-3">
                 <input

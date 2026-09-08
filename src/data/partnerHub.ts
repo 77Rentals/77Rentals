@@ -8,6 +8,7 @@ export interface NDASignature {
   signedBy: 'admin' | 'owner';
   signerName: string;
   timestamp: Date;
+  signatureImage?: string; // PNG data URL from the canvas signature pad
 }
 
 // Contract (Contrato de Servicio de Alquiler Turístico de Inmueble) signature data.
@@ -21,6 +22,7 @@ export interface ContractSignature {
   timestamp: Date;
   contractHash: string; // SHA-256 of the exact rendered contract text at signing time
   userAgent?: string;
+  signatureImage?: string; // PNG data URL from the canvas signature pad
 }
 
 // Partner requirement posted by admin

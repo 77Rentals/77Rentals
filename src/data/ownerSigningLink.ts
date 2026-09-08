@@ -17,6 +17,7 @@ export interface OwnerSigningLink {
   // has to regenerate the document from partial data.
   contractText?: string;
   ndaText?: string;
+  signatureImage?: string; // PNG data URL from the canvas signature pad
 }
 
 // Fields the owner fills in when signing.

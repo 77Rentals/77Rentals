@@ -343,7 +343,7 @@ export function AdminOfferDetailModal({
               requirement={requirement}
               adminName={requirement.adminContact.name}
               isAdmin={true}
-              onSign={(signerName) => signNDA(response.id, 'admin', signerName)}
+              onSign={(signerName, signatureImage) => signNDA(response.id, 'admin', signerName, signatureImage)}
             />
           )}
 
@@ -354,8 +354,8 @@ export function AdminOfferDetailModal({
               requirement={requirement}
               adminName={requirement.adminContact.name}
               isAdmin={true}
-              onSign={(signerName, signerIdNumber, contractHash) =>
-                signContract(response.id, 'admin', signerName, signerIdNumber, contractHash)
+              onSign={(signerName, signerIdNumber, contractHash, signatureImage) =>
+                signContract(response.id, 'admin', signerName, signerIdNumber, contractHash, signatureImage)
               }
             />
           )}

@@ -30,8 +30,8 @@ drop table if exists public.admins cascade;
 drop function if exists public.is_admin();
 drop function if exists public.is_approved_owner();
 drop function if exists public.protect_owner_approval();
-drop function if exists public.sign_nda(uuid, text, text);
-drop function if exists public.sign_contract(uuid, text, text, text, text, text);
+drop function if exists public.sign_nda(uuid, text, text, text);
+drop function if exists public.sign_contract(uuid, text, text, text, text, text, text);
 
 -- ── Admins allowlist ──
 -- After creating your admin account in Authentication → Users, find its UUID
@@ -266,6 +266,7 @@ create table public.nda_signatures (
   offer_id uuid not null references public.partner_offers (id) on delete cascade,
   signed_by text not null check (signed_by in ('admin', 'owner')),
   signer_name text not null,
+  signature_image text, -- PNG data URL from the canvas signature pad
   signed_at timestamptz not null default now()
 );
 
@@ -313,6 +314,7 @@ create table public.contract_signatures (
   signer_id_number text not null,
   contract_hash text not null,
   user_agent text,
+  signature_image text, -- PNG data URL from the canvas signature pad
   signed_at timestamptz not null default now()
 );
 
@@ -353,7 +355,7 @@ create policy "owner can insert own contract signature"
 -- rows under RLS. These SECURITY DEFINER functions authorize each call
 -- explicitly and always derive status from the actual signature rows.
 
-create function public.sign_nda(p_offer_id uuid, p_signed_by text, p_signer_name text)
+create function public.sign_nda(p_offer_id uuid, p_signed_by text, p_signer_name text, p_signature_image text default null)
 returns text
 language plpgsql
 security definer
@@ -380,8 +382,8 @@ begin
     raise exception 'not authorized to sign as this owner';
   end if;
 
-  insert into public.nda_signatures (offer_id, signed_by, signer_name)
-  values (p_offer_id, p_signed_by, p_signer_name);
+  insert into public.nda_signatures (offer_id, signed_by, signer_name, signature_image)
+  values (p_offer_id, p_signed_by, p_signer_name, p_signature_image);
 
   select exists (
     select 1 from public.nda_signatures
@@ -402,7 +404,8 @@ create function public.sign_contract(
   p_signer_name text,
   p_signer_id_number text,
   p_contract_hash text,
-  p_user_agent text
+  p_user_agent text,
+  p_signature_image text default null
 )
 returns text
 language plpgsql
@@ -430,8 +433,8 @@ begin
     raise exception 'not authorized to sign as this owner';
   end if;
 
-  insert into public.contract_signatures (offer_id, signed_by, signer_name, signer_id_number, contract_hash, user_agent)
-  values (p_offer_id, p_signed_by, p_signer_name, p_signer_id_number, p_contract_hash, p_user_agent);
+  insert into public.contract_signatures (offer_id, signed_by, signer_name, signer_id_number, contract_hash, user_agent, signature_image)
+  values (p_offer_id, p_signed_by, p_signer_name, p_signer_id_number, p_contract_hash, p_user_agent, p_signature_image);
 
   select exists (
     select 1 from public.contract_signatures

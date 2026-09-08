@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useToast } from '@/components/ui/use-toast';
 import { DocumentText } from '@/components/DocumentText';
+import { SignaturePad } from '@/components/SignaturePad';
 import type { OwnerSigningFormData, OwnerSigningLink } from '@/data/ownerSigningLink';
 import { getOwnerSigningLink, signOwnerSigningLink } from '@/lib/ownerSigningLinkClient';
 import {
@@ -43,6 +44,7 @@ export default function OwnerSigningPage() {
   const [loading, setLoading] = useState(true);
   const [form, setForm] = useState<OwnerSigningFormData>(EMPTY_FORM);
   const [agreed, setAgreed] = useState(false);
+  const [signatureImage, setSignatureImage] = useState<string | null>(null);
   const [isSigning, setIsSigning] = useState(false);
   const [signError, setSignError] = useState<string | null>(null);
 
@@ -90,15 +92,16 @@ export default function OwnerSigningPage() {
     form.buildingName.trim().length > 1 &&
     form.apartmentNumber.trim().length > 0 &&
     form.unitCount >= 1 &&
+    !!signatureImage &&
     agreed;
 
   const handleSign = async () => {
     if (!linkId || link === 'not_found' || !link) return;
     setSignError(null);
-    if (!isFormValid) {
+    if (!isFormValid || !signatureImage) {
       toast({
         title: 'Error',
-        description: 'Completa todos los campos y acepta los términos antes de firmar.',
+        description: 'Completa todos los campos, dibuja tu firma y acepta los términos antes de firmar.',
         variant: 'destructive',
       });
       return;
@@ -114,7 +117,15 @@ export default function OwnerSigningPage() {
         hashText(finalNdaText),
       ]);
 
-      await signOwnerSigningLink(linkId, form, contractHash, ndaHash, finalContractText, finalNdaText);
+      await signOwnerSigningLink(
+        linkId,
+        form,
+        contractHash,
+        ndaHash,
+        finalContractText,
+        finalNdaText,
+        signatureImage
+      );
 
       setLink({
         id: linkId,
@@ -127,6 +138,7 @@ export default function OwnerSigningPage() {
         signedAt: signTimestamp,
         contractText: finalContractText,
         ndaText: finalNdaText,
+        signatureImage,
       });
 
       toast({
@@ -186,6 +198,15 @@ export default function OwnerSigningPage() {
                 Firmado por {link.ownerName}
                 {link.signedAt ? ` el ${link.signedAt.toLocaleDateString('es-CO')}` : ''}.
               </p>
+            )}
+            {link.signatureImage && (
+              <div className="flex justify-center">
+                <img
+                  src={link.signatureImage}
+                  alt="Firma"
+                  className="border border-gray-200 rounded-lg bg-white max-w-xs w-full"
+                />
+              </div>
             )}
             <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
               <Button
@@ -312,6 +333,11 @@ export default function OwnerSigningPage() {
                   />
                 </div>
               </div>
+
+              <SignaturePad
+                label="Firma (dibuja con el mouse, dedo o lápiz óptico)"
+                onChange={setSignatureImage}
+              />
 
               <div className="flex items-start gap-3 pt-2">
                 <input
