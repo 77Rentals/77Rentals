@@ -10,11 +10,12 @@ interface UnitConfig {
   label: string; // "Apartamento Tipo D" / "Suite Tipo B"
   rate: number; // COP per night
   quoteNo: string;
+  guestCount: number; // Guests staying per unit (2 Tipo D x 3 + 4 Tipo B x 2 = 14 escoltas)
 }
 
 const UNIT_CONFIG: Record<OwnerUnitType, UnitConfig> = {
-  D: { label: 'Apartamento Tipo D', rate: 500_000, quoteNo: '77Rentals-CAP-2026-D' },
-  B: { label: 'Suite Tipo B', rate: 200_000, quoteNo: '77Rentals-CAP-2026-B' },
+  D: { label: 'Apartamento Tipo D', rate: 500_000, quoteNo: '77Rentals-CAP-2026-D', guestCount: 3 },
+  B: { label: 'Suite Tipo B', rate: 200_000, quoteNo: '77Rentals-CAP-2026-B', guestCount: 2 },
 };
 
 const NIGHTS = 35;
@@ -84,6 +85,7 @@ siguiente(s) unidad(es):
    Edificio / Conjunto: ${data.buildingName}
    Apartamento / Torre: ${data.apartmentNumber}
    Número de unidades: ${unitCount}
+   Número de huéspedes por unidad: ${cfg.guestCount}
 EL PROPIETARIO declara que la unidad se encuentra en buen estado de funcionamiento, limpia,
 dotada y libre de reservas o compromisos de terceros durante todo el período pactado en la
 Cláusula Tercera.
