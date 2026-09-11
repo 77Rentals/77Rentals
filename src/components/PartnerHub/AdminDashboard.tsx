@@ -8,6 +8,7 @@ import { AdminRequirementsList } from './AdminRequirementsList';
 import { AdminOwnerApprovals } from './AdminOwnerApprovals';
 import { AdminPropertyListings } from './AdminPropertyListings';
 import { AdminGalcolLinkGenerator } from './AdminGalcolLinkGenerator';
+import { AdminClientContractManager } from './AdminClientContractManager';
 
 export function AdminDashboard() {
   const [showForm, setShowForm] = useState(false);
@@ -91,6 +92,9 @@ export function AdminDashboard() {
           );
         })}
       </div>
+
+      {/* Client contracts (Galcol, etc.) — no client login required */}
+      <AdminClientContractManager />
 
       {/* Galcol contract/NDA signing links (no owner login required) */}
       <AdminGalcolLinkGenerator />

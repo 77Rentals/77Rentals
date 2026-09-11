@@ -23,6 +23,7 @@ import NotFound from "./pages/NotFound.tsx";
 // otherwise, since nothing else in App.tsx is code-split).
 const PartnerHub = lazy(() => import("./pages/PartnerHub"));
 const OwnerSigningPage = lazy(() => import("./pages/OwnerSigningPage.tsx"));
+const ClientSigningPage = lazy(() => import("./pages/ClientSigningPage.tsx"));
 
 function RouteLoadingScreen() {
   return (
@@ -67,6 +68,16 @@ const App = () => (
                 <RouteErrorBoundary>
                   <Suspense fallback={<RouteLoadingScreen />}>
                     <OwnerSigningPage />
+                  </Suspense>
+                </RouteErrorBoundary>
+              }
+            />
+            <Route
+              path="/firmar-cliente/:linkId"
+              element={
+                <RouteErrorBoundary>
+                  <Suspense fallback={<RouteLoadingScreen />}>
+                    <ClientSigningPage />
                   </Suspense>
                 </RouteErrorBoundary>
               }
