@@ -58,7 +58,10 @@ export default function PetitionSigningPage() {
   const coefficientNumber = Number(form.coefficientPct.replace(',', '.'));
   const maxCoefficientPct = petition !== 'not_found' && petition ? petition.maxCoefficientPct : 100;
   const coefficientProvided = form.coefficientPct.trim().length > 0;
-  const coefficientValid = !coefficientProvided || (coefficientNumber > 0 && coefficientNumber <= maxCoefficientPct);
+  const coefficientHasEnoughDecimals = /^\d+[.,]\d{4,}$/.test(form.coefficientPct.trim());
+  const coefficientValid =
+    !coefficientProvided ||
+    (coefficientHasEnoughDecimals && coefficientNumber > 0 && coefficientNumber <= maxCoefficientPct);
 
   const isFormValid =
     form.unitNumber.trim().length > 0 &&
@@ -140,7 +143,7 @@ export default function PetitionSigningPage() {
               {petition.signedCount === 1 ? '' : 'n'} firmado
             </span>
             <span className="text-gray-700 font-medium">
-              {petition.totalCoefficientPct.toFixed(3)}% de {petition.thresholdPct}% requerido
+              {petition.totalCoefficientPct.toFixed(4)}% de {petition.thresholdPct}% requerido
             </span>
           </div>
           <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
@@ -248,7 +251,12 @@ export default function PetitionSigningPage() {
                       }`}
                       placeholder="Ej: 0,1514"
                     />
-                    {form.coefficientPct && !coefficientValid && (
+                    {form.coefficientPct && !coefficientValid && !coefficientHasEnoughDecimals && (
+                      <p className="text-xs text-red-600 mt-1">
+                        Debe tener mínimo 4 decimales, tal como aparece en tu certificado (ej: 0,1514).
+                      </p>
+                    )}
+                    {form.coefficientPct && !coefficientValid && coefficientHasEnoughDecimals && (
                       <p className="text-xs text-red-600 mt-1">
                         Debe ser un número entre 0 y {maxCoefficientPct}. Verifica tu certificado de tradición y
                         libertad — parece muy alto para una unidad de esta copropiedad.

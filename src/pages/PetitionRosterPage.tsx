@@ -83,7 +83,7 @@ export default function PetitionRosterPage() {
                 {roster.length} propietario{roster.length === 1 ? '' : 's'} ha
                 {roster.length === 1 ? '' : 'n'} firmado
               </p>
-              <p className="text-xs text-gray-500">{totalCoefficientPct.toFixed(3)}% de coeficiente acumulado</p>
+              <p className="text-xs text-gray-500">{totalCoefficientPct.toFixed(4)}% de coeficiente acumulado</p>
             </Card>
 
             <Card className="p-4 overflow-x-auto">
@@ -104,7 +104,7 @@ export default function PetitionRosterPage() {
                       <tr key={entry.unitNumber} className="border-b border-gray-100">
                         <td className="py-2 pr-3 font-medium">{entry.unitNumber}</td>
                         <td className="py-2 pr-3">{entry.signerName}</td>
-                        <td className="py-2 pr-3">{entry.coefficientPct === null ? '—' : entry.coefficientPct.toFixed(3)}</td>
+                        <td className="py-2 pr-3">{entry.coefficientPct === null ? '—' : entry.coefficientPct.toFixed(4)}</td>
                         <td className="py-2">{entry.signedAt.toLocaleDateString('es-CO')}</td>
                       </tr>
                     ))}

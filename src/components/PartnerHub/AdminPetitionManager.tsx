@@ -329,7 +329,7 @@ export function AdminPetitionManager() {
                             <tr key={sig.id} className="border-b border-gray-100">
                               <td className="py-1.5 pr-3 font-medium">{sig.unitNumber}</td>
                               <td className="py-1.5 pr-3">{sig.signerName}</td>
-                              <td className="py-1.5 pr-3">{sig.coefficientPct === null ? '—' : sig.coefficientPct.toFixed(3)}</td>
+                              <td className="py-1.5 pr-3">{sig.coefficientPct === null ? '—' : sig.coefficientPct.toFixed(4)}</td>
                               <td className="py-1.5 pr-3">{sig.signedAt.toLocaleDateString('es-CO')}</td>
                               <td className="py-1.5 pr-3">
                                 <img src={sig.signatureImage} alt="Firma" className="h-6 border border-gray-200 rounded bg-white" />

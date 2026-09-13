@@ -123,7 +123,7 @@ export function buildPetitionPdf(petition: Petition, signatures: PetitionSignatu
   y += 10;
   ensureSpace(20);
   writeText(
-    `Total de firmas recolectadas: ${signatures.length}  ·  Coeficiente acumulado: ${petition.totalCoefficientPct.toFixed(3)}%  ·  ` +
+    `Total de firmas recolectadas: ${signatures.length}  ·  Coeficiente acumulado: ${petition.totalCoefficientPct.toFixed(4)}%  ·  ` +
       `Umbral requerido: ${petition.thresholdPct}%  ·  ${
         petition.totalCoefficientPct >= petition.thresholdPct ? 'UMBRAL CUMPLIDO' : 'Umbral aún no alcanzado'
       }`,
@@ -147,7 +147,7 @@ export function buildPetitionPdf(petition: Petition, signatures: PetitionSignatu
       s.unitNumber,
       s.signerName,
       s.signerIdNumber ?? '',
-      s.coefficientPct === null ? '—' : s.coefficientPct.toFixed(3),
+      s.coefficientPct === null ? '—' : s.coefficientPct.toFixed(4),
       s.consentMethod,
       s.signedAt.toLocaleDateString('es-CO'),
       '',
