@@ -1,31 +1,19 @@
-export type PropertyType = 'A' | 'B' | 'C' | 'D';
-
 export interface Petition {
   id: string;
   status: 'open' | 'closed';
   title: string;
   documentText: string;
+  thresholdPct: number;
   signedCount: number;
-  totalApartments: number;
+  totalCoefficientPct: number;
   rosterPublic: boolean;
-}
-
-/** One row of the public, name+unit-only transparency roster — never includes
- *  the signature image, cédula, or any other admin-only field. */
-export interface PetitionRosterEntry {
-  unitNumber: string;
-  signerName: string;
-  propertyType: PropertyType;
-  apartmentCount: number;
-  signedAt: Date;
 }
 
 export interface PetitionSignatureFormData {
   unitNumber: string;
   signerName: string;
   signerIdNumber: string;
-  propertyType: PropertyType;
-  apartmentCount: string; // kept as string in the form, parsed to number on submit
+  coefficientPct: string; // kept as string in the form, parsed to number on submit
   consentMethod: string;
 }
 
@@ -34,9 +22,17 @@ export interface PetitionSignature {
   unitNumber: string;
   signerName: string;
   signerIdNumber: string | null;
-  propertyType: PropertyType;
-  apartmentCount: number;
+  coefficientPct: number;
   consentMethod: string;
   signatureImage: string;
+  signedAt: Date;
+}
+
+/** One row of the public, name+unit-only transparency roster — never includes
+ *  the signature image, cédula, or any other admin-only field. */
+export interface PetitionRosterEntry {
+  unitNumber: string;
+  signerName: string;
+  coefficientPct: number;
   signedAt: Date;
 }

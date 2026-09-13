@@ -28,6 +28,7 @@ export function AdminPetitionManager() {
   const [showForm, setShowForm] = useState(false);
   const [title, setTitle] = useState('');
   const [documentText, setDocumentText] = useState('');
+  const [thresholdPct, setThresholdPct] = useState('20');
   const [isCreating, setIsCreating] = useState(false);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [signatures, setSignatures] = useState<PetitionSignature[]>([]);
@@ -48,21 +49,23 @@ export function AdminPetitionManager() {
   }, []);
 
   const handleCreate = async () => {
-    if (!title.trim() || !documentText.trim()) {
+    const threshold = Number(thresholdPct);
+    if (!title.trim() || !documentText.trim() || !threshold || threshold <= 0 || threshold > 100) {
       toast({
         title: 'Error',
-        description: 'Completa el título y el texto del documento antes de generar el link.',
+        description: 'Completa el título, el texto del documento y un umbral válido (1-100).',
         variant: 'destructive',
       });
       return;
     }
     setIsCreating(true);
     try {
-      const id = await createPetition(title.trim(), documentText.trim());
+      const id = await createPetition(title.trim(), documentText.trim(), threshold);
       await navigator.clipboard.writeText(buildLinkUrl(id)).catch(() => {});
       toast({ title: 'Solicitud creada', description: 'Se copió el link al portapapeles.', variant: 'default' });
       setTitle('');
       setDocumentText('');
+      setThresholdPct('20');
       setShowForm(false);
       refresh();
     } catch {
@@ -190,6 +193,17 @@ export function AdminPetitionManager() {
               placeholder="Pega aquí el texto completo de la solicitud..."
             />
           </div>
+          <div className="max-w-xs">
+            <label className="block text-sm text-gray-700 mb-1">Umbral de coeficiente requerido (%)</label>
+            <input
+              type="text"
+              inputMode="decimal"
+              value={thresholdPct}
+              onChange={(e) => setThresholdPct(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+              placeholder="20"
+            />
+          </div>
           <Button
             onClick={handleCreate}
             disabled={isCreating}
@@ -207,6 +221,7 @@ export function AdminPetitionManager() {
       ) : (
         <div className="space-y-2">
           {petitions.map((petition) => {
+            const progressPct = Math.min(100, (petition.totalCoefficientPct / petition.thresholdPct) * 100);
             const isExpanded = expandedId === petition.id;
             return (
               <div key={petition.id} className="border border-gray-200 rounded-lg overflow-hidden">
@@ -219,12 +234,20 @@ export function AdminPetitionManager() {
                       </span>
                     </p>
                     <p className="text-xs text-gray-500 truncate">{buildLinkUrl(petition.id)}</p>
-                    <p className="text-xs text-gray-600 mt-1.5">
-                      {petition.signedCount} firmas · {petition.totalApartments} apartamentos representados ·{' '}
-                      <span className={petition.rosterPublic ? 'text-green-700' : 'text-gray-500'}>
-                        Listado {petition.rosterPublic ? 'público' : 'privado'}
+                    <div className="mt-1.5 flex items-center gap-2">
+                      <div className="w-40 h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                        <div
+                          className={`h-full rounded-full ${progressPct >= 100 ? 'bg-green-600' : 'bg-[#D4A843]'}`}
+                          style={{ width: `${progressPct}%` }}
+                        />
+                      </div>
+                      <span className="text-xs text-gray-600">
+                        {petition.signedCount} firmas · {petition.totalCoefficientPct.toFixed(2)}% / {petition.thresholdPct}% ·{' '}
+                        <span className={petition.rosterPublic ? 'text-green-700' : 'text-gray-500'}>
+                          Listado {petition.rosterPublic ? 'público' : 'privado'}
+                        </span>
                       </span>
-                    </p>
+                    </div>
                   </div>
                   <div className="flex gap-2 flex-shrink-0 flex-wrap justify-end">
                     <Button variant="outline" size="sm" onClick={() => handleCopy(petition.id)}>
@@ -270,8 +293,7 @@ export function AdminPetitionManager() {
                           <tr className="text-left text-gray-500 border-b border-gray-200">
                             <th className="py-1 pr-3">Unidad</th>
                             <th className="py-1 pr-3">Nombre</th>
-                            <th className="py-1 pr-3">Tipo</th>
-                            <th className="py-1 pr-3">Aptos.</th>
+                            <th className="py-1 pr-3">Coef. %</th>
                             <th className="py-1 pr-3">Fecha</th>
                             <th className="py-1 pr-3">Firma</th>
                             <th className="py-1"></th>
@@ -282,8 +304,7 @@ export function AdminPetitionManager() {
                             <tr key={sig.id} className="border-b border-gray-100">
                               <td className="py-1.5 pr-3 font-medium">{sig.unitNumber}</td>
                               <td className="py-1.5 pr-3">{sig.signerName}</td>
-                              <td className="py-1.5 pr-3">{sig.propertyType}</td>
-                              <td className="py-1.5 pr-3">{sig.apartmentCount}</td>
+                              <td className="py-1.5 pr-3">{sig.coefficientPct.toFixed(3)}</td>
                               <td className="py-1.5 pr-3">{sig.signedAt.toLocaleDateString('es-CO')}</td>
                               <td className="py-1.5 pr-3">
                                 <img src={sig.signatureImage} alt="Firma" className="h-6 border border-gray-200 rounded bg-white" />

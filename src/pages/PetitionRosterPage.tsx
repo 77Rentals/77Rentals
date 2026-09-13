@@ -55,7 +55,7 @@ export default function PetitionRosterPage() {
     );
   }
 
-  const totalApartments = roster.reduce((sum, r) => sum + r.apartmentCount, 0);
+  const totalCoefficientPct = roster.reduce((sum, r) => sum + r.coefficientPct, 0);
 
   return (
     <div className="min-h-screen bg-[#f8f7ff] py-10 px-4">
@@ -83,10 +83,7 @@ export default function PetitionRosterPage() {
                 {roster.length} propietario{roster.length === 1 ? '' : 's'} ha
                 {roster.length === 1 ? '' : 'n'} firmado
               </p>
-              <p className="text-xs text-gray-500">
-                {totalApartments} apartamento{totalApartments === 1 ? '' : 's'} representado
-                {totalApartments === 1 ? '' : 's'}
-              </p>
+              <p className="text-xs text-gray-500">{totalCoefficientPct.toFixed(3)}% de coeficiente acumulado</p>
             </Card>
 
             <Card className="p-4 overflow-x-auto">
@@ -98,8 +95,7 @@ export default function PetitionRosterPage() {
                     <tr className="text-left text-gray-500 border-b border-gray-200">
                       <th className="py-2 pr-3">Unidad</th>
                       <th className="py-2 pr-3">Propietario</th>
-                      <th className="py-2 pr-3">Tipo</th>
-                      <th className="py-2 pr-3">Aptos.</th>
+                      <th className="py-2 pr-3">Coef. %</th>
                       <th className="py-2">Fecha</th>
                     </tr>
                   </thead>
@@ -108,8 +104,7 @@ export default function PetitionRosterPage() {
                       <tr key={entry.unitNumber} className="border-b border-gray-100">
                         <td className="py-2 pr-3 font-medium">{entry.unitNumber}</td>
                         <td className="py-2 pr-3">{entry.signerName}</td>
-                        <td className="py-2 pr-3">{entry.propertyType}</td>
-                        <td className="py-2 pr-3">{entry.apartmentCount}</td>
+                        <td className="py-2 pr-3">{entry.coefficientPct.toFixed(3)}</td>
                         <td className="py-2">{entry.signedAt.toLocaleDateString('es-CO')}</td>
                       </tr>
                     ))}

@@ -4,7 +4,6 @@ import type {
   PetitionRosterEntry,
   PetitionSignature,
   PetitionSignatureFormData,
-  PropertyType,
 } from '@/data/petition';
 
 interface PetitionRow {
@@ -12,8 +11,9 @@ interface PetitionRow {
   status: 'open' | 'closed';
   title: string;
   document_text: string;
+  threshold_pct: number;
   signed_count: number;
-  total_apartments: number;
+  total_coefficient_pct: number;
   roster_public?: boolean;
 }
 
@@ -23,13 +23,14 @@ function rowToPetition(row: PetitionRow): Petition {
     status: row.status,
     title: row.title,
     documentText: row.document_text,
+    thresholdPct: Number(row.threshold_pct),
     signedCount: Number(row.signed_count),
-    totalApartments: Number(row.total_apartments),
+    totalCoefficientPct: Number(row.total_coefficient_pct),
     rosterPublic: row.roster_public ?? true,
   };
 }
 
-/** Public, no-login lookup of a petition by its (unguessable) id, plus a live headcount. */
+/** Public, no-login lookup of a petition by its (unguessable) id, plus a live tally. */
 export async function getPetition(id: string): Promise<Petition | null> {
   const { data, error } = await supabase.rpc('get_petition', { p_id: id });
   if (error) throw error;
@@ -50,8 +51,7 @@ export async function signPetition(
     p_unit_number: data.unitNumber,
     p_signer_name: data.signerName,
     p_signer_id_number: data.signerIdNumber || null,
-    p_property_type: data.propertyType,
-    p_apartment_count: Number(data.apartmentCount),
+    p_coefficient_pct: Number(data.coefficientPct),
     p_consent_method: data.consentMethod,
     p_signature_image: signatureImage,
     p_document_hash: documentHash,
@@ -60,36 +60,34 @@ export async function signPetition(
   if (error) throw error;
 }
 
-/** Public, no-login roster read: name + unit + type + apartment count + date only — never the
+/** Public, no-login roster read: name + unit + coefficient + date only — never the
  *  signature image or cédula. Returns an empty list if the petition's roster isn't public. */
 export async function getPetitionRoster(id: string): Promise<PetitionRosterEntry[]> {
   const { data, error } = await supabase.rpc('get_petition_roster', { p_id: id });
   if (error) throw error;
   return (data ?? []).map(
-    (row: {
-      unit_number: string;
-      signer_name: string;
-      property_type: PropertyType;
-      apartment_count: number;
-      signed_at: string;
-    }) => ({
+    (row: { unit_number: string; signer_name: string; coefficient_pct: number; signed_at: string }) => ({
       unitNumber: row.unit_number,
       signerName: row.signer_name,
-      propertyType: row.property_type,
-      apartmentCount: Number(row.apartment_count),
+      coefficientPct: Number(row.coefficient_pct),
       signedAt: new Date(row.signed_at),
     })
   );
 }
 
 /** Admin-only: creates a new petition with the pasted document text. */
-export async function createPetition(title: string, documentText: string): Promise<string> {
+export async function createPetition(
+  title: string,
+  documentText: string,
+  thresholdPct: number
+): Promise<string> {
   const { data: userData } = await supabase.auth.getUser();
   const { data, error } = await supabase
     .from('petitions')
     .insert({
       title,
       document_text: documentText,
+      threshold_pct: thresholdPct,
       created_by: userData.user?.id,
     })
     .select('id')
@@ -102,38 +100,39 @@ export async function createPetition(title: string, documentText: string): Promi
 export async function listPetitions(): Promise<Petition[]> {
   const { data: petitionRows, error: petitionsError } = await supabase
     .from('petitions')
-    .select('id, status, title, document_text, roster_public')
+    .select('id, status, title, document_text, threshold_pct, roster_public')
     .order('created_at', { ascending: false });
   if (petitionsError) throw petitionsError;
   if (!petitionRows || petitionRows.length === 0) return [];
 
   const { data: signatureRows, error: signaturesError } = await supabase
     .from('petition_signatures')
-    .select('petition_id, apartment_count')
+    .select('petition_id, coefficient_pct')
     .in(
       'petition_id',
       petitionRows.map((p) => p.id as string)
     );
   if (signaturesError) throw signaturesError;
 
-  const tallies = new Map<string, { count: number; apartments: number }>();
+  const tallies = new Map<string, { count: number; total: number }>();
   (signatureRows ?? []).forEach((row) => {
     const petitionId = row.petition_id as string;
-    const tally = tallies.get(petitionId) ?? { count: 0, apartments: 0 };
+    const tally = tallies.get(petitionId) ?? { count: 0, total: 0 };
     tally.count += 1;
-    tally.apartments += Number(row.apartment_count);
+    tally.total += Number(row.coefficient_pct);
     tallies.set(petitionId, tally);
   });
 
   return petitionRows.map((row) => {
-    const tally = tallies.get(row.id as string) ?? { count: 0, apartments: 0 };
+    const tally = tallies.get(row.id as string) ?? { count: 0, total: 0 };
     return {
       id: row.id as string,
       status: row.status as 'open' | 'closed',
       title: row.title as string,
       documentText: row.document_text as string,
+      thresholdPct: Number(row.threshold_pct),
       signedCount: tally.count,
-      totalApartments: tally.apartments,
+      totalCoefficientPct: tally.total,
       rosterPublic: (row as { roster_public: boolean }).roster_public,
     };
   });
@@ -143,9 +142,7 @@ export async function listPetitions(): Promise<Petition[]> {
 export async function listPetitionSignatures(petitionId: string): Promise<PetitionSignature[]> {
   const { data, error } = await supabase
     .from('petition_signatures')
-    .select(
-      'id, unit_number, signer_name, signer_id_number, property_type, apartment_count, consent_method, signature_image, signed_at'
-    )
+    .select('id, unit_number, signer_name, signer_id_number, coefficient_pct, consent_method, signature_image, signed_at')
     .eq('petition_id', petitionId)
     .order('signed_at', { ascending: true });
   if (error) throw error;
@@ -154,8 +151,7 @@ export async function listPetitionSignatures(petitionId: string): Promise<Petiti
     unitNumber: row.unit_number as string,
     signerName: row.signer_name as string,
     signerIdNumber: (row.signer_id_number as string | null) ?? null,
-    propertyType: row.property_type as PropertyType,
-    apartmentCount: Number(row.apartment_count),
+    coefficientPct: Number(row.coefficient_pct),
     consentMethod: row.consent_method as string,
     signatureImage: row.signature_image as string,
     signedAt: new Date(row.signed_at as string),
