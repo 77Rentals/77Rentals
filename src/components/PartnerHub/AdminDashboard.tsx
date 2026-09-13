@@ -9,6 +9,7 @@ import { AdminOwnerApprovals } from './AdminOwnerApprovals';
 import { AdminPropertyListings } from './AdminPropertyListings';
 import { AdminGalcolLinkGenerator } from './AdminGalcolLinkGenerator';
 import { AdminClientContractManager } from './AdminClientContractManager';
+import { AdminPetitionManager } from './AdminPetitionManager';
 
 export function AdminDashboard() {
   const [showForm, setShowForm] = useState(false);
@@ -92,6 +93,9 @@ export function AdminDashboard() {
           );
         })}
       </div>
+
+      {/* Multi-signer petitions (e.g. HOA assembly convocations) — one link, many signers */}
+      <AdminPetitionManager />
 
       {/* Client contracts (Galcol, etc.) — no client login required */}
       <AdminClientContractManager />
