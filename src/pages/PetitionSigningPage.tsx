@@ -5,14 +5,17 @@ import { Card } from '@/components/ui/card';
 import { useToast } from '@/components/ui/use-toast';
 import { DocumentText } from '@/components/DocumentText';
 import { SignaturePad } from '@/components/SignaturePad';
-import type { Petition, PetitionSignatureFormData } from '@/data/petition';
+import type { Petition, PetitionSignatureFormData, PropertyType } from '@/data/petition';
 import { getPetition, signPetition } from '@/lib/petitionClient';
+
+const PROPERTY_TYPES: PropertyType[] = ['A', 'B', 'C', 'D'];
 
 const EMPTY_FORM: PetitionSignatureFormData = {
   unitNumber: '',
   signerName: '',
   signerIdNumber: '',
-  coefficientPct: '',
+  propertyType: 'A',
+  apartmentCount: '1',
   consentMethod: 'Firma electrónica en línea (77Rentals)',
 };
 
@@ -54,13 +57,13 @@ export default function PetitionSigningPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [petitionId]);
 
-  const coefficientNumber = Number(form.coefficientPct.replace(',', '.'));
-  const coefficientValid = form.coefficientPct.trim().length > 0 && coefficientNumber > 0 && coefficientNumber <= 100;
+  const apartmentCountNumber = Number(form.apartmentCount);
+  const apartmentCountValid = Number.isInteger(apartmentCountNumber) && apartmentCountNumber > 0;
 
   const isFormValid =
     form.unitNumber.trim().length > 0 &&
     form.signerName.trim().length > 1 &&
-    coefficientValid &&
+    apartmentCountValid &&
     !!signatureImage &&
     agreed;
 
@@ -79,7 +82,7 @@ export default function PetitionSigningPage() {
     setIsSigning(true);
     try {
       const hash = await hashText(petition.documentText);
-      await signPetition(petitionId, { ...form, coefficientPct: String(coefficientNumber) }, signatureImage, hash);
+      await signPetition(petitionId, form, signatureImage, hash);
       setJustSigned(true);
       toast({
         title: 'Firmado',
@@ -115,8 +118,6 @@ export default function PetitionSigningPage() {
     );
   }
 
-  const progressPct = Math.min(100, (petition.totalCoefficientPct / petition.thresholdPct) * 100);
-
   return (
     <div className="min-h-screen bg-[#f8f7ff] py-10 px-4">
       <div className="max-w-3xl mx-auto space-y-6">
@@ -125,24 +126,19 @@ export default function PetitionSigningPage() {
           <p className="text-gray-600 text-sm mt-1">77Rentals · Firma electrónica (Ley 527 de 1999)</p>
         </div>
 
-        <Card className="p-4 space-y-2">
-          <div className="flex items-center justify-between text-sm">
-            <span className="text-gray-700 font-medium">
-              {petition.signedCount} propietario{petition.signedCount === 1 ? '' : 's'} ha
-              {petition.signedCount === 1 ? '' : 'n'} firmado
-            </span>
-            <span className="text-gray-700 font-medium">
-              {petition.totalCoefficientPct.toFixed(3)}% de {petition.thresholdPct}% requerido
-            </span>
-          </div>
-          <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
-            <div
-              className={`h-full rounded-full ${progressPct >= 100 ? 'bg-green-600' : 'bg-[#D4A843]'}`}
-              style={{ width: `${progressPct}%` }}
-            />
-          </div>
+        <Card className="p-4 space-y-1">
+          <p className="text-center text-lg font-bold text-gray-900">
+            {petition.signedCount} propietario{petition.signedCount === 1 ? '' : 's'} ha
+            {petition.signedCount === 1 ? '' : 'n'} firmado
+          </p>
+          <p className="text-center text-xs text-gray-500">
+            {petition.totalApartments} apartamento{petition.totalApartments === 1 ? '' : 's'} representado
+            {petition.totalApartments === 1 ? '' : 's'}
+          </p>
           {petition.status === 'closed' && (
-            <p className="text-xs text-orange-600 font-medium">Esta solicitud fue cerrada y ya no admite más firmas.</p>
+            <p className="text-center text-xs text-orange-600 font-medium pt-1">
+              Esta solicitud fue cerrada y ya no admite más firmas.
+            </p>
           )}
         </Card>
 
@@ -204,19 +200,34 @@ export default function PetitionSigningPage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm text-gray-700 mb-1">Coeficiente de tu unidad (%)</label>
+                    <label className="block text-sm text-gray-700 mb-1">Tipo de Propiedad</label>
+                    <select
+                      value={form.propertyType}
+                      onChange={(e) => setForm((f) => ({ ...f, propertyType: e.target.value as PropertyType }))}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white"
+                    >
+                      {PROPERTY_TYPES.map((type) => (
+                        <option key={type} value={type}>
+                          Tipo {type}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm text-gray-700 mb-1">¿Cuántos apartamentos?</label>
                     <input
-                      type="text"
-                      inputMode="decimal"
-                      value={form.coefficientPct}
-                      onChange={(e) => setForm((f) => ({ ...f, coefficientPct: e.target.value }))}
+                      type="number"
+                      min={1}
+                      step={1}
+                      value={form.apartmentCount}
+                      onChange={(e) => setForm((f) => ({ ...f, apartmentCount: e.target.value }))}
                       className={`w-full px-3 py-2 border rounded-lg ${
-                        form.coefficientPct && !coefficientValid ? 'border-red-400' : 'border-gray-300'
+                        form.apartmentCount && !apartmentCountValid ? 'border-red-400' : 'border-gray-300'
                       }`}
-                      placeholder="Ej: 1.85"
+                      placeholder="1"
                     />
-                    {form.coefficientPct && !coefficientValid && (
-                      <p className="text-xs text-red-600 mt-1">Debe ser un número entre 0 y 100</p>
+                    {form.apartmentCount && !apartmentCountValid && (
+                      <p className="text-xs text-red-600 mt-1">Debe ser un número entero mayor a 0</p>
                     )}
                   </div>
                 </div>

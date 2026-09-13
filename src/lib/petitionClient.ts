@@ -1,14 +1,13 @@
 import { supabase } from '@/lib/supabaseClient';
-import type { Petition, PetitionSignature, PetitionSignatureFormData } from '@/data/petition';
+import type { Petition, PetitionSignature, PetitionSignatureFormData, PropertyType } from '@/data/petition';
 
 interface PetitionRow {
   id: string;
   status: 'open' | 'closed';
   title: string;
   document_text: string;
-  threshold_pct: number;
   signed_count: number;
-  total_coefficient_pct: number;
+  total_apartments: number;
 }
 
 function rowToPetition(row: PetitionRow): Petition {
@@ -17,13 +16,12 @@ function rowToPetition(row: PetitionRow): Petition {
     status: row.status,
     title: row.title,
     documentText: row.document_text,
-    thresholdPct: Number(row.threshold_pct),
     signedCount: Number(row.signed_count),
-    totalCoefficientPct: Number(row.total_coefficient_pct),
+    totalApartments: Number(row.total_apartments),
   };
 }
 
-/** Public, no-login lookup of a petition by its (unguessable) id, plus a live tally. */
+/** Public, no-login lookup of a petition by its (unguessable) id, plus a live headcount. */
 export async function getPetition(id: string): Promise<Petition | null> {
   const { data, error } = await supabase.rpc('get_petition', { p_id: id });
   if (error) throw error;
@@ -44,7 +42,8 @@ export async function signPetition(
     p_unit_number: data.unitNumber,
     p_signer_name: data.signerName,
     p_signer_id_number: data.signerIdNumber || null,
-    p_coefficient_pct: Number(data.coefficientPct),
+    p_property_type: data.propertyType,
+    p_apartment_count: Number(data.apartmentCount),
     p_consent_method: data.consentMethod,
     p_signature_image: signatureImage,
     p_document_hash: documentHash,
@@ -54,18 +53,13 @@ export async function signPetition(
 }
 
 /** Admin-only: creates a new petition with the pasted document text. */
-export async function createPetition(
-  title: string,
-  documentText: string,
-  thresholdPct: number
-): Promise<string> {
+export async function createPetition(title: string, documentText: string): Promise<string> {
   const { data: userData } = await supabase.auth.getUser();
   const { data, error } = await supabase
     .from('petitions')
     .insert({
       title,
       document_text: documentText,
-      threshold_pct: thresholdPct,
       created_by: userData.user?.id,
     })
     .select('id')
@@ -78,39 +72,38 @@ export async function createPetition(
 export async function listPetitions(): Promise<Petition[]> {
   const { data: petitionRows, error: petitionsError } = await supabase
     .from('petitions')
-    .select('id, status, title, document_text, threshold_pct')
+    .select('id, status, title, document_text')
     .order('created_at', { ascending: false });
   if (petitionsError) throw petitionsError;
   if (!petitionRows || petitionRows.length === 0) return [];
 
   const { data: signatureRows, error: signaturesError } = await supabase
     .from('petition_signatures')
-    .select('petition_id, coefficient_pct')
+    .select('petition_id, apartment_count')
     .in(
       'petition_id',
       petitionRows.map((p) => p.id as string)
     );
   if (signaturesError) throw signaturesError;
 
-  const tallies = new Map<string, { count: number; total: number }>();
+  const tallies = new Map<string, { count: number; apartments: number }>();
   (signatureRows ?? []).forEach((row) => {
     const petitionId = row.petition_id as string;
-    const tally = tallies.get(petitionId) ?? { count: 0, total: 0 };
+    const tally = tallies.get(petitionId) ?? { count: 0, apartments: 0 };
     tally.count += 1;
-    tally.total += Number(row.coefficient_pct);
+    tally.apartments += Number(row.apartment_count);
     tallies.set(petitionId, tally);
   });
 
   return petitionRows.map((row) => {
-    const tally = tallies.get(row.id as string) ?? { count: 0, total: 0 };
+    const tally = tallies.get(row.id as string) ?? { count: 0, apartments: 0 };
     return {
       id: row.id as string,
       status: row.status as 'open' | 'closed',
       title: row.title as string,
       documentText: row.document_text as string,
-      thresholdPct: Number(row.threshold_pct),
       signedCount: tally.count,
-      totalCoefficientPct: tally.total,
+      totalApartments: tally.apartments,
     };
   });
 }
@@ -119,7 +112,9 @@ export async function listPetitions(): Promise<Petition[]> {
 export async function listPetitionSignatures(petitionId: string): Promise<PetitionSignature[]> {
   const { data, error } = await supabase
     .from('petition_signatures')
-    .select('id, unit_number, signer_name, signer_id_number, coefficient_pct, consent_method, signature_image, signed_at')
+    .select(
+      'id, unit_number, signer_name, signer_id_number, property_type, apartment_count, consent_method, signature_image, signed_at'
+    )
     .eq('petition_id', petitionId)
     .order('signed_at', { ascending: true });
   if (error) throw error;
@@ -128,7 +123,8 @@ export async function listPetitionSignatures(petitionId: string): Promise<Petiti
     unitNumber: row.unit_number as string,
     signerName: row.signer_name as string,
     signerIdNumber: (row.signer_id_number as string | null) ?? null,
-    coefficientPct: Number(row.coefficient_pct),
+    propertyType: row.property_type as PropertyType,
+    apartmentCount: Number(row.apartment_count),
     consentMethod: row.consent_method as string,
     signatureImage: row.signature_image as string,
     signedAt: new Date(row.signed_at as string),

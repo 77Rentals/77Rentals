@@ -120,13 +120,11 @@ export function buildPetitionPdf(petition: Petition, signatures: PetitionSignatu
   });
 
   // Summary line before the signature table.
+  const totalApartments = signatures.reduce((sum, s) => sum + s.apartmentCount, 0);
   y += 10;
   ensureSpace(20);
   writeText(
-    `Total de firmas recolectadas: ${signatures.length}  ·  Coeficiente acumulado: ${petition.totalCoefficientPct.toFixed(3)}%  ·  ` +
-      `Umbral requerido: ${petition.thresholdPct}%  ·  ${
-        petition.totalCoefficientPct >= petition.thresholdPct ? 'UMBRAL CUMPLIDO' : 'Umbral aún no alcanzado'
-      }`,
+    `Total de firmas recolectadas: ${signatures.length}  ·  Apartamentos representados: ${totalApartments}`,
     { bold: true, color: NAVY }
   );
   y += 6;
@@ -142,12 +140,13 @@ export function buildPetitionPdf(petition: Petition, signatures: PetitionSignatu
   autoTable(doc, {
     startY: PAGE_MARGIN_TOP,
     margin: { left: PAGE_MARGIN_X, right: PAGE_MARGIN_X, top: PAGE_MARGIN_TOP, bottom: PAGE_MARGIN_BOTTOM },
-    head: [['Unidad', 'Nombre', 'Cédula', 'Coef. %', 'Medio', 'Fecha', 'Firma']],
+    head: [['Unidad', 'Nombre', 'Cédula', 'Tipo', 'Aptos.', 'Medio', 'Fecha', 'Firma']],
     body: signatures.map((s) => [
       s.unitNumber,
       s.signerName,
       s.signerIdNumber ?? '',
-      s.coefficientPct.toFixed(3),
+      s.propertyType,
+      String(s.apartmentCount),
       s.consentMethod,
       s.signedAt.toLocaleDateString('es-CO'),
       '',
@@ -156,16 +155,17 @@ export function buildPetitionPdf(petition: Petition, signatures: PetitionSignatu
     headStyles: { fillColor: [11, 37, 69], textColor: [255, 255, 255], fontStyle: 'bold' },
     alternateRowStyles: { fillColor: [246, 246, 246] },
     columnStyles: {
-      0: { cellWidth: 55 },
-      1: { cellWidth: 110 },
-      2: { cellWidth: 60 },
-      3: { cellWidth: 45 },
-      4: { cellWidth: 100 },
-      5: { cellWidth: 55 },
-      6: { cellWidth: SIG_IMG_WIDTH + 10, minCellHeight: SIG_IMG_HEIGHT + 8 },
+      0: { cellWidth: 50 },
+      1: { cellWidth: 105 },
+      2: { cellWidth: 55 },
+      3: { cellWidth: 30 },
+      4: { cellWidth: 35 },
+      5: { cellWidth: 95 },
+      6: { cellWidth: 50 },
+      7: { cellWidth: SIG_IMG_WIDTH + 10, minCellHeight: SIG_IMG_HEIGHT + 8 },
     },
     didDrawCell: (data) => {
-      if (data.section === 'body' && data.column.index === 6) {
+      if (data.section === 'body' && data.column.index === 7) {
         const sig = signatures[data.row.index];
         if (sig?.signatureImage) {
           try {
