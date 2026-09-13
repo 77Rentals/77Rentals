@@ -4,6 +4,7 @@ export interface Petition {
   title: string;
   documentText: string;
   thresholdPct: number;
+  maxCoefficientPct: number;
   signedCount: number;
   totalCoefficientPct: number;
   rosterPublic: boolean;
@@ -22,7 +23,7 @@ export interface PetitionSignature {
   unitNumber: string;
   signerName: string;
   signerIdNumber: string | null;
-  coefficientPct: number;
+  coefficientPct: number | null;
   consentMethod: string;
   signatureImage: string;
   signedAt: Date;
@@ -33,6 +34,6 @@ export interface PetitionSignature {
 export interface PetitionRosterEntry {
   unitNumber: string;
   signerName: string;
-  coefficientPct: number;
+  coefficientPct: number | null;
   signedAt: Date;
 }

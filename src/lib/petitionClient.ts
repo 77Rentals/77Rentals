@@ -12,6 +12,7 @@ interface PetitionRow {
   title: string;
   document_text: string;
   threshold_pct: number;
+  max_coefficient_pct?: number;
   signed_count: number;
   total_coefficient_pct: number;
   roster_public?: boolean;
@@ -24,6 +25,7 @@ function rowToPetition(row: PetitionRow): Petition {
     title: row.title,
     documentText: row.document_text,
     thresholdPct: Number(row.threshold_pct),
+    maxCoefficientPct: Number(row.max_coefficient_pct ?? 100),
     signedCount: Number(row.signed_count),
     totalCoefficientPct: Number(row.total_coefficient_pct),
     rosterPublic: row.roster_public ?? true,
@@ -51,7 +53,7 @@ export async function signPetition(
     p_unit_number: data.unitNumber,
     p_signer_name: data.signerName,
     p_signer_id_number: data.signerIdNumber || null,
-    p_coefficient_pct: Number(data.coefficientPct),
+    p_coefficient_pct: data.coefficientPct.trim() ? Number(data.coefficientPct) : null,
     p_consent_method: data.consentMethod,
     p_signature_image: signatureImage,
     p_document_hash: documentHash,
@@ -66,10 +68,10 @@ export async function getPetitionRoster(id: string): Promise<PetitionRosterEntry
   const { data, error } = await supabase.rpc('get_petition_roster', { p_id: id });
   if (error) throw error;
   return (data ?? []).map(
-    (row: { unit_number: string; signer_name: string; coefficient_pct: number; signed_at: string }) => ({
+    (row: { unit_number: string; signer_name: string; coefficient_pct: number | null; signed_at: string }) => ({
       unitNumber: row.unit_number,
       signerName: row.signer_name,
-      coefficientPct: Number(row.coefficient_pct),
+      coefficientPct: row.coefficient_pct === null ? null : Number(row.coefficient_pct),
       signedAt: new Date(row.signed_at),
     })
   );
@@ -79,7 +81,8 @@ export async function getPetitionRoster(id: string): Promise<PetitionRosterEntry
 export async function createPetition(
   title: string,
   documentText: string,
-  thresholdPct: number
+  thresholdPct: number,
+  maxCoefficientPct: number
 ): Promise<string> {
   const { data: userData } = await supabase.auth.getUser();
   const { data, error } = await supabase
@@ -88,6 +91,7 @@ export async function createPetition(
       title,
       document_text: documentText,
       threshold_pct: thresholdPct,
+      max_coefficient_pct: maxCoefficientPct,
       created_by: userData.user?.id,
     })
     .select('id')
@@ -100,7 +104,7 @@ export async function createPetition(
 export async function listPetitions(): Promise<Petition[]> {
   const { data: petitionRows, error: petitionsError } = await supabase
     .from('petitions')
-    .select('id, status, title, document_text, threshold_pct, roster_public')
+    .select('id, status, title, document_text, threshold_pct, max_coefficient_pct, roster_public')
     .order('created_at', { ascending: false });
   if (petitionsError) throw petitionsError;
   if (!petitionRows || petitionRows.length === 0) return [];
@@ -119,7 +123,7 @@ export async function listPetitions(): Promise<Petition[]> {
     const petitionId = row.petition_id as string;
     const tally = tallies.get(petitionId) ?? { count: 0, total: 0 };
     tally.count += 1;
-    tally.total += Number(row.coefficient_pct);
+    if (row.coefficient_pct !== null) tally.total += Number(row.coefficient_pct);
     tallies.set(petitionId, tally);
   });
 
@@ -131,6 +135,7 @@ export async function listPetitions(): Promise<Petition[]> {
       title: row.title as string,
       documentText: row.document_text as string,
       thresholdPct: Number(row.threshold_pct),
+      maxCoefficientPct: Number((row as { max_coefficient_pct: number }).max_coefficient_pct ?? 100),
       signedCount: tally.count,
       totalCoefficientPct: tally.total,
       rosterPublic: (row as { roster_public: boolean }).roster_public,
@@ -151,7 +156,7 @@ export async function listPetitionSignatures(petitionId: string): Promise<Petiti
     unitNumber: row.unit_number as string,
     signerName: row.signer_name as string,
     signerIdNumber: (row.signer_id_number as string | null) ?? null,
-    coefficientPct: Number(row.coefficient_pct),
+    coefficientPct: row.coefficient_pct === null ? null : Number(row.coefficient_pct),
     consentMethod: row.consent_method as string,
     signatureImage: row.signature_image as string,
     signedAt: new Date(row.signed_at as string),

@@ -29,6 +29,7 @@ export function AdminPetitionManager() {
   const [title, setTitle] = useState('');
   const [documentText, setDocumentText] = useState('');
   const [thresholdPct, setThresholdPct] = useState('20');
+  const [maxCoefficientPct, setMaxCoefficientPct] = useState('100');
   const [isCreating, setIsCreating] = useState(false);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [signatures, setSignatures] = useState<PetitionSignature[]>([]);
@@ -50,22 +51,33 @@ export function AdminPetitionManager() {
 
   const handleCreate = async () => {
     const threshold = Number(thresholdPct);
-    if (!title.trim() || !documentText.trim() || !threshold || threshold <= 0 || threshold > 100) {
+    const maxCoefficient = Number(maxCoefficientPct);
+    if (
+      !title.trim() ||
+      !documentText.trim() ||
+      !threshold ||
+      threshold <= 0 ||
+      threshold > 100 ||
+      !maxCoefficient ||
+      maxCoefficient <= 0 ||
+      maxCoefficient > 100
+    ) {
       toast({
         title: 'Error',
-        description: 'Completa el título, el texto del documento y un umbral válido (1-100).',
+        description: 'Completa el título, el texto del documento, un umbral válido y un coeficiente máximo válido (1-100).',
         variant: 'destructive',
       });
       return;
     }
     setIsCreating(true);
     try {
-      const id = await createPetition(title.trim(), documentText.trim(), threshold);
+      const id = await createPetition(title.trim(), documentText.trim(), threshold, maxCoefficient);
       await navigator.clipboard.writeText(buildLinkUrl(id)).catch(() => {});
       toast({ title: 'Solicitud creada', description: 'Se copió el link al portapapeles.', variant: 'default' });
       setTitle('');
       setDocumentText('');
       setThresholdPct('20');
+      setMaxCoefficientPct('100');
       setShowForm(false);
       refresh();
     } catch {
@@ -193,16 +205,29 @@ export function AdminPetitionManager() {
               placeholder="Pega aquí el texto completo de la solicitud..."
             />
           </div>
-          <div className="max-w-xs">
-            <label className="block text-sm text-gray-700 mb-1">Umbral de coeficiente requerido (%)</label>
-            <input
-              type="text"
-              inputMode="decimal"
-              value={thresholdPct}
-              onChange={(e) => setThresholdPct(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg"
-              placeholder="20"
-            />
+          <div className="flex gap-3 flex-wrap">
+            <div className="max-w-xs">
+              <label className="block text-sm text-gray-700 mb-1">Umbral de coeficiente requerido (%)</label>
+              <input
+                type="text"
+                inputMode="decimal"
+                value={thresholdPct}
+                onChange={(e) => setThresholdPct(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                placeholder="20"
+              />
+            </div>
+            <div className="max-w-xs">
+              <label className="block text-sm text-gray-700 mb-1">Coeficiente máximo por firmante (%)</label>
+              <input
+                type="text"
+                inputMode="decimal"
+                value={maxCoefficientPct}
+                onChange={(e) => setMaxCoefficientPct(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                placeholder="Ej: 1 (deja 100 si no sabes)"
+              />
+            </div>
           </div>
           <Button
             onClick={handleCreate}
@@ -304,7 +329,7 @@ export function AdminPetitionManager() {
                             <tr key={sig.id} className="border-b border-gray-100">
                               <td className="py-1.5 pr-3 font-medium">{sig.unitNumber}</td>
                               <td className="py-1.5 pr-3">{sig.signerName}</td>
-                              <td className="py-1.5 pr-3">{sig.coefficientPct.toFixed(3)}</td>
+                              <td className="py-1.5 pr-3">{sig.coefficientPct === null ? '—' : sig.coefficientPct.toFixed(3)}</td>
                               <td className="py-1.5 pr-3">{sig.signedAt.toLocaleDateString('es-CO')}</td>
                               <td className="py-1.5 pr-3">
                                 <img src={sig.signatureImage} alt="Firma" className="h-6 border border-gray-200 rounded bg-white" />

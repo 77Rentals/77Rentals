@@ -147,7 +147,7 @@ export function buildPetitionPdf(petition: Petition, signatures: PetitionSignatu
       s.unitNumber,
       s.signerName,
       s.signerIdNumber ?? '',
-      s.coefficientPct.toFixed(3),
+      s.coefficientPct === null ? '—' : s.coefficientPct.toFixed(3),
       s.consentMethod,
       s.signedAt.toLocaleDateString('es-CO'),
       '',

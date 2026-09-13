@@ -55,7 +55,7 @@ export default function PetitionRosterPage() {
     );
   }
 
-  const totalCoefficientPct = roster.reduce((sum, r) => sum + r.coefficientPct, 0);
+  const totalCoefficientPct = roster.reduce((sum, r) => sum + (r.coefficientPct ?? 0), 0);
 
   return (
     <div className="min-h-screen bg-[#f8f7ff] py-10 px-4">
@@ -104,7 +104,7 @@ export default function PetitionRosterPage() {
                       <tr key={entry.unitNumber} className="border-b border-gray-100">
                         <td className="py-2 pr-3 font-medium">{entry.unitNumber}</td>
                         <td className="py-2 pr-3">{entry.signerName}</td>
-                        <td className="py-2 pr-3">{entry.coefficientPct.toFixed(3)}</td>
+                        <td className="py-2 pr-3">{entry.coefficientPct === null ? '—' : entry.coefficientPct.toFixed(3)}</td>
                         <td className="py-2">{entry.signedAt.toLocaleDateString('es-CO')}</td>
                       </tr>
                     ))}

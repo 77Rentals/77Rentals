@@ -56,7 +56,9 @@ export default function PetitionSigningPage() {
   }, [petitionId]);
 
   const coefficientNumber = Number(form.coefficientPct.replace(',', '.'));
-  const coefficientValid = form.coefficientPct.trim().length > 0 && coefficientNumber > 0 && coefficientNumber <= 100;
+  const maxCoefficientPct = petition !== 'not_found' && petition ? petition.maxCoefficientPct : 100;
+  const coefficientProvided = form.coefficientPct.trim().length > 0;
+  const coefficientValid = !coefficientProvided || (coefficientNumber > 0 && coefficientNumber <= maxCoefficientPct);
 
   const isFormValid =
     form.unitNumber.trim().length > 0 &&
@@ -80,7 +82,12 @@ export default function PetitionSigningPage() {
     setIsSigning(true);
     try {
       const hash = await hashText(petition.documentText);
-      await signPetition(petitionId, { ...form, coefficientPct: String(coefficientNumber) }, signatureImage, hash);
+      await signPetition(
+        petitionId,
+        { ...form, coefficientPct: coefficientProvided ? String(coefficientNumber) : '' },
+        signatureImage,
+        hash
+      );
       setJustSigned(true);
       toast({
         title: 'Firmado',
@@ -213,7 +220,7 @@ export default function PetitionSigningPage() {
                   </div>
                   <div>
                     <label className="block text-sm text-gray-700 mb-1 flex items-center gap-1.5">
-                      Coeficiente de tu unidad (%)
+                      Coeficiente de tu unidad (%) <span className="text-gray-400 font-normal">(opcional)</span>
                       <button
                         type="button"
                         onClick={() => setShowCoefficientHelp((v) => !v)}
@@ -242,7 +249,10 @@ export default function PetitionSigningPage() {
                       placeholder="Ej: 0,1514"
                     />
                     {form.coefficientPct && !coefficientValid && (
-                      <p className="text-xs text-red-600 mt-1">Debe ser un número entre 0 y 100</p>
+                      <p className="text-xs text-red-600 mt-1">
+                        Debe ser un número entre 0 y {maxCoefficientPct}. Verifica tu certificado de tradición y
+                        libertad — parece muy alto para una unidad de esta copropiedad.
+                      </p>
                     )}
                   </div>
                 </div>
