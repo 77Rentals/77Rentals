@@ -25,6 +25,7 @@ const PartnerHub = lazy(() => import("./pages/PartnerHub"));
 const OwnerSigningPage = lazy(() => import("./pages/OwnerSigningPage.tsx"));
 const ClientSigningPage = lazy(() => import("./pages/ClientSigningPage.tsx"));
 const PetitionSigningPage = lazy(() => import("./pages/PetitionSigningPage.tsx"));
+const PetitionRosterPage = lazy(() => import("./pages/PetitionRosterPage.tsx"));
 
 function RouteLoadingScreen() {
   return (
@@ -89,6 +90,16 @@ const App = () => (
                 <RouteErrorBoundary>
                   <Suspense fallback={<RouteLoadingScreen />}>
                     <PetitionSigningPage />
+                  </Suspense>
+                </RouteErrorBoundary>
+              }
+            />
+            <Route
+              path="/peticion/:petitionId/firmantes"
+              element={
+                <RouteErrorBoundary>
+                  <Suspense fallback={<RouteLoadingScreen />}>
+                    <PetitionRosterPage />
                   </Suspense>
                 </RouteErrorBoundary>
               }

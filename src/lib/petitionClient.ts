@@ -1,5 +1,11 @@
 import { supabase } from '@/lib/supabaseClient';
-import type { Petition, PetitionSignature, PetitionSignatureFormData, PropertyType } from '@/data/petition';
+import type {
+  Petition,
+  PetitionRosterEntry,
+  PetitionSignature,
+  PetitionSignatureFormData,
+  PropertyType,
+} from '@/data/petition';
 
 interface PetitionRow {
   id: string;
@@ -8,6 +14,7 @@ interface PetitionRow {
   document_text: string;
   signed_count: number;
   total_apartments: number;
+  roster_public?: boolean;
 }
 
 function rowToPetition(row: PetitionRow): Petition {
@@ -18,6 +25,7 @@ function rowToPetition(row: PetitionRow): Petition {
     documentText: row.document_text,
     signedCount: Number(row.signed_count),
     totalApartments: Number(row.total_apartments),
+    rosterPublic: row.roster_public ?? true,
   };
 }
 
@@ -52,6 +60,28 @@ export async function signPetition(
   if (error) throw error;
 }
 
+/** Public, no-login roster read: name + unit + type + apartment count + date only — never the
+ *  signature image or cédula. Returns an empty list if the petition's roster isn't public. */
+export async function getPetitionRoster(id: string): Promise<PetitionRosterEntry[]> {
+  const { data, error } = await supabase.rpc('get_petition_roster', { p_id: id });
+  if (error) throw error;
+  return (data ?? []).map(
+    (row: {
+      unit_number: string;
+      signer_name: string;
+      property_type: PropertyType;
+      apartment_count: number;
+      signed_at: string;
+    }) => ({
+      unitNumber: row.unit_number,
+      signerName: row.signer_name,
+      propertyType: row.property_type,
+      apartmentCount: Number(row.apartment_count),
+      signedAt: new Date(row.signed_at),
+    })
+  );
+}
+
 /** Admin-only: creates a new petition with the pasted document text. */
 export async function createPetition(title: string, documentText: string): Promise<string> {
   const { data: userData } = await supabase.auth.getUser();
@@ -72,7 +102,7 @@ export async function createPetition(title: string, documentText: string): Promi
 export async function listPetitions(): Promise<Petition[]> {
   const { data: petitionRows, error: petitionsError } = await supabase
     .from('petitions')
-    .select('id, status, title, document_text')
+    .select('id, status, title, document_text, roster_public')
     .order('created_at', { ascending: false });
   if (petitionsError) throw petitionsError;
   if (!petitionRows || petitionRows.length === 0) return [];
@@ -104,6 +134,7 @@ export async function listPetitions(): Promise<Petition[]> {
       documentText: row.document_text as string,
       signedCount: tally.count,
       totalApartments: tally.apartments,
+      rosterPublic: (row as { roster_public: boolean }).roster_public,
     };
   });
 }
@@ -140,6 +171,12 @@ export async function deletePetitionSignature(id: string): Promise<void> {
 /** Admin-only: opens/closes a petition to new signatures. */
 export async function setPetitionStatus(id: string, status: 'open' | 'closed'): Promise<void> {
   const { error } = await supabase.from('petitions').update({ status }).eq('id', id);
+  if (error) throw error;
+}
+
+/** Admin-only: toggles whether the name+unit transparency roster is publicly viewable. */
+export async function setPetitionRosterPublic(id: string, rosterPublic: boolean): Promise<void> {
+  const { error } = await supabase.from('petitions').update({ roster_public: rosterPublic }).eq('id', id);
   if (error) throw error;
 }
 

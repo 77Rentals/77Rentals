@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useToast } from '@/components/ui/use-toast';
@@ -135,6 +135,13 @@ export default function PetitionSigningPage() {
             {petition.totalApartments} apartamento{petition.totalApartments === 1 ? '' : 's'} representado
             {petition.totalApartments === 1 ? '' : 's'}
           </p>
+          {petition.rosterPublic && (
+            <p className="text-center text-xs pt-1">
+              <Link to={`/peticion/${petition.id}/firmantes`} className="text-[#2D1B69] underline">
+                Ver quiénes han firmado →
+              </Link>
+            </p>
+          )}
           {petition.status === 'closed' && (
             <p className="text-center text-xs text-orange-600 font-medium pt-1">
               Esta solicitud fue cerrada y ya no admite más firmas.
@@ -233,6 +240,13 @@ export default function PetitionSigningPage() {
                 </div>
 
                 <SignaturePad label="Firma (dibuja con el mouse, dedo o lápiz óptico)" onChange={setSignatureImage} />
+
+                {petition.rosterPublic && (
+                  <p className="text-xs text-gray-500">
+                    Tu nombre, unidad y fecha de firma serán visibles para los demás copropietarios en un listado
+                    público de transparencia (no se publican tu cédula ni tu firma).
+                  </p>
+                )}
 
                 <div className="flex items-start gap-3 pt-2">
                   <input

@@ -9,12 +9,17 @@ import {
   deletePetitionSignature,
   listPetitionSignatures,
   listPetitions,
+  setPetitionRosterPublic,
   setPetitionStatus,
 } from '@/lib/petitionClient';
 import { downloadPetitionPdf } from '@/lib/petitionPdfGenerator';
 
 function buildLinkUrl(id: string): string {
   return `${window.location.origin}/peticion/${id}`;
+}
+
+function buildRosterUrl(id: string): string {
+  return `${window.location.origin}/peticion/${id}/firmantes`;
 }
 
 export function AdminPetitionManager() {
@@ -70,6 +75,20 @@ export function AdminPetitionManager() {
   const handleCopy = async (id: string) => {
     await navigator.clipboard.writeText(buildLinkUrl(id)).catch(() => {});
     toast({ title: 'Copiado', description: 'Link copiado al portapapeles.', variant: 'default' });
+  };
+
+  const handleCopyRoster = async (id: string) => {
+    await navigator.clipboard.writeText(buildRosterUrl(id)).catch(() => {});
+    toast({ title: 'Copiado', description: 'Link del listado de firmantes copiado al portapapeles.', variant: 'default' });
+  };
+
+  const handleToggleRosterPublic = async (petition: Petition) => {
+    try {
+      await setPetitionRosterPublic(petition.id, !petition.rosterPublic);
+      refresh();
+    } catch {
+      toast({ title: 'Error', description: 'No se pudo cambiar la visibilidad del listado.', variant: 'destructive' });
+    }
   };
 
   const handleToggleExpand = async (id: string) => {
@@ -201,12 +220,23 @@ export function AdminPetitionManager() {
                     </p>
                     <p className="text-xs text-gray-500 truncate">{buildLinkUrl(petition.id)}</p>
                     <p className="text-xs text-gray-600 mt-1.5">
-                      {petition.signedCount} firmas · {petition.totalApartments} apartamentos representados
+                      {petition.signedCount} firmas · {petition.totalApartments} apartamentos representados ·{' '}
+                      <span className={petition.rosterPublic ? 'text-green-700' : 'text-gray-500'}>
+                        Listado {petition.rosterPublic ? 'público' : 'privado'}
+                      </span>
                     </p>
                   </div>
                   <div className="flex gap-2 flex-shrink-0 flex-wrap justify-end">
                     <Button variant="outline" size="sm" onClick={() => handleCopy(petition.id)}>
                       Copiar link
+                    </Button>
+                    {petition.rosterPublic && (
+                      <Button variant="outline" size="sm" onClick={() => handleCopyRoster(petition.id)}>
+                        Copiar link de firmantes
+                      </Button>
+                    )}
+                    <Button variant="outline" size="sm" onClick={() => handleToggleRosterPublic(petition)}>
+                      {petition.rosterPublic ? 'Hacer listado privado' : 'Hacer listado público'}
                     </Button>
                     <Button variant="outline" size="sm" onClick={() => handleToggleExpand(petition.id)}>
                       {isExpanded ? 'Ocultar firmas' : 'Ver firmas'}

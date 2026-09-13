@@ -7,6 +7,17 @@ export interface Petition {
   documentText: string;
   signedCount: number;
   totalApartments: number;
+  rosterPublic: boolean;
+}
+
+/** One row of the public, name+unit-only transparency roster — never includes
+ *  the signature image, cédula, or any other admin-only field. */
+export interface PetitionRosterEntry {
+  unitNumber: string;
+  signerName: string;
+  propertyType: PropertyType;
+  apartmentCount: number;
+  signedAt: Date;
 }
 
 export interface PetitionSignatureFormData {
