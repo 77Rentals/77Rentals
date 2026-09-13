@@ -76,23 +76,41 @@ export async function createPetition(
 
 /** Admin-only: lists all petitions, newest first. */
 export async function listPetitions(): Promise<Petition[]> {
-  const { data, error } = await supabase
+  const { data: petitionRows, error: petitionsError } = await supabase
     .from('petitions')
-    .select(
-      'id, status, title, document_text, threshold_pct, petition_signatures(coefficient_pct)'
-    )
+    .select('id, status, title, document_text, threshold_pct')
     .order('created_at', { ascending: false });
-  if (error) throw error;
-  return (data ?? []).map((row) => {
-    const signatures = (row as { petition_signatures: { coefficient_pct: number }[] }).petition_signatures ?? [];
+  if (petitionsError) throw petitionsError;
+  if (!petitionRows || petitionRows.length === 0) return [];
+
+  const { data: signatureRows, error: signaturesError } = await supabase
+    .from('petition_signatures')
+    .select('petition_id, coefficient_pct')
+    .in(
+      'petition_id',
+      petitionRows.map((p) => p.id as string)
+    );
+  if (signaturesError) throw signaturesError;
+
+  const tallies = new Map<string, { count: number; total: number }>();
+  (signatureRows ?? []).forEach((row) => {
+    const petitionId = row.petition_id as string;
+    const tally = tallies.get(petitionId) ?? { count: 0, total: 0 };
+    tally.count += 1;
+    tally.total += Number(row.coefficient_pct);
+    tallies.set(petitionId, tally);
+  });
+
+  return petitionRows.map((row) => {
+    const tally = tallies.get(row.id as string) ?? { count: 0, total: 0 };
     return {
       id: row.id as string,
       status: row.status as 'open' | 'closed',
       title: row.title as string,
       documentText: row.document_text as string,
       thresholdPct: Number(row.threshold_pct),
-      signedCount: signatures.length,
-      totalCoefficientPct: signatures.reduce((sum, s) => sum + Number(s.coefficient_pct), 0),
+      signedCount: tally.count,
+      totalCoefficientPct: tally.total,
     };
   });
 }
