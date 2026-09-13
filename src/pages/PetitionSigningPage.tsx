@@ -182,13 +182,13 @@ export default function PetitionSigningPage() {
                 <h2 className="text-lg font-semibold text-gray-900">Tus datos y firma</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm text-gray-700 mb-1">Unidad privada</label>
+                    <label className="block text-sm text-gray-700 mb-1">Torre y Apartamento</label>
                     <input
                       type="text"
                       value={form.unitNumber}
                       onChange={(e) => setForm((f) => ({ ...f, unitNumber: e.target.value }))}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg"
-                      placeholder="Ej: Apto 502"
+                      placeholder="Ej: 1-101"
                     />
                   </div>
                   <div>
@@ -239,7 +239,7 @@ export default function PetitionSigningPage() {
                       className={`w-full px-3 py-2 border rounded-lg ${
                         form.coefficientPct && !coefficientValid ? 'border-red-400' : 'border-gray-300'
                       }`}
-                      placeholder="Ej: 1.85"
+                      placeholder="Ej: 0,1514"
                     />
                     {form.coefficientPct && !coefficientValid && (
                       <p className="text-xs text-red-600 mt-1">Debe ser un número entre 0 y 100</p>
