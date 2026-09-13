@@ -303,13 +303,15 @@ export default function PetitionSigningPage() {
           </>
         )}
 
-        <p className="text-center text-[11px] text-gray-400 pt-2">
-          Tratamiento de datos personales: tu nombre, número de unidad, cédula (si la suministras), coeficiente y
-          firma se recolectan únicamente para acreditar y tramitar esta solicitud de convocatoria ante la
-          administración del Edificio Delventto P.H., de acuerdo con la Ley 1581 de 2012 y el Decreto 1377 de
-          2013 (protección de datos personales / habeas data). Puedes ejercer tus derechos de conocer, actualizar,
-          rectificar o solicitar la eliminación de tus datos contactando directamente a 77Rentals.
-        </p>
+        <Card className="p-4 bg-blue-50 border border-blue-200">
+          <p className="text-xs text-blue-900 leading-relaxed">
+            <strong>🔒 Tratamiento de datos personales (Ley 1581 de 2012 y Decreto 1377 de 2013 — Habeas Data):</strong>{' '}
+            tu nombre, número de unidad, cédula (si la suministras), coeficiente y firma se recolectan
+            únicamente para acreditar y tramitar esta solicitud de convocatoria ante la administración del
+            Edificio Delventto P.H. Puedes ejercer tus derechos de conocer, actualizar, rectificar o solicitar
+            la eliminación de tus datos contactando directamente a 77Rentals.
+          </p>
+        </Card>
       </div>
     </div>
   );
