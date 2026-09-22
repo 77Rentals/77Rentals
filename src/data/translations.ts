@@ -6,6 +6,22 @@ export const translations = {
     'nav.management': 'Property Management',
     'nav.contact': 'Contáctanos',
     'nav.reserve': 'Reservar Ahora',
+    'nav.blog': 'Blog',
+
+    // Blog
+    'blog.eyebrow': 'Blog 77Rentals',
+    'blog.title': 'Guía para viajar por Colombia',
+    'blog.subtitle': 'Consejos prácticos, datos curiosos y lo que necesitas saber antes de llegar a Cartagena, Santa Marta o Bogotá.',
+    'blog.readMore': 'Leer artículo',
+    'blog.minRead': 'min de lectura',
+    'blog.back': 'Volver al blog',
+    'blog.sources': 'Fuentes',
+    'blog.ctaTitle': '¿Planeando tu viaje a Colombia?',
+    'blog.ctaText': 'Tenemos apartamentos listos para ti en Cartagena, Santa Marta y Bogotá. Escríbenos por WhatsApp y te ayudamos a elegir.',
+    'blog.ctaApartments': 'Ver apartamentos',
+    'blog.ctaWhatsapp': 'Escríbenos por WhatsApp',
+    'blog.notFound': 'Artículo no encontrado',
+    'blog.more': 'Sigue leyendo',
 
     // Hero
     'hero.title': 'Vive tu experiencia de alojamiento con 77Rentals',
@@ -114,6 +130,22 @@ export const translations = {
     'nav.management': 'Property Management',
     'nav.contact': 'Contact Us',
     'nav.reserve': 'Book Now',
+    'nav.blog': 'Blog',
+
+    // Blog
+    'blog.eyebrow': '77Rentals Blog',
+    'blog.title': 'Your Colombia Travel Guide',
+    'blog.subtitle': 'Practical tips, surprising facts and what to know before you land in Cartagena, Santa Marta or Bogotá.',
+    'blog.readMore': 'Read article',
+    'blog.minRead': 'min read',
+    'blog.back': 'Back to blog',
+    'blog.sources': 'Sources',
+    'blog.ctaTitle': 'Planning your trip to Colombia?',
+    'blog.ctaText': "We have apartments ready for you in Cartagena, Santa Marta and Bogotá. Message us on WhatsApp and we'll help you choose.",
+    'blog.ctaApartments': 'See apartments',
+    'blog.ctaWhatsapp': 'Message us on WhatsApp',
+    'blog.notFound': 'Article not found',
+    'blog.more': 'Keep reading',
 
     // Hero
     'hero.title': 'Luxury Stays in Colombia',

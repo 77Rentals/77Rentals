@@ -3,7 +3,7 @@ import { Mail, Phone, MapPin, Instagram } from 'lucide-react';
 import logo from '@/assets/logo77.jpeg';
 
 const Footer = () => {
-  const { t } = useLanguage();
+  const { lang, t } = useLanguage();
 
   return (
     <footer id="contact" className="bg-primary pt-16 pb-8">
@@ -35,6 +35,7 @@ const Footer = () => {
 
           <div>
             <h4 className="text-secondary font-semibold uppercase tracking-widest text-sm mb-4">{t('footer.links')}</h4>
+            <a href={lang === 'en' ? '/en/blog/' : '/blog/'} className="block mb-4 text-primary-foreground/60 text-sm hover:text-secondary transition-colors">{t('nav.blog')}</a>
             <div className="flex gap-3">
               <a href="https://www.instagram.com/co77rentals/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="w-10 h-10 rounded-full bg-primary-foreground/10 flex items-center justify-center hover:bg-secondary/20 transition-colors">
                 <Instagram className="w-5 h-5 text-primary-foreground" />

@@ -15,8 +15,13 @@ interface LanguageContextType {
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
-export const LanguageProvider = ({ children }: { children: ReactNode }) => {
-  const [lang, setLang] = useState<Language>('es');
+// /en/... URLs (the English blog) start in English; the prerender passes
+// initialLang explicitly since there's no window during the build.
+const langFromLocation = (): Language =>
+  typeof window !== 'undefined' && /^\/en(\/|$)/.test(window.location.pathname) ? 'en' : 'es';
+
+export const LanguageProvider = ({ children, initialLang }: { children: ReactNode; initialLang?: Language }) => {
+  const [lang, setLang] = useState<Language>(() => initialLang ?? langFromLocation());
 
   const t = (key: TranslationKey | string): string => {
     return (translations[lang] as Record<string, string>)[key] || key;

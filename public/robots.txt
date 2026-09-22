@@ -16,3 +16,5 @@ Disallow: /cotizacion
 Disallow: /reserva-confirmada
 Disallow: /completar-datos
 Disallow: /cuenta-cobro
+
+Sitemap: https://77rentals.com/sitemap.xml

@@ -16,6 +16,8 @@ import ReservaConfirmada from "./pages/ReservaConfirmada.tsx";
 import CompletarDatos from "./pages/CompletarDatos.tsx";
 import CuentaCobro from "./pages/CuentaCobro.tsx";
 import NotFound from "./pages/NotFound.tsx";
+import Blog from "./pages/Blog.tsx";
+import BlogPost from "./pages/BlogPost.tsx";
 
 // Loaded lazily because they pull in the Supabase client: if that project's
 // env vars or schema are ever misconfigured, the failure stays isolated to
@@ -59,6 +61,10 @@ const App = () => (
                 </RouteErrorBoundary>
               }
             />
+            <Route path="/blog" element={<Blog />} />
+            <Route path="/blog/:slug" element={<BlogPost />} />
+            <Route path="/en/blog" element={<Blog />} />
+            <Route path="/en/blog/:slug" element={<BlogPost />} />
             <Route path="/catalogo" element={<Catalog />} />
             <Route path="/cotizacion" element={<Cotizacion />} />
             <Route path="/reserva-confirmada" element={<ReservaConfirmada />} />
