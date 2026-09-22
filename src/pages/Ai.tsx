@@ -207,6 +207,60 @@ const Ai = () => {
         </div>
       </section>
 
+      {/* Industry reference solution, clearly labeled as illustrative */}
+      <section id="soluciones" className="pb-20 md:pb-28 scroll-mt-16">
+        <div className="container mx-auto px-4 max-w-6xl">
+          <div className="max-w-3xl">
+            <Eyebrow>{c.blueprint.eyebrow}</Eyebrow>
+            <SectionTitle>{c.blueprint.title}</SectionTitle>
+            <p className={`mt-5 text-lg ${MUTED}`}>{c.blueprint.subtitle}</p>
+          </div>
+          <div className={`${CARD} mt-14 p-7 md:p-10`}>
+            <div className="flex flex-wrap items-center gap-3">
+              <span className="rounded-full bg-[#1B1235] px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-white">{c.blueprint.label}</span>
+              <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#8E44C9]">{c.blueprint.industry}</span>
+            </div>
+            <h3 className="mt-5 text-2xl md:text-3xl font-extrabold tracking-tight">{c.blueprint.name}</h3>
+            <p className={`mt-4 max-w-3xl leading-relaxed ${MUTED}`}>{c.blueprint.problem}</p>
+
+            <p className="mt-10 text-xs font-bold uppercase tracking-widest text-[#1B1235]/40">{c.blueprint.flowTitle}</p>
+            <ol className="mt-4 grid gap-3 md:grid-cols-5">
+              {c.blueprint.flow.map((f, i) => (
+                <li key={f.step} className="rounded-2xl bg-[#F3F0E8] p-4">
+                  <p className={`text-sm font-extrabold ${GRADIENT_TEXT}`}>0{i + 1}</p>
+                  <p className="mt-1 font-bold">{f.step}</p>
+                  <p className={`mt-1 text-sm leading-relaxed ${MUTED}`}>{f.detail}</p>
+                </li>
+              ))}
+            </ol>
+
+            <div className="mt-8 grid gap-4 sm:grid-cols-2">
+              {c.blueprint.modules.map((m) => (
+                <div key={m.title} className="rounded-2xl border border-[#1B1235]/10 p-5">
+                  <p className="flex items-center gap-2 font-bold"><Check className="w-4 h-4 text-[#8E44C9]" /> {m.title}</p>
+                  <p className={`mt-2 text-sm leading-relaxed ${MUTED}`}>{m.body}</p>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-8 flex flex-col lg:flex-row lg:items-end gap-6 justify-between">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-widest text-[#1B1235]/40">{c.blueprint.measureTitle}</p>
+                <ul className="mt-3 flex flex-wrap gap-2">
+                  {c.blueprint.measures.map((m) => (
+                    <li key={m} className="rounded-full bg-[#F3F0E8] px-3 py-1.5 text-sm font-semibold">{m}</li>
+                  ))}
+                </ul>
+              </div>
+              <a href={aiWhatsAppUrl(lang, c.blueprint.ctaTopic)} target="_blank" rel="noopener noreferrer" className={PILL_DARK + ' shrink-0'}>
+                {c.blueprint.cta} <ArrowRight className="w-4 h-4 ml-2" />
+              </a>
+            </div>
+            <p className="mt-8 text-xs text-[#1B1235]/45 leading-relaxed">{c.blueprint.disclaimer}</p>
+          </div>
+        </div>
+      </section>
+
       {/* Service pillars */}
       <section id="servicios" className="pb-20 md:pb-28 scroll-mt-16">
         <div className="container mx-auto px-4 max-w-6xl">

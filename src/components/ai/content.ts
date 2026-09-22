@@ -58,6 +58,23 @@ export interface AiContent {
     subtitle: string;
     items: { tag: string; title: string; result: string; body: string }[];
   };
+  blueprint: {
+    eyebrow: string;
+    title: string;
+    subtitle: string;
+    label: string;
+    industry: string;
+    name: string;
+    problem: string;
+    flowTitle: string;
+    flow: { step: string; detail: string }[];
+    modules: { title: string; body: string }[];
+    measureTitle: string;
+    measures: string[];
+    disclaimer: string;
+    cta: string;
+    ctaTopic: string;
+  };
   pillars: {
     eyebrow: string;
     title: string;
@@ -152,6 +169,34 @@ export const aiContent: Record<AiLang, AiContent> = {
           body: 'Agentes especializados investigan, redactan en español e inglés y publican páginas pre-renderizadas con SEO técnico completo.',
         },
       ],
+    },
+    blueprint: {
+      eyebrow: 'Soluciones por industria',
+      title: 'Así se ve la IA en una empresa de logística y comercio exterior',
+      subtitle: 'Un diseño de referencia para agencias de carga, operadores logísticos e importadores/exportadores. Lo adaptamos a tus procesos, tu agencia de aduanas y tus sistemas.',
+      label: 'Solución tipo',
+      industry: 'Logística · Comercio exterior',
+      name: 'Operación documental y Plan Vallejo con agentes de IA',
+      problem: 'Cada embarque trae facturas, listas de empaque, BL/AWB, certificados de origen y registros que alguien revisa a mano contra la DIAN y los programas especiales. Un dato cruzado significa retrasos, sanciones o insumos que pierden el beneficio.',
+      flowTitle: 'Flujo',
+      flow: [
+        { step: 'Recepción', detail: 'Correo, WhatsApp o portal: los documentos del embarque llegan a una sola bandeja.' },
+        { step: 'Lectura con IA', detail: 'Extrae partidas, valores, pesos, Incoterms y proveedor de PDFs y fotos.' },
+        { step: 'Revisión cruzada', detail: 'Compara factura, lista de empaque, BL y orden de compra, y marca diferencias.' },
+        { step: 'Control Plan Vallejo', detail: 'Cruza insumos importados con exportaciones y plazos del programa.' },
+        { step: 'Aprobación humana', detail: 'El analista revisa alertas, corrige y aprueba. Nada sale sin su visto bueno.' },
+      ],
+      modules: [
+        { title: 'Revisor documental', body: 'Detecta inconsistencias entre los documentos del embarque antes de que lleguen a la agencia de aduanas.' },
+        { title: 'Agente experto en Plan Vallejo', body: 'Responde al equipo con base en la normativa y en los datos del programa: saldos de insumos, cuadros insumo-producto y vencimientos.' },
+        { title: 'Tablero de embarques', body: 'Estado de cada operación, documentos faltantes y alertas de plazos en un solo lugar.' },
+        { title: 'Asistente por WhatsApp', body: 'Clientes y proveedores preguntan por su carga y reciben respuesta con datos reales.' },
+      ],
+      measureTitle: 'Qué medimos desde el primer día',
+      measures: ['Horas de revisión por embarque', 'Errores detectados antes de aduana', 'Días de anticipación en alertas', 'Tiempo de respuesta a clientes'],
+      disclaimer: 'Caso ilustrativo basado en procesos típicos del sector; no corresponde a un cliente específico. La IA apoya al equipo y no reemplaza la asesoría aduanera ni tributaria.',
+      cta: 'Quiero algo así para mi empresa',
+      ctaTopic: 'Solución para logística / comercio exterior',
     },
     pillars: {
       eyebrow: 'Servicios',
@@ -409,6 +454,34 @@ export const aiContent: Record<AiLang, AiContent> = {
           body: 'Specialized agents research, write in Spanish and English, and publish prerendered pages with full technical SEO.',
         },
       ],
+    },
+    blueprint: {
+      eyebrow: 'Solutions by industry',
+      title: 'What AI looks like in a logistics and foreign-trade company',
+      subtitle: 'A reference design for freight forwarders, logistics operators and importers/exporters. We adapt it to your processes, customs broker and systems.',
+      label: 'Reference solution',
+      industry: 'Logistics · Foreign trade',
+      name: 'Document operations and Plan Vallejo with AI agents',
+      problem: 'Every shipment brings invoices, packing lists, BL/AWB, certificates of origin and records that someone checks by hand against DIAN and special programs. One mismatched field means delays, penalties or inputs losing their benefit.',
+      flowTitle: 'Flow',
+      flow: [
+        { step: 'Intake', detail: 'Email, WhatsApp or portal: shipment documents land in one inbox.' },
+        { step: 'AI reading', detail: 'Extracts tariff lines, values, weights, Incoterms and supplier from PDFs and photos.' },
+        { step: 'Cross-check', detail: 'Compares invoice, packing list, BL and purchase order, and flags differences.' },
+        { step: 'Plan Vallejo control', detail: 'Matches imported inputs against exports and program deadlines.' },
+        { step: 'Human approval', detail: 'The analyst reviews alerts, corrects and approves. Nothing goes out without sign-off.' },
+      ],
+      modules: [
+        { title: 'Document reviewer', body: 'Catches inconsistencies between shipment documents before they reach the customs broker.' },
+        { title: 'Plan Vallejo expert agent', body: 'Answers the team from the regulations and the program data: input balances, input-output tables and deadlines.' },
+        { title: 'Shipment dashboard', body: 'Status of every operation, missing documents and deadline alerts in one place.' },
+        { title: 'WhatsApp assistant', body: 'Customers and suppliers ask about their cargo and get answers from real data.' },
+      ],
+      measureTitle: 'What we measure from day one',
+      measures: ['Review hours per shipment', 'Errors caught before customs', 'Days of warning on deadlines', 'Customer response time'],
+      disclaimer: 'Illustrative case based on typical industry processes; it does not describe a specific client. AI supports the team and does not replace customs or tax advice.',
+      cta: 'I want this for my company',
+      ctaTopic: 'Logistics / foreign trade solution',
     },
     pillars: {
       eyebrow: 'Services',
