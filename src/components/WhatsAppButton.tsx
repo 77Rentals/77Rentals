@@ -1,10 +1,11 @@
 const WA_URL =
   'https://wa.me/573046736241?text=Hola%2077Rentals%2C%20te%20vi%20en%20la%20p%C3%A1gina%20y%20quisiera%20saber%20qu%C3%A9%20hospedajes%20tienes';
 
-const WhatsAppButton = () => {
+// The /ai page passes Sebastian's own number; everywhere else uses 77Rentals'.
+const WhatsAppButton = ({ href = WA_URL }: { href?: string }) => {
   return (
     <a
-      href={WA_URL}
+      href={href}
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Contactar por WhatsApp"

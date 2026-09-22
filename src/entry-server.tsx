@@ -7,6 +7,8 @@ import { Route, Routes } from 'react-router-dom';
 import { LanguageProvider } from '@/contexts/LanguageContext';
 import Blog from '@/pages/Blog';
 import BlogPost from '@/pages/BlogPost';
+import Ai from '@/pages/Ai';
+import { aiContent, aiPath } from '@/components/ai/content';
 import { translations } from '@/data/translations';
 import { SITE_URL, blogPath, blogPosts, langFromPath, type BlogPost as Post } from '@/data/blog';
 
@@ -15,15 +17,28 @@ type Lang = 'es' | 'en';
 const esc = (s: string) =>
   s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
-export const routes: string[] = (['es', 'en'] as Lang[]).flatMap((lang) => [
+const blogRoutes: string[] = (['es', 'en'] as Lang[]).flatMap((lang) => [
   blogPath(lang),
   ...blogPosts.map((p) => blogPath(lang, p.slug)),
 ]);
+
+// The AI consulting landing page (/ai/, /en/ai/).
+const aiRoutes: string[] = (['es', 'en'] as Lang[]).map((lang) => aiPath(lang));
+const isAiRoute = (url: string) => aiRoutes.includes(url);
+
+export const routes: string[] = [...blogRoutes, ...aiRoutes];
 
 // Every page in both languages, with the date it last changed, for sitemap.xml.
 export const sitemapEntries = () =>
   routes.map((url) => {
     const lang = langFromPath(url);
+    if (isAiRoute(url)) {
+      return {
+        loc: SITE_URL + url,
+        lastmod: new Date().toISOString().slice(0, 10),
+        alternates: { es: SITE_URL + aiPath('es'), en: SITE_URL + aiPath('en'), 'x-default': SITE_URL + aiPath('es') },
+      };
+    }
     const slug = url.split('/').filter(Boolean).pop();
     const post = blogPosts.find((p) => p.slug === slug);
     const other: Lang = lang === 'es' ? 'en' : 'es';
@@ -37,6 +52,30 @@ export const sitemapEntries = () =>
       },
     };
   });
+
+const aiHeadTags = (url: string, lang: Lang) => {
+  const { title, description } = aiContent[lang].meta;
+  const image = SITE_URL + '/images/bogota.jpg';
+  return [
+    `<title>${esc(title)}</title>`,
+    `<meta name="description" content="${esc(description)}">`,
+    `<link rel="canonical" href="${SITE_URL + url}">`,
+    `<link rel="alternate" hreflang="es" href="${SITE_URL + aiPath('es')}">`,
+    `<link rel="alternate" hreflang="en" href="${SITE_URL + aiPath('en')}">`,
+    `<link rel="alternate" hreflang="x-default" href="${SITE_URL + aiPath('es')}">`,
+    `<meta property="og:type" content="website">`,
+    `<meta property="og:site_name" content="77 Rentals">`,
+    `<meta property="og:locale" content="${lang === 'es' ? 'es_CO' : 'en_US'}">`,
+    `<meta property="og:url" content="${SITE_URL + url}">`,
+    `<meta property="og:title" content="${esc(title)}">`,
+    `<meta property="og:description" content="${esc(description)}">`,
+    `<meta property="og:image" content="${image}">`,
+    `<meta name="twitter:card" content="summary_large_image">`,
+    `<meta name="twitter:title" content="${esc(title)}">`,
+    `<meta name="twitter:description" content="${esc(description)}">`,
+    `<meta name="twitter:image" content="${image}">`,
+  ].join('\n    ');
+};
 
 const headTags = (url: string, lang: Lang, post?: Post) => {
   const t = translations[lang] as Record<string, string>;
@@ -101,10 +140,12 @@ export const render = (url: string) => {
           <Route path="/blog/:slug" element={<BlogPost />} />
           <Route path="/en/blog" element={<Blog />} />
           <Route path="/en/blog/:slug" element={<BlogPost />} />
+          <Route path="/ai" element={<Ai />} />
+          <Route path="/en/ai" element={<Ai />} />
         </Routes>
       </StaticRouter>
     </LanguageProvider>,
   );
 
-  return { html, head: headTags(url, lang, post), lang };
+  return { html, head: isAiRoute(url) ? aiHeadTags(url, lang) : headTags(url, lang, post), lang };
 };
