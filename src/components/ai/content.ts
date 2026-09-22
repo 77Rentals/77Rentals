@@ -24,6 +24,22 @@ export const aiWhatsAppUrl = (lang: AiLang, topic?: string) => {
   return `https://wa.me/${AI_WHATSAPP_NUMBER}?text=${encodeURIComponent(base + tail)}`;
 };
 
+// Shown in the scrolling strip under the hero. Names only, no logos.
+export const AI_TOOLS = [
+  'Claude',
+  'Claude Code',
+  'ChatGPT',
+  'Gemini',
+  'Grok (xAI)',
+  'Cursor',
+  'Microsoft Copilot',
+  'n8n',
+  'Make',
+  'Zapier',
+  'Supabase',
+  'WhatsApp Business',
+];
+
 export interface ProblemCard {
   problem: string;
   detail: string;
@@ -33,16 +49,38 @@ export interface ProblemCard {
 
 export interface AiContent {
   meta: { title: string; description: string };
-  nav: { services: string; howWeWork: string; contact: string; switchLang: string };
-  hero: { eyebrow: string; title: string; subtitle: string; ctaWhatsApp: string; ctaServices: string; location: string };
-  gap: { eyebrow: string; title: string; subtitle: string; stats: { value: string; label: string }[]; sourcesLabel: string; sources: { title: string; url: string }[] };
-  tracks: { eyebrow: string; title: string; business: { title: string; audience: string; body: string }; dev: { title: string; audience: string; body: string }; cta: string };
-  business: { eyebrow: string; title: string; subtitle: string; cards: ProblemCard[] };
-  dev: { eyebrow: string; title: string; subtitle: string; cards: ProblemCard[] };
-  cardLabels: { solution: string; talk: string };
-  caseStudy: { eyebrow: string; title: string; subtitle: string; items: { title: string; body: string }[] };
+  nav: { services: string; work: string; howWeWork: string; cta: string; switchLang: string };
+  hero: { eyebrow: string; titleA: string; titleB: string; subtitle: string; cta: string; ctaSecondary: string; location: string };
+  toolsLabel: string;
+  cases: {
+    eyebrow: string;
+    title: string;
+    subtitle: string;
+    items: { tag: string; title: string; result: string; body: string }[];
+  };
+  pillars: {
+    eyebrow: string;
+    title: string;
+    subtitle: string;
+    packageLabel: string;
+    items: { title: string; proof: string; body: string; stack: string; packageName: string; packageDetail: string }[];
+    cta: string;
+  };
+  problems: {
+    eyebrow: string;
+    title: string;
+    subtitle: string;
+    tabs: { business: string; dev: string };
+    business: ProblemCard[];
+    dev: ProblemCard[];
+    labels: { solution: string; talk: string };
+    stats: { value: string; label: string }[];
+    sourcesLabel: string;
+    sources: { title: string; url: string }[];
+  };
+  numbers: { title: string; items: { value: string; label: string }[] };
+  founders: { eyebrow: string; title: string; body: string; points: string[]; cta: string };
   process: { eyebrow: string; title: string; subtitle: string; steps: { title: string; duration: string; body: string }[] };
-  tools: { eyebrow: string; title: string; subtitle: string; list: string[]; disclaimer: string };
   responsible: { eyebrow: string; title: string; body: string; points: string[] };
   faq: { eyebrow: string; title: string; items: { q: string; a: string }[] };
   form: {
@@ -67,7 +105,7 @@ export interface AiContent {
     successBody: string;
     orWhatsApp: string;
   };
-  footer: { by: string; rentals: string };
+  footer: { by: string; rentals: string; disclaimer: string };
 }
 
 export const aiContent: Record<AiLang, AiContent> = {
@@ -75,54 +113,101 @@ export const aiContent: Record<AiLang, AiContent> = {
     meta: {
       title: 'Consultoría en IA para empresas en Colombia | 77 Rentals',
       description:
-        'Ayudo a pymes colombianas a pasar del uso informal de ChatGPT a flujos de trabajo con IA que ahorran horas: diagnóstico, automatización, capacitación y equipos de desarrollo con Claude Code y Cursor.',
+        'Llevamos la IA de tu empresa del chat a la operación: diagnóstico, agentes de WhatsApp, automatización, capacitación y equipos de desarrollo con Claude Code y Cursor. Desde Bogotá para toda Colombia.',
     },
-    nav: { services: 'Servicios', howWeWork: 'Cómo trabajamos', contact: 'Contacto', switchLang: 'EN' },
+    nav: { services: 'Servicios', work: 'Casos', howWeWork: 'Proceso', cta: 'Hablemos', switchLang: 'EN' },
     hero: {
-      eyebrow: 'Consultoría en Inteligencia Artificial',
-      title: 'La IA ya está en tu empresa. Hagámosla trabajar bien.',
+      eyebrow: 'Consultoría en IA · Bogotá, Colombia',
+      titleA: 'Llevamos la IA de tu empresa',
+      titleB: 'del chat a la operación.',
       subtitle:
-        'Tu equipo ya usa ChatGPT, cada quien a su manera. Te ayudo a convertir ese uso informal en flujos de trabajo reales que ahorran horas, reducen errores y cuidan los datos de tus clientes.',
-      ctaWhatsApp: 'Escríbeme por WhatsApp',
-      ctaServices: 'Ver servicios',
+        'Tu equipo ya usa ChatGPT, cada quien a su manera. Diseñamos, construimos y dejamos funcionando flujos de trabajo con IA que ahorran horas, reducen errores y cuidan los datos de tus clientes.',
+      cta: 'Escríbeme por WhatsApp',
+      ctaSecondary: 'Ver casos reales',
       location: 'Desde Bogotá para toda Colombia · Remoto y presencial',
     },
-    gap: {
-      eyebrow: 'La brecha',
-      title: 'El problema no es el acceso a la IA. Es cómo se usa.',
+    toolsLabel: 'Trabajamos con las principales plataformas de IA',
+    cases: {
+      eyebrow: 'Casos reales',
+      title: 'No lo aprendí en un curso. Lo construí para mi propia empresa.',
       subtitle:
-        'Las pymes colombianas adoptan IA rápido, pero muy pocas la integran de verdad a su operación.',
-      stats: [
-        { value: '40%', label: 'de las pymes en Colombia ya usa IA' },
-        { value: '~10%', label: 'alcanza un nivel de madurez avanzado' },
-        { value: '40%', label: 'de las micro, pequeñas y medianas empresas no tiene planes de adoptarla' },
-      ],
-      sourcesLabel: 'Fuentes',
-      sources: [
-        { title: 'Estudio Cintel sobre adopción de IA (Impacto TIC)', url: 'https://impactotic.co/inteligencia-artificial/adopcion-de-ia-en-empresas-colombia-andicom/' },
-        { title: 'Estudio AWS citado por MinTIC (El País)', url: 'https://www.elpais.com.co/colombia/cada-5-minutos-una-empresa-colombiana-adopta-ia-asi-lo-revela-el-nuevo-estudio-de-aws-esto-es-lo-que-hay-detras-de-la-cifra-3048.html' },
+        '77Rentals opera alquileres en Cartagena, Santa Marta y Bogotá. Estos sistemas los construimos con IA y los usamos todos los días.',
+      items: [
+        {
+          tag: 'Documentos · Firma electrónica',
+          title: 'Contratos que se firman desde el celular',
+          result: 'De días de ida y vuelta a un enlace de firma.',
+          body: 'Contratos y otrosíes generados automáticamente con los datos del cliente, enviados por enlace y firmados en línea con aviso de habeas data.',
+        },
+        {
+          tag: 'Propiedad horizontal · Legal',
+          title: 'Peticiones de copropiedad con coeficientes',
+          result: 'Firmas de múltiples propietarios, con trazabilidad pública.',
+          body: 'Peticiones para asambleas con cálculo de coeficientes, validación de datos y una lista pública de firmantes para transparencia.',
+        },
+        {
+          tag: 'Contenido · Agentes de IA',
+          title: 'Un blog bilingüe escrito con agentes',
+          result: 'Artículos investigados, con fuentes y listos para Google.',
+          body: 'Agentes especializados investigan, redactan en español e inglés y publican páginas pre-renderizadas con SEO técnico completo.',
+        },
       ],
     },
-    tracks: {
-      eyebrow: 'Elige tu ruta',
-      title: '¿Para quién es?',
-      business: {
-        title: 'IA para tu negocio',
-        audience: 'Dueños, gerentes, operaciones, ventas y administración',
-        body: 'Automatizaciones, asistentes de WhatsApp, documentos y capacitación con ChatGPT, Claude y Gemini.',
-      },
-      dev: {
-        title: 'IA para tu equipo de desarrollo',
-        audience: 'CTOs, líderes técnicos y equipos de producto',
-        body: 'Claude Code, Cursor, agentes y revisión de código con IA sin romper producción.',
-      },
-      cta: 'Ver soluciones',
+    pillars: {
+      eyebrow: 'Servicios',
+      title: 'IA aplicada, de la estrategia a la operación',
+      subtitle: 'Paquetes con alcance claro y precio fijo. Empiezas pequeño y creces con resultados.',
+      packageLabel: 'Paquete',
+      items: [
+        {
+          title: 'Diagnóstico de IA',
+          proof: 'Hoja de ruta lista en 2 semanas',
+          body: 'Entrevistamos a tu equipo, mapeamos procesos y priorizamos qué automatizar según el retorno.',
+          stack: 'Mapa de procesos · Casos de uso · ROI · Riesgos y Ley 1581',
+          packageName: 'Sprint de Diagnóstico',
+          packageDetail: '2 semanas · precio fijo',
+        },
+        {
+          title: 'Automatización y agentes',
+          proof: 'Del flujo manual a un sistema que corre solo',
+          body: 'Asistentes de WhatsApp, flujos de documentos y agentes que consultan la información de tu empresa.',
+          stack: 'n8n · Make · Claude y OpenAI API · RAG · WhatsApp Business · Supabase',
+          packageName: 'Agente de WhatsApp en 30 días',
+          packageDetail: 'Diseño, construcción y puesta en marcha',
+        },
+        {
+          title: 'IA para equipos de desarrollo',
+          proof: 'El mismo flujo con el que construimos este sitio',
+          body: 'Configuramos Claude Code y Cursor en tus repositorios, con agentes, reglas y revisión de código con IA.',
+          stack: 'Claude Code · Cursor · MCP · Subagentes · CLAUDE.md · Revisión en pull requests',
+          packageName: 'Bootcamp Claude Code / Cursor',
+          packageDetail: '2 días con tu equipo, sobre tu código',
+        },
+        {
+          title: 'Capacitación',
+          proof: 'Tu equipo usándola bien desde la semana siguiente',
+          body: 'Talleres prácticos con los casos reales de cada área: ventas, operaciones, administración.',
+          stack: 'ChatGPT · Claude · Gemini · Copilot · Guías internas · Políticas de uso',
+          packageName: 'Taller IA para tu equipo',
+          packageDetail: '4 horas · hasta 15 personas',
+        },
+        {
+          title: 'Líder de IA fraccional',
+          proof: 'Un responsable de IA sin contratar uno de tiempo completo',
+          body: 'Acompañamiento mensual: nuevas automatizaciones, soporte, métricas y seguimiento de herramientas.',
+          stack: 'Roadmap trimestral · Métricas · Soporte · Nuevos casos de uso',
+          packageName: 'Acompañamiento mensual',
+          packageDetail: 'Plan mensual, sin permanencia larga',
+        },
+      ],
+      cta: 'Preguntar por este paquete',
     },
-    business: {
-      eyebrow: 'IA para tu negocio',
-      title: 'Problemas que resolvemos',
-      subtitle: 'Si alguno te suena conocido, hablemos.',
-      cards: [
+    problems: {
+      eyebrow: '¿Te suena conocido?',
+      title: 'El problema no es el acceso a la IA. Es cómo se usa.',
+      subtitle: 'Las pymes colombianas adoptan IA rápido, pero muy pocas la integran a su operación.',
+      tabs: { business: 'Para tu negocio', dev: 'Para tu equipo de desarrollo' },
+      business: [
         {
           problem: 'Mi equipo usa ChatGPT, pero cada quien a su manera.',
           detail: 'Uso informal, sin estándares, resultados desiguales.',
@@ -133,19 +218,19 @@ export const aiContent: Record<AiLang, AiContent> = {
           problem: 'Perdemos horas en tareas repetitivas.',
           detail: 'Cotizaciones, reportes, copiar y pegar entre Excel, correo y el CRM.',
           solution: 'Mapeamos tus procesos y automatizamos los 2 o 3 que más horas consumen.',
-          offer: 'Diagnóstico + Implementación',
+          offer: 'Diagnóstico + Automatización',
         },
         {
           problem: 'Los clientes escriben por WhatsApp y nadie responde a tiempo.',
           detail: 'Leads perdidos de noche y los fines de semana.',
           solution: 'Un asistente con IA que responde, califica y pasa el cliente a una persona.',
-          offer: 'Implementación',
+          offer: 'Automatización',
         },
         {
           problem: 'Contratos y documentos nos toman días.',
           detail: 'Redactar, revisar y perseguir firmas.',
           solution: 'Generación de documentos y firma electrónica, como lo hicimos en 77Rentals.',
-          offer: 'Implementación',
+          offer: 'Automatización',
         },
         {
           problem: 'Nos da miedo meter datos de clientes en la IA.',
@@ -160,23 +245,18 @@ export const aiContent: Record<AiLang, AiContent> = {
           offer: 'Diagnóstico',
         },
       ],
-    },
-    dev: {
-      eyebrow: 'IA para tu equipo de desarrollo',
-      title: 'Tu equipo técnico, más rápido y sin sustos',
-      subtitle: 'Llevo tu equipo de "probamos Copilot una vez" a un flujo de trabajo con agentes que entrega.',
-      cards: [
+      dev: [
         {
           problem: 'No sabemos cómo arrancar con Claude Code o Cursor.',
           detail: 'Licencias compradas, poco uso real.',
           solution: 'Configuración por repositorio: CLAUDE.md y reglas del proyecto, permisos, MCP e integraciones.',
-          offer: 'Implementación',
+          offer: 'Bootcamp',
         },
         {
           problem: 'La IA escribe código que rompe producción.',
           detail: '"Vibe coding" sin pruebas ni revisión.',
           solution: 'Flujo plan → pruebas → revisión, con revisión de código asistida por IA en cada pull request.',
-          offer: 'Capacitación',
+          offer: 'Bootcamp',
         },
         {
           problem: 'Cada desarrollador usa la IA distinto.',
@@ -191,69 +271,49 @@ export const aiContent: Record<AiLang, AiContent> = {
           offer: 'Diagnóstico',
         },
       ],
-    },
-    cardLabels: { solution: 'Solución', talk: 'Hablemos de esto' },
-    caseStudy: {
-      eyebrow: 'Caso real',
-      title: 'No lo aprendí en un curso. Lo apliqué en mi propia empresa.',
-      subtitle:
-        '77Rentals opera alquileres en Cartagena, Santa Marta y Bogotá. Estos son sistemas que construimos con IA y usamos todos los días.',
-      items: [
-        {
-          title: 'Contratos con firma electrónica',
-          body: 'Contratos y otrosíes generados automáticamente, enviados por enlace y firmados desde el celular.',
-        },
-        {
-          title: 'Peticiones de copropiedad con coeficientes',
-          body: 'Peticiones con múltiples firmantes para asambleas, cálculo de coeficientes y lista pública de transparencia.',
-        },
-        {
-          title: 'Habeas data desde el diseño',
-          body: 'Avisos de tratamiento de datos (Ley 1581) integrados en cada formulario de firma.',
-        },
-        {
-          title: 'Cotizaciones y cuentas de cobro',
-          body: 'Documentos comerciales que antes tomaban horas, ahora listos en minutos.',
-        },
-        {
-          title: 'Blog con agentes de IA',
-          body: 'Contenido bilingüe investigado y redactado con agentes especializados, optimizado para Google.',
-        },
+      labels: { solution: 'Solución', talk: 'Hablemos de esto' },
+      stats: [
+        { value: '40%', label: 'de las pymes en Colombia ya usa IA' },
+        { value: '~10%', label: 'alcanza un nivel de madurez avanzado' },
+        { value: '40%', label: 'de las mipymes no tiene planes de adoptarla' },
       ],
+      sourcesLabel: 'Fuentes',
+      sources: [
+        { title: 'Cintel (Impacto TIC)', url: 'https://impactotic.co/inteligencia-artificial/adopcion-de-ia-en-empresas-colombia-andicom/' },
+        { title: 'AWS / MinTIC (El País)', url: 'https://www.elpais.com.co/colombia/cada-5-minutos-una-empresa-colombiana-adopta-ia-asi-lo-revela-el-nuevo-estudio-de-aws-esto-es-lo-que-hay-detras-de-la-cifra-3048.html' },
+      ],
+    },
+    numbers: {
+      title: 'La mayoría de proyectos de IA mueren después del demo. Nosotros los dejamos en operación.',
+      items: [
+        { value: '5', label: 'sistemas con IA en operación en 77Rentals' },
+        { value: '3', label: 'ciudades donde operamos' },
+        { value: '2', label: 'idiomas en todo lo que construimos' },
+        { value: '1581', label: 'Ley de datos que cumplimos desde el diseño' },
+      ],
+    },
+    founders: {
+      eyebrow: 'Programa Fundadores',
+      title: 'Buscamos las primeras 3 empresas.',
+      body:
+        'Estamos abriendo la consultoría a empresas fuera de 77Rentals. Las primeras 3 reciben condiciones preferenciales a cambio de algo simple: contar su caso.',
+      points: [
+        'Condiciones preferenciales en el primer proyecto',
+        'Acompañamiento directo de Sebastian',
+        'A cambio: un testimonio y un caso publicado',
+      ],
+      cta: 'Quiero ser uno de los 3',
     },
     process: {
       eyebrow: 'Cómo trabajamos',
       title: 'De la idea a la operación, en 4 pasos',
       subtitle: 'Empiezas con poco riesgo y creces según los resultados.',
       steps: [
-        {
-          title: 'Diagnóstico',
-          duration: '1–2 semanas · precio fijo',
-          body: 'Entrevistas con tu equipo, mapa de procesos y una hoja de ruta de IA priorizada por retorno.',
-        },
-        {
-          title: 'Implementación',
-          duration: '2–6 semanas por proyecto',
-          body: 'Construimos las 1 a 3 automatizaciones con mayor impacto y las dejamos funcionando.',
-        },
-        {
-          title: 'Capacitación',
-          duration: 'Talleres presenciales o virtuales',
-          body: 'Tu equipo aprende a usar la IA en su trabajo diario, con sus propios casos.',
-        },
-        {
-          title: 'Acompañamiento',
-          duration: 'Mensual',
-          body: 'Un líder de IA fraccional: mejora continua, nuevas automatizaciones y soporte.',
-        },
+        { title: 'Diagnóstico', duration: '1–2 semanas · precio fijo', body: 'Entrevistas con tu equipo, mapa de procesos y una hoja de ruta de IA priorizada por retorno.' },
+        { title: 'Implementación', duration: '2–6 semanas por proyecto', body: 'Construimos las 1 a 3 automatizaciones con mayor impacto y las dejamos funcionando.' },
+        { title: 'Capacitación', duration: 'Presencial o virtual', body: 'Tu equipo aprende a usar la IA en su trabajo diario, con sus propios casos.' },
+        { title: 'Acompañamiento', duration: 'Mensual', body: 'Un líder de IA fraccional: mejora continua, nuevas automatizaciones y soporte.' },
       ],
-    },
-    tools: {
-      eyebrow: 'Herramientas',
-      title: 'No vendemos una herramienta. Elegimos la correcta.',
-      subtitle: 'Trabajamos con las principales plataformas de IA y escogemos según tu caso, tu presupuesto y tus datos.',
-      list: ['Claude', 'Claude Code', 'ChatGPT', 'Gemini', 'Grok (xAI)', 'Cursor', 'Microsoft Copilot', 'n8n', 'Zapier', 'Make'],
-      disclaimer: 'Marcas de sus respectivos dueños. No estamos afiliados a ellas.',
     },
     responsible: {
       eyebrow: 'IA responsable',
@@ -270,26 +330,12 @@ export const aiContent: Record<AiLang, AiContent> = {
       eyebrow: 'Preguntas frecuentes',
       title: 'Lo que suelen preguntarme',
       items: [
-        {
-          q: '¿Necesito saber programar?',
-          a: 'No. La ruta de negocio está pensada para dueños y equipos sin conocimientos técnicos. La ruta de desarrollo sí es para equipos que escriben código.',
-        },
-        {
-          q: '¿Trabajas remoto o presencial?',
-          a: 'Ambos. Estoy en Bogotá y atiendo empresas en toda Colombia de forma remota; los talleres pueden ser presenciales.',
-        },
-        {
-          q: '¿Cuánto cuesta?',
-          a: 'El diagnóstico tiene precio fijo según el tamaño de tu empresa. Tras una primera conversación te envío una propuesta clara, sin sorpresas.',
-        },
-        {
-          q: '¿Cuánto tarda en verse un resultado?',
-          a: 'El diagnóstico toma 1 a 2 semanas. Una primera automatización suele quedar funcionando en 2 a 6 semanas.',
-        },
-        {
-          q: '¿Qué pasa con los datos de mi empresa?',
-          a: 'Definimos desde el inicio qué información puede usarse con cada herramienta, conforme a la Ley 1581 de 2012.',
-        },
+        { q: '¿Necesito saber programar?', a: 'No. Los servicios para negocio están pensados para dueños y equipos sin conocimientos técnicos. El bootcamp de desarrollo sí es para equipos que escriben código.' },
+        { q: '¿Trabajas remoto o presencial?', a: 'Ambos. Estoy en Bogotá y atiendo empresas en toda Colombia de forma remota; los talleres pueden ser presenciales.' },
+        { q: '¿Cuánto cuesta?', a: 'Cada paquete tiene alcance y precio fijo según el tamaño de tu empresa. Tras una primera conversación te envío una propuesta clara, sin sorpresas.' },
+        { q: '¿Cuánto tarda en verse un resultado?', a: 'El diagnóstico toma 1 a 2 semanas. Una primera automatización suele quedar funcionando en 2 a 6 semanas.' },
+        { q: '¿Qué herramientas usan?', a: 'Las que mejor sirvan a tu caso: Claude, ChatGPT, Gemini, Cursor, n8n y otras. No vendemos una herramienta; la elegimos según tu presupuesto y tus datos.' },
+        { q: '¿Qué pasa con los datos de mi empresa?', a: 'Definimos desde el inicio qué información puede usarse con cada herramienta, conforme a la Ley 1581 de 2012.' },
       ],
     },
     form: {
@@ -302,12 +348,11 @@ export const aiContent: Record<AiLang, AiContent> = {
       size: 'Tamaño de la empresa',
       sizeOptions: ['1–10 personas', '11–50 personas', '51–200 personas', 'Más de 200 personas'],
       track: '¿Qué te interesa?',
-      trackOptions: ['IA para mi negocio', 'IA para mi equipo de desarrollo', 'Ambas'],
+      trackOptions: ['IA para mi negocio', 'IA para mi equipo de desarrollo', 'Ambas', 'Programa Fundadores'],
       problem: '¿Cuál es el principal problema que quieres resolver?',
       phone: 'WhatsApp',
       email: 'Correo electrónico',
-      consent:
-        'Autorizo el tratamiento de mis datos personales para ser contactado sobre este servicio, conforme a la Ley 1581 de 2012.',
+      consent: 'Autorizo el tratamiento de mis datos personales para ser contactado sobre este servicio, conforme a la Ley 1581 de 2012.',
       submit: 'Enviar',
       sending: 'Enviando...',
       error: 'Hubo un error. Intenta de nuevo o escríbeme por WhatsApp.',
@@ -315,141 +360,156 @@ export const aiContent: Record<AiLang, AiContent> = {
       successBody: 'Te contactaré en menos de 24 horas hábiles.',
       orWhatsApp: '¿Prefieres WhatsApp?',
     },
-    footer: { by: 'Consultoría en IA por', rentals: 'Alquileres 77Rentals' },
+    footer: {
+      by: 'Consultoría en IA por',
+      rentals: 'Alquileres 77Rentals',
+      disclaimer: 'Las marcas mencionadas pertenecen a sus dueños. No estamos afiliados a ellas.',
+    },
   },
   en: {
     meta: {
       title: 'AI Consulting for Companies in Colombia | 77 Rentals',
       description:
-        'I help Colombian SMBs move from informal ChatGPT use to AI workflows that save hours: assessments, automation, team training, and developer teams on Claude Code and Cursor.',
+        'We take your company’s AI from chat to operations: assessments, WhatsApp agents, automation, team training and developer teams on Claude Code and Cursor. Based in Bogotá, serving all of Colombia.',
     },
-    nav: { services: 'Services', howWeWork: 'How we work', contact: 'Contact', switchLang: 'ES' },
+    nav: { services: 'Services', work: 'Work', howWeWork: 'Process', cta: 'Let’s talk', switchLang: 'ES' },
     hero: {
-      eyebrow: 'Artificial Intelligence Consulting',
-      title: 'AI is already in your company. Let’s make it work.',
+      eyebrow: 'AI Consulting · Bogotá, Colombia',
+      titleA: 'We take your company’s AI',
+      titleB: 'from chat to operations.',
       subtitle:
-        'Your team already uses ChatGPT, each person in their own way. I help turn that informal use into real workflows that save hours, cut errors, and protect your customers’ data.',
-      ctaWhatsApp: 'Message me on WhatsApp',
-      ctaServices: 'See services',
+        'Your team already uses ChatGPT, each person in their own way. We design, build and run AI workflows that save hours, cut errors and protect your customers’ data.',
+      cta: 'Message me on WhatsApp',
+      ctaSecondary: 'See real cases',
       location: 'Based in Bogotá, serving all of Colombia · Remote and on-site',
     },
-    gap: {
-      eyebrow: 'The gap',
+    toolsLabel: 'We work across the major AI platforms',
+    cases: {
+      eyebrow: 'Real cases',
+      title: 'I didn’t learn this in a course. I built it for my own company.',
+      subtitle:
+        '77Rentals runs rentals in Cartagena, Santa Marta and Bogotá. We built these systems with AI and use them every day.',
+      items: [
+        {
+          tag: 'Documents · E-signature',
+          title: 'Contracts signed from a phone',
+          result: 'From days of back-and-forth to one signing link.',
+          body: 'Contracts and amendments generated automatically from client data, sent by link and signed online with a data-protection notice.',
+        },
+        {
+          tag: 'HOA · Legal',
+          title: 'HOA petitions with ownership coefficients',
+          result: 'Multi-owner signatures with public traceability.',
+          body: 'Petitions for owners’ assemblies with coefficient math, data validation and a public signer roster for transparency.',
+        },
+        {
+          tag: 'Content · AI agents',
+          title: 'A bilingual blog written with agents',
+          result: 'Researched, sourced articles, ready for Google.',
+          body: 'Specialized agents research, write in Spanish and English, and publish prerendered pages with full technical SEO.',
+        },
+      ],
+    },
+    pillars: {
+      eyebrow: 'Services',
+      title: 'Applied AI, from strategy to operations',
+      subtitle: 'Packages with clear scope and a fixed price. Start small and grow with results.',
+      packageLabel: 'Package',
+      items: [
+        {
+          title: 'AI Assessment',
+          proof: 'A roadmap in 2 weeks',
+          body: 'We interview your team, map processes and rank what to automate by return.',
+          stack: 'Process map · Use cases · ROI · Risk and data-protection law',
+          packageName: 'Assessment Sprint',
+          packageDetail: '2 weeks · fixed price',
+        },
+        {
+          title: 'Automation and agents',
+          proof: 'From a manual flow to a system that runs itself',
+          body: 'WhatsApp assistants, document flows and agents that query your company’s own information.',
+          stack: 'n8n · Make · Claude and OpenAI APIs · RAG · WhatsApp Business · Supabase',
+          packageName: 'WhatsApp agent in 30 days',
+          packageDetail: 'Design, build and launch',
+        },
+        {
+          title: 'AI for dev teams',
+          proof: 'The same workflow we built this site with',
+          body: 'We set up Claude Code and Cursor in your repos, with agents, rules and AI code review.',
+          stack: 'Claude Code · Cursor · MCP · Subagents · CLAUDE.md · Pull request review',
+          packageName: 'Claude Code / Cursor Bootcamp',
+          packageDetail: '2 days with your team, on your code',
+        },
+        {
+          title: 'Training',
+          proof: 'Your team using it well by next week',
+          body: 'Hands-on workshops built on each area’s real cases: sales, operations, admin.',
+          stack: 'ChatGPT · Claude · Gemini · Copilot · Internal playbooks · Usage policies',
+          packageName: 'AI Workshop for your team',
+          packageDetail: '4 hours · up to 15 people',
+        },
+        {
+          title: 'Fractional AI lead',
+          proof: 'An AI owner without a full-time hire',
+          body: 'Monthly support: new automations, metrics, help and tool tracking.',
+          stack: 'Quarterly roadmap · Metrics · Support · New use cases',
+          packageName: 'Monthly support',
+          packageDetail: 'Month-to-month plan',
+        },
+      ],
+      cta: 'Ask about this package',
+    },
+    problems: {
+      eyebrow: 'Sound familiar?',
       title: 'The problem isn’t access to AI. It’s how it’s used.',
-      subtitle: 'Colombian SMBs are adopting AI fast, but very few actually build it into how they operate.',
+      subtitle: 'Colombian SMBs are adopting AI fast, but very few build it into how they operate.',
+      tabs: { business: 'For your business', dev: 'For your dev team' },
+      business: [
+        { problem: 'My team uses ChatGPT, but everyone does it differently.', detail: 'Informal use, no standards, uneven results.', solution: 'Hands-on training, internal playbooks and approved tools for each area.', offer: 'Training' },
+        { problem: 'We lose hours on repetitive work.', detail: 'Quotes, reports, copy-pasting between Excel, email and the CRM.', solution: 'We map your processes and automate the 2 or 3 that eat the most hours.', offer: 'Assessment + Automation' },
+        { problem: 'Customers message on WhatsApp and nobody answers in time.', detail: 'Leads lost at night and on weekends.', solution: 'An AI assistant that answers, qualifies and hands the customer to a person.', offer: 'Automation' },
+        { problem: 'Contracts and documents take us days.', detail: 'Drafting, reviewing and chasing signatures.', solution: 'Document generation and e-signature, the way we did it at 77Rentals.', offer: 'Automation' },
+        { problem: 'We’re afraid to put customer data into AI.', detail: 'Colombia’s Law 1581 of 2012 and SIC Circular 002 of 2024.', solution: 'Safe adoption: which data goes to which tool, consent language and internal policies.', offer: 'Assessment' },
+        { problem: 'I don’t know where to start or if it’s worth it.', detail: 'Lots of tools, little clarity on return.', solution: 'A fixed-price assessment with a roadmap ranked by return.', offer: 'Assessment' },
+      ],
+      dev: [
+        { problem: 'We don’t know how to get started with Claude Code or Cursor.', detail: 'Licenses bought, little real use.', solution: 'Per-repo setup: CLAUDE.md and project rules, permissions, MCP and integrations.', offer: 'Bootcamp' },
+        { problem: 'AI writes code that breaks production.', detail: '“Vibe coding” with no tests or review.', solution: 'A plan → test → review workflow, with AI-assisted code review on every pull request.', offer: 'Bootcamp' },
+        { problem: 'Every developer uses AI differently.', detail: 'Nothing is shared, nothing is reused.', solution: 'Shared agents, subagents and skills in the repo, plus a team playbook.', offer: 'Build' },
+        { problem: 'We can’t tell if AI actually saves us time.', detail: 'Token and license costs go unmeasured.', solution: 'A pilot with one team, delivery metrics and cost control before scaling.', offer: 'Assessment' },
+      ],
+      labels: { solution: 'Solution', talk: 'Let’s talk about this' },
       stats: [
         { value: '40%', label: 'of Colombian SMBs already use AI' },
         { value: '~10%', label: 'reach an advanced maturity level' },
-        { value: '40%', label: 'of micro, small and mid-size firms have no plans to adopt it' },
+        { value: '40%', label: 'of micro and small firms have no plans to adopt it' },
       ],
       sourcesLabel: 'Sources',
       sources: [
-        { title: 'Cintel AI adoption study (Impacto TIC)', url: 'https://impactotic.co/inteligencia-artificial/adopcion-de-ia-en-empresas-colombia-andicom/' },
-        { title: 'AWS study cited by MinTIC (El País)', url: 'https://www.elpais.com.co/colombia/cada-5-minutos-una-empresa-colombiana-adopta-ia-asi-lo-revela-el-nuevo-estudio-de-aws-esto-es-lo-que-hay-detras-de-la-cifra-3048.html' },
+        { title: 'Cintel (Impacto TIC)', url: 'https://impactotic.co/inteligencia-artificial/adopcion-de-ia-en-empresas-colombia-andicom/' },
+        { title: 'AWS / MinTIC (El País)', url: 'https://www.elpais.com.co/colombia/cada-5-minutos-una-empresa-colombiana-adopta-ia-asi-lo-revela-el-nuevo-estudio-de-aws-esto-es-lo-que-hay-detras-de-la-cifra-3048.html' },
       ],
     },
-    tracks: {
-      eyebrow: 'Choose your track',
-      title: 'Who is it for?',
-      business: {
-        title: 'AI for your business',
-        audience: 'Owners, managers, operations, sales and admin',
-        body: 'Automations, WhatsApp assistants, documents and training on ChatGPT, Claude and Gemini.',
-      },
-      dev: {
-        title: 'AI for your dev team',
-        audience: 'CTOs, tech leads and product teams',
-        body: 'Claude Code, Cursor, agents and AI code review without breaking production.',
-      },
-      cta: 'See solutions',
-    },
-    business: {
-      eyebrow: 'AI for your business',
-      title: 'Problems we solve',
-      subtitle: 'If any of these sound familiar, let’s talk.',
-      cards: [
-        {
-          problem: 'My team uses ChatGPT, but everyone does it differently.',
-          detail: 'Informal use, no standards, uneven results.',
-          solution: 'Hands-on training, internal playbooks and approved tools for each area.',
-          offer: 'Training',
-        },
-        {
-          problem: 'We lose hours on repetitive work.',
-          detail: 'Quotes, reports, copy-pasting between Excel, email and the CRM.',
-          solution: 'We map your processes and automate the 2 or 3 that eat the most hours.',
-          offer: 'Assessment + Build',
-        },
-        {
-          problem: 'Customers message on WhatsApp and nobody answers in time.',
-          detail: 'Leads lost at night and on weekends.',
-          solution: 'An AI assistant that answers, qualifies and hands the customer to a person.',
-          offer: 'Build',
-        },
-        {
-          problem: 'Contracts and documents take us days.',
-          detail: 'Drafting, reviewing and chasing signatures.',
-          solution: 'Document generation and e-signature, the way we did it at 77Rentals.',
-          offer: 'Build',
-        },
-        {
-          problem: 'We’re afraid to put customer data into AI.',
-          detail: 'Colombia’s Law 1581 of 2012 and SIC Circular 002 of 2024.',
-          solution: 'Safe adoption: which data goes to which tool, consent language and internal policies.',
-          offer: 'Assessment',
-        },
-        {
-          problem: 'I don’t know where to start or if it’s worth it.',
-          detail: 'Lots of tools, little clarity on return.',
-          solution: 'A fixed-price assessment with a roadmap ranked by return.',
-          offer: 'Assessment',
-        },
-      ],
-    },
-    dev: {
-      eyebrow: 'AI for your dev team',
-      title: 'A faster engineering team, without the scares',
-      subtitle: 'I take your team from “we tried Copilot once” to an agent-driven workflow that ships.',
-      cards: [
-        {
-          problem: 'We don’t know how to get started with Claude Code or Cursor.',
-          detail: 'Licenses bought, little real use.',
-          solution: 'Per-repo setup: CLAUDE.md and project rules, permissions, MCP and integrations.',
-          offer: 'Build',
-        },
-        {
-          problem: 'AI writes code that breaks production.',
-          detail: '“Vibe coding” with no tests or review.',
-          solution: 'A plan → test → review workflow, with AI-assisted code review on every pull request.',
-          offer: 'Training',
-        },
-        {
-          problem: 'Every developer uses AI differently.',
-          detail: 'Nothing is shared, nothing is reused.',
-          solution: 'Shared agents, subagents and skills in the repo, plus a team playbook.',
-          offer: 'Build',
-        },
-        {
-          problem: 'We can’t tell if AI actually saves us time.',
-          detail: 'Token and license costs go unmeasured.',
-          solution: 'A pilot with one team, delivery metrics and cost control before scaling.',
-          offer: 'Assessment',
-        },
-      ],
-    },
-    cardLabels: { solution: 'Solution', talk: 'Let’s talk about this' },
-    caseStudy: {
-      eyebrow: 'Real case',
-      title: 'I didn’t learn this in a course. I built it for my own company.',
-      subtitle:
-        '77Rentals runs rentals in Cartagena, Santa Marta and Bogotá. These are systems we built with AI and use every day.',
+    numbers: {
+      title: 'Most AI projects die after the demo. We leave ours running.',
       items: [
-        { title: 'Contracts with e-signature', body: 'Contracts and amendments generated automatically, sent by link and signed from a phone.' },
-        { title: 'HOA petitions with ownership coefficients', body: 'Multi-signer petitions for owners’ assemblies, coefficient math and a public transparency roster.' },
-        { title: 'Privacy by design', body: 'Data-protection notices (Law 1581) built into every signing form.' },
-        { title: 'Quotes and invoices', body: 'Business documents that used to take hours, now ready in minutes.' },
-        { title: 'A blog written with AI agents', body: 'Bilingual content researched and drafted by specialized agents, optimized for Google.' },
+        { value: '5', label: 'AI systems running at 77Rentals' },
+        { value: '3', label: 'cities we operate in' },
+        { value: '2', label: 'languages in everything we build' },
+        { value: '1581', label: 'Colombia’s data law, built in by design' },
       ],
+    },
+    founders: {
+      eyebrow: 'Founders Program',
+      title: 'We’re looking for the first 3 companies.',
+      body:
+        'We’re opening this consulting to companies beyond 77Rentals. The first 3 get preferential terms in exchange for something simple: telling their story.',
+      points: [
+        'Preferential terms on the first project',
+        'Direct work with Sebastian',
+        'In return: a testimonial and a published case',
+      ],
+      cta: 'I want to be one of the 3',
     },
     process: {
       eyebrow: 'How we work',
@@ -458,16 +518,9 @@ export const aiContent: Record<AiLang, AiContent> = {
       steps: [
         { title: 'Assessment', duration: '1–2 weeks · fixed price', body: 'Team interviews, a process map and an AI roadmap ranked by return.' },
         { title: 'Build', duration: '2–6 weeks per project', body: 'We build the 1 to 3 highest-impact automations and leave them running.' },
-        { title: 'Training', duration: 'On-site or virtual workshops', body: 'Your team learns to use AI in their daily work, on their own cases.' },
+        { title: 'Training', duration: 'On-site or virtual', body: 'Your team learns to use AI in their daily work, on their own cases.' },
         { title: 'Ongoing support', duration: 'Monthly', body: 'A fractional AI lead: continuous improvement, new automations and support.' },
       ],
-    },
-    tools: {
-      eyebrow: 'Tools',
-      title: 'We don’t sell one tool. We pick the right one.',
-      subtitle: 'We work across the major AI platforms and choose based on your case, budget and data.',
-      list: ['Claude', 'Claude Code', 'ChatGPT', 'Gemini', 'Grok (xAI)', 'Cursor', 'Microsoft Copilot', 'n8n', 'Zapier', 'Make'],
-      disclaimer: 'Trademarks belong to their owners. We are not affiliated with them.',
     },
     responsible: {
       eyebrow: 'Responsible AI',
@@ -484,10 +537,11 @@ export const aiContent: Record<AiLang, AiContent> = {
       eyebrow: 'FAQ',
       title: 'What people usually ask',
       items: [
-        { q: 'Do I need to know how to code?', a: 'No. The business track is built for owners and non-technical teams. The dev track is for teams that write code.' },
+        { q: 'Do I need to know how to code?', a: 'No. The business services are built for owners and non-technical teams. The dev bootcamp is for teams that write code.' },
         { q: 'Do you work remotely or on-site?', a: 'Both. I’m based in Bogotá and work with companies across Colombia remotely; workshops can be on-site.' },
-        { q: 'How much does it cost?', a: 'The assessment has a fixed price based on company size. After a first conversation I send a clear proposal, no surprises.' },
+        { q: 'How much does it cost?', a: 'Each package has a fixed scope and price based on company size. After a first conversation I send a clear proposal, no surprises.' },
         { q: 'How soon will we see results?', a: 'The assessment takes 1 to 2 weeks. A first automation is usually running within 2 to 6 weeks.' },
+        { q: 'Which tools do you use?', a: 'Whatever fits your case best: Claude, ChatGPT, Gemini, Cursor, n8n and others. We don’t sell one tool; we pick based on your budget and data.' },
         { q: 'What happens to my company’s data?', a: 'From the start we define which information can be used with each tool, in line with Law 1581 of 2012.' },
       ],
     },
@@ -501,7 +555,7 @@ export const aiContent: Record<AiLang, AiContent> = {
       size: 'Company size',
       sizeOptions: ['1–10 people', '11–50 people', '51–200 people', '200+ people'],
       track: 'What are you interested in?',
-      trackOptions: ['AI for my business', 'AI for my dev team', 'Both'],
+      trackOptions: ['AI for my business', 'AI for my dev team', 'Both', 'Founders Program'],
       problem: 'What’s the main problem you want to solve?',
       phone: 'WhatsApp',
       email: 'Email',
@@ -513,6 +567,10 @@ export const aiContent: Record<AiLang, AiContent> = {
       successBody: 'I’ll get back to you within 24 business hours.',
       orWhatsApp: 'Prefer WhatsApp?',
     },
-    footer: { by: 'AI consulting by', rentals: '77Rentals stays' },
+    footer: {
+      by: 'AI consulting by',
+      rentals: '77Rentals stays',
+      disclaimer: 'Trademarks mentioned belong to their owners. We are not affiliated with them.',
+    },
   },
 };

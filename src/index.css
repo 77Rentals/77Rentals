@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&display=swap');
 @import url('https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -182,4 +183,27 @@ html {
 @keyframes fall-3 {
   0%   { transform: translate(0,0) rotate(0deg) scale(1);   opacity: 1; }
   100% { transform: translate(-10px, 70px) rotate(-10deg) scale(0); opacity: 0; }
+}
+
+/* /ai consulting page: headline blur-in and the tools marquee. */
+.ai-page,
+.ai-page :is(h1, h2, h3, h4, h5, h6) {
+  font-family: 'Manrope', 'General Sans', sans-serif;
+}
+.ai-blur-in {
+  animation: ai-blur-in 1s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+@keyframes ai-blur-in {
+  from { opacity: 0; filter: blur(14px); transform: translateY(12px); }
+  to { opacity: 1; filter: blur(0); transform: none; }
+}
+.ai-marquee {
+  animation: ai-marquee 40s linear infinite;
+}
+@keyframes ai-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ai-blur-in, .ai-marquee { animation: none; }
 }
