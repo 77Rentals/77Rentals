@@ -8,6 +8,8 @@ import { LanguageProvider } from '@/contexts/LanguageContext';
 import Blog from '@/pages/Blog';
 import BlogPost from '@/pages/BlogPost';
 import Ai from '@/pages/Ai';
+import AiBlog, { AiBlogPost } from '@/pages/AiBlog';
+import { aiBlogCopy, aiBlogPath, aiBlogPosts } from '@/data/aiBlog';
 import { aiContent, aiPath } from '@/components/ai/content';
 import { translations } from '@/data/translations';
 import { SITE_URL, blogPath, blogPosts, langFromPath, type BlogPost as Post } from '@/data/blog';
@@ -26,7 +28,14 @@ const blogRoutes: string[] = (['es', 'en'] as Lang[]).flatMap((lang) => [
 const aiRoutes: string[] = (['es', 'en'] as Lang[]).map((lang) => aiPath(lang));
 const isAiRoute = (url: string) => aiRoutes.includes(url);
 
-export const routes: string[] = [...blogRoutes, ...aiRoutes];
+// The AI consulting blog (/ai/blog/, /en/ai/blog/<slug>/).
+const aiBlogRoutes: string[] = (['es', 'en'] as Lang[]).flatMap((lang) => [
+  aiBlogPath(lang),
+  ...aiBlogPosts.map((p) => aiBlogPath(lang, p.slug)),
+]);
+const isAiBlogRoute = (url: string) => aiBlogRoutes.includes(url);
+
+export const routes: string[] = [...blogRoutes, ...aiRoutes, ...aiBlogRoutes];
 
 // Every page in both languages, with the date it last changed, for sitemap.xml.
 export const sitemapEntries = () =>
@@ -40,8 +49,20 @@ export const sitemapEntries = () =>
       };
     }
     const slug = url.split('/').filter(Boolean).pop();
-    const post = blogPosts.find((p) => p.slug === slug);
     const other: Lang = lang === 'es' ? 'en' : 'es';
+    if (isAiBlogRoute(url)) {
+      const aiPost = aiBlogPosts.find((p) => p.slug === slug);
+      return {
+        loc: SITE_URL + url,
+        lastmod: aiPost?.date ?? aiBlogPosts[0]?.date,
+        alternates: {
+          [lang]: SITE_URL + url,
+          [other]: SITE_URL + aiBlogPath(other, aiPost?.slug),
+          'x-default': SITE_URL + aiBlogPath('es', aiPost?.slug),
+        },
+      };
+    }
+    const post = blogPosts.find((p) => p.slug === slug);
     return {
       loc: SITE_URL + url,
       lastmod: post?.date ?? blogPosts[0]?.date,
@@ -77,12 +98,14 @@ const aiHeadTags = (url: string, lang: Lang) => {
   ].join('\n    ');
 };
 
-const headTags = (url: string, lang: Lang, post?: Post) => {
+const headTags = (url: string, lang: Lang, post?: Post, ai = false) => {
   const t = translations[lang] as Record<string, string>;
-  const title = post ? `${post[lang].title} | 77 Rentals` : `${t['blog.title']} | 77 Rentals`;
-  const description = post ? post[lang].metaDescription : t['blog.subtitle'];
+  const brand = ai ? '77 Rentals IA' : '77 Rentals';
+  const indexTitle = ai ? aiBlogCopy[lang].title : t['blog.title'];
+  const title = post ? `${post[lang].title} | ${brand}` : `${indexTitle} | ${brand}`;
+  const description = post ? post[lang].metaDescription : ai ? aiBlogCopy[lang].subtitle : t['blog.subtitle'];
   const image = SITE_URL + (post?.cover ?? '/images/cartagena.jpg');
-  const alt = (l: Lang) => SITE_URL + blogPath(l, post?.slug);
+  const alt = (l: Lang) => SITE_URL + (ai ? aiBlogPath : blogPath)(l, post?.slug);
 
   const tags = [
     `<title>${esc(title)}</title>`,
@@ -130,7 +153,8 @@ const headTags = (url: string, lang: Lang, post?: Post) => {
 export const render = (url: string) => {
   const lang = langFromPath(url);
   const slug = url.split('/').filter(Boolean).pop();
-  const post = blogPosts.find((p) => p.slug === slug);
+  const aiBlog = isAiBlogRoute(url);
+  const post = (aiBlog ? aiBlogPosts : blogPosts).find((p) => p.slug === slug);
 
   const html = renderToString(
     <LanguageProvider initialLang={lang}>
@@ -142,10 +166,14 @@ export const render = (url: string) => {
           <Route path="/en/blog/:slug" element={<BlogPost />} />
           <Route path="/ai" element={<Ai />} />
           <Route path="/en/ai" element={<Ai />} />
+          <Route path="/ai/blog" element={<AiBlog />} />
+          <Route path="/ai/blog/:slug" element={<AiBlogPost />} />
+          <Route path="/en/ai/blog" element={<AiBlog />} />
+          <Route path="/en/ai/blog/:slug" element={<AiBlogPost />} />
         </Routes>
       </StaticRouter>
     </LanguageProvider>,
   );
 
-  return { html, head: isAiRoute(url) ? aiHeadTags(url, lang) : headTags(url, lang, post), lang };
+  return { html, head: isAiRoute(url) ? aiHeadTags(url, lang) : headTags(url, lang, post, aiBlog), lang };
 };

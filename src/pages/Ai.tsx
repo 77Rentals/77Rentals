@@ -5,6 +5,7 @@ import logo from '@/assets/logo77.jpeg';
 import WhatsAppButton from '@/components/WhatsAppButton';
 import AiLeadForm from '@/components/ai/AiLeadForm';
 import { AI_TOOLS, aiContent, aiPath, aiWhatsAppUrl, type AiLang } from '@/components/ai/content';
+import { aiBlogPath } from '@/data/aiBlog';
 import { useBlogLang } from '@/hooks/useBlogLang';
 
 // Light editorial palette: warm paper background, deep purple ink in place of
@@ -114,6 +115,7 @@ const Ai = () => {
             <a href="#casos" className="hidden md:inline text-[#1B1235]/70 hover:text-[#1B1235]">{c.nav.work}</a>
             <a href="#servicios" className="hidden md:inline text-[#1B1235]/70 hover:text-[#1B1235]">{c.nav.services}</a>
             <a href="#proceso" className="hidden md:inline text-[#1B1235]/70 hover:text-[#1B1235]">{c.nav.howWeWork}</a>
+            <Link to={aiBlogPath(lang)} className="hidden md:inline text-[#1B1235]/70 hover:text-[#1B1235]">Blog</Link>
             <Link
               to={aiPath(other)}
               className="text-xs font-bold text-[#1B1235]/60 hover:text-[#1B1235]"
