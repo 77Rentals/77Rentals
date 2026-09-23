@@ -383,7 +383,7 @@ const Ai = () => {
       <section className="py-20 md:py-28">
         <div className="container mx-auto px-4 max-w-6xl">
           <SectionTitle className="max-w-4xl">{c.numbers.title}</SectionTitle>
-          <div className="mt-14 grid grid-cols-2 lg:grid-cols-4 border-t border-[#1B1235]/10">
+          <div className="mt-14 grid grid-cols-2 max-w-2xl border-t border-[#1B1235]/10">
             {c.numbers.items.map((n) => (
               <div key={n.label} className="pt-8 pr-6 pb-2">
                 <p className={`text-5xl md:text-6xl font-extrabold tracking-[-0.04em] ${GRADIENT_TEXT}`}>{n.value}</p>

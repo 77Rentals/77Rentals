@@ -331,10 +331,8 @@ export const aiContent: Record<AiLang, AiContent> = {
     numbers: {
       title: 'La mayoría de proyectos de IA mueren después del demo. Nosotros los dejamos en operación.',
       items: [
-        { value: '5', label: 'sistemas con IA en operación en 77Rentals' },
         { value: '3', label: 'ciudades donde operamos' },
         { value: '2', label: 'idiomas en todo lo que construimos' },
-        { value: '1581', label: 'Ley de datos que cumplimos desde el diseño' },
       ],
     },
     founders: {
@@ -566,10 +564,8 @@ export const aiContent: Record<AiLang, AiContent> = {
     numbers: {
       title: 'Most AI projects die after the demo. We leave ours running.',
       items: [
-        { value: '5', label: 'AI systems running at 77Rentals' },
         { value: '3', label: 'cities we operate in' },
         { value: '2', label: 'languages in everything we build' },
-        { value: '1581', label: 'Colombia’s data law, built in by design' },
       ],
     },
     founders: {
