@@ -21,7 +21,7 @@ confirm. Never invent prices, dates or rules.
 | 1 | Best time to visit Cartagena: month by month (weather, seasons, prices) | best time to visit Cartagena / mejor época para viajar a Cartagena | todo |
 | 2 | Where to stay in Cartagena: neighbourhood guide (Centro, Getsemaní, Bocagrande, El Laguito, Castillogrande, Manga) | where to stay in Cartagena / dónde alojarse en Cartagena | todo |
 | 3 | Christmas and New Year in Cartagena (novenas, alumbrados, NYE, minimum stays) | Cartagena at Christmas / Navidad en Cartagena | todo |
-| 4 | Barranquilla Carnival 2027, based in Cartagena or Santa Marta (confirm 2027 dates with carnavaldebarranquilla.org) | Barranquilla Carnival 2027 / Carnaval de Barranquilla 2027 | todo |
+| 4 | Barranquilla Carnival 2027 (**6-9 February 2027** - Easter 2027 is 28 March, so Ash Wednesday is 10 Feb; re-confirm at carnavaldebarranquilla.org), based in Cartagena or Santa Marta | Barranquilla Carnival 2027 / Carnaval de Barranquilla 2027 | todo |
 | 5 | Semana Santa 2027 in Colombia, 21–28 March: what's open, what's booked | Semana Santa 2027 Colombia | todo |
 | 6 | Bocagrande vs El Laguito: which end of the beach suits you | Bocagrande vs El Laguito | todo |
 | 7 | Minca: the two-day escape above Santa Marta | Minca Colombia / qué hacer en Minca | todo |
@@ -38,6 +38,20 @@ confirm. Never invent prices, dates or rules.
   keep that section current (re-verify every 6 months) rather than adding a page.
 - **Bogotá altitude** and **Ciudad Perdida** — already in
   `surprising-facts-about-colombia`; link to it instead of repeating.
+
+## Verified dates and figures (reuse these; do not re-derive)
+
+- **Carnaval de Barranquilla 2027: 6-9 February 2027.** Several sites still say mid-February; they are wrong.
+- **Semana Santa 2027: 21-28 March 2027.** Easter Sunday 28 March.
+- **Hay Festival Cartagena 2027: 28-31 January 2027** (hayfestival.com/cartagena), tickets from November 2026.
+- **FICCI 66 (Cartagena film festival): 6-11 April 2027** - not its historic March slot.
+- **Fiestas de Independencia de Cartagena: around 8-15 November**, 11 November is the independence date.
+- **TransCaribe fare: COP $3,900** since 23 January 2026 (Decreto 017 of 2026).
+- **Cartagena taxis have no meters** - zonal fares agreed before boarding; a 2026 decree set a minimum around COP $12,250. The "COP 7,000-10,000 to the centre" figure copied across the web is stale.
+- **Corales del Rosario park: mandatory accident insurance COP $8,800 per visitor** (Resolución 273 de 2024). Do not conflate it with entry fees.
+- **Cartagena climate**: highs 31-32C and lows 24-26C year-round, humidity 78-83%; driest January-March, wettest October (publish a 230-270 mm range, sources differ). Attribute to Climates to Travel by name - IDEAM's normals sit behind the DHIME portal and were not reachable.
+- **Hurricanes**: Cartagena is at ~10N on the southern rim of the Caribbean, far from the main track, with no modern mainland landfall. Colombia's exposed territory is San Andrés and Providencia. Never write "outside the hurricane belt" or imply zero risk.
+- **Bocagrande and El Laguito beaches are grey-brown sand with murky water.** The white sand is at Playa Blanca and the Rosario Islands. Never describe the city beaches as white-sand Caribbean.
 
 ## AI consulting blog (`src/data/aiBlog.ts`, /ai/blog and /en/ai/blog)
 
