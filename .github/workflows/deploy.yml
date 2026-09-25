@@ -28,7 +28,50 @@ jobs:
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
         run: npm run build
 
+      # DreamHost's SSH occasionally times out (seen 2026-09-25), which used to
+      # fail the whole deploy and leave a commit built but never published.
+      # Two more attempts, spaced out, cover a transient outage; a genuine
+      # credential or path error still fails all three and stops the workflow.
       - name: Deploy to DreamHost via SFTP
+        id: deploy_site
+        continue-on-error: true
+        uses: burnett01/rsync-deployments@6.0.0
+        with:
+          switches: -avzr --delete
+          path: dist/
+          remote_path: /home/${{ secrets.DREAMHOST_USERNAME }}/public_html/
+          remote_host: ${{ secrets.DREAMHOST_HOST }}
+          remote_user: ${{ secrets.DREAMHOST_USERNAME }}
+          remote_key: ${{ secrets.DREAMHOST_SSH_KEY }}
+          remote_key_pass: ${{ secrets.DREAMHOST_SSH_PASSPHRASE }}
+
+      - name: Wait before retrying the site deploy
+        if: steps.deploy_site.outcome == 'failure'
+        run: |
+          echo "::warning::Site deploy failed (${{ steps.deploy_site.outcome }}); retrying in 60s"
+          sleep 60
+
+      - name: Deploy to DreamHost via SFTP (retry 1)
+        id: deploy_site_retry1
+        if: steps.deploy_site.outcome == 'failure'
+        continue-on-error: true
+        uses: burnett01/rsync-deployments@6.0.0
+        with:
+          switches: -avzr --delete
+          path: dist/
+          remote_path: /home/${{ secrets.DREAMHOST_USERNAME }}/public_html/
+          remote_host: ${{ secrets.DREAMHOST_HOST }}
+          remote_user: ${{ secrets.DREAMHOST_USERNAME }}
+          remote_key: ${{ secrets.DREAMHOST_SSH_KEY }}
+          remote_key_pass: ${{ secrets.DREAMHOST_SSH_PASSPHRASE }}
+
+      - name: Wait before the final site deploy attempt
+        if: steps.deploy_site.outcome == 'failure' && steps.deploy_site_retry1.outcome == 'failure'
+        run: sleep 120
+
+      - name: Deploy to DreamHost via SFTP (retry 2)
+        id: deploy_site_retry2
+        if: steps.deploy_site.outcome == 'failure' && steps.deploy_site_retry1.outcome == 'failure'
         uses: burnett01/rsync-deployments@6.0.0
         with:
           switches: -avzr --delete
@@ -55,6 +98,20 @@ jobs:
       # webroot and never wipes the runtime rate-limit.json chat.php writes
       # on the server between deploys).
       - name: Deploy Macondo private config (outside webroot)
+        id: deploy_macondo
+        continue-on-error: true
+        uses: burnett01/rsync-deployments@6.0.0
+        with:
+          switches: -avzr
+          path: macondo-private/
+          remote_path: /home/${{ secrets.DREAMHOST_USERNAME }}/macondo-private/
+          remote_host: ${{ secrets.DREAMHOST_HOST }}
+          remote_user: ${{ secrets.DREAMHOST_USERNAME }}
+          remote_key: ${{ secrets.DREAMHOST_SSH_KEY }}
+          remote_key_pass: ${{ secrets.DREAMHOST_SSH_PASSPHRASE }}
+
+      - name: Retry Macondo private config deploy
+        if: steps.deploy_macondo.outcome == 'failure'
         uses: burnett01/rsync-deployments@6.0.0
         with:
           switches: -avzr
