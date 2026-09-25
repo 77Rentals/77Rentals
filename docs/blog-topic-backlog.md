@@ -18,8 +18,8 @@ confirm. Never invent prices, dates or rules.
 
 | # | Topic | Primary search phrase (EN / ES) | Status |
 |---|-------|-------------------------------|--------|
-| 1 | Best time to visit Cartagena: month by month (weather, seasons, prices) | best time to visit Cartagena / mejor época para viajar a Cartagena | todo |
-| 2 | Where to stay in Cartagena: neighbourhood guide (Centro, Getsemaní, Bocagrande, El Laguito, Castillogrande, Manga) | where to stay in Cartagena / dónde alojarse en Cartagena | todo |
+| 1 | Best time to visit Cartagena: month by month (weather, seasons, prices) | best time to visit Cartagena / mejor época para viajar a Cartagena | published 2026-09-25 |
+| 2 | Where to stay in Cartagena: neighbourhood guide (Centro, Getsemaní, Bocagrande, El Laguito, Castillogrande, Manga) | where to stay in Cartagena / dónde alojarse en Cartagena | published 2026-09-25 |
 | 3 | Christmas and New Year in Cartagena (novenas, alumbrados, NYE, minimum stays) | Cartagena at Christmas / Navidad en Cartagena | todo |
 | 4 | Barranquilla Carnival 2027 (**6-9 February 2027** - Easter 2027 is 28 March, so Ash Wednesday is 10 Feb; re-confirm at carnavaldebarranquilla.org), based in Cartagena or Santa Marta | Barranquilla Carnival 2027 / Carnaval de Barranquilla 2027 | todo |
 | 5 | Semana Santa 2027 in Colombia, 21–28 March: what's open, what's booked | Semana Santa 2027 Colombia | todo |
