@@ -24,6 +24,7 @@ const Navbar = ({ langSwitchHref }: NavbarProps = {}) => {
 
   const navLinks = [
     { href: '/#apartments', label: t('nav.apartments') },
+    { href: lang === 'en' ? '/en/delventto/' : '/delventto/', label: 'Delventto' },
     { href: '/#about', label: t('nav.about') },
     { href: '/#management', label: t('nav.management') },
     { href: lang === 'en' ? '/en/blog/' : '/blog/', label: t('nav.blog') },
@@ -38,7 +39,7 @@ const Navbar = ({ langSwitchHref }: NavbarProps = {}) => {
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         scrolled
-          ? 'bg-[#2D1B69]/98 backdrop-blur-xl shadow-lg shadow-black/20 border-b border-white/10'
+          ? 'bg-[#2D1B69]/95 backdrop-blur-xl shadow-lg shadow-black/20 border-b border-white/10'
           : 'bg-transparent'
       }`}
     >
@@ -101,7 +102,7 @@ const Navbar = ({ langSwitchHref }: NavbarProps = {}) => {
 
       {/* Mobile menu */}
       {isOpen && (
-        <div className="md:hidden bg-[#2D1B69]/98 backdrop-blur-xl border-t border-white/10 px-4 pb-5 pt-2">
+        <div className="md:hidden bg-[#2D1B69]/95 backdrop-blur-xl border-t border-white/10 px-4 pb-5 pt-2">
           {navLinks.map((link) => (
             <a
               key={link.href}

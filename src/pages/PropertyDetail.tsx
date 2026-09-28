@@ -83,6 +83,7 @@ const PropertyDetail = () => {
   const visibleReviews = showAllReviews ? reviewsWithComment : reviewsWithComment.slice(0, 5);
 
   // Cross-sell: same building
+  const isDelventto = apt.buildingName === 'Edificio Delventto';
   const sameBuilding = apt.buildingName
     ? apartments.filter(a => a.buildingName === apt.buildingName && a.id !== apt.id)
     : [];
@@ -166,7 +167,13 @@ const PropertyDetail = () => {
             {/* Title block */}
             <div>
               {apt.buildingName && (
-                <p className="text-[#D4A843] text-xs font-bold uppercase tracking-widest mb-1">{apt.buildingName}</p>
+                isDelventto ? (
+                  <Link to="/delventto/" className="inline-block text-[#D4A843] hover:text-[#2D1B69] text-xs font-bold uppercase tracking-widest mb-1 transition-colors">
+                    {apt.buildingName} · Pozos Colorados →
+                  </Link>
+                ) : (
+                  <p className="text-[#D4A843] text-xs font-bold uppercase tracking-widest mb-1">{apt.buildingName}</p>
+                )
               )}
               <h1 className="text-2xl md:text-3xl font-serif font-bold text-[#2D1B69] mb-3">{name}</h1>
               <div className="flex flex-wrap gap-4 text-gray-500 text-sm">
@@ -368,6 +375,14 @@ const PropertyDetail = () => {
                 </div>
                 {apt.locationDetail.accessNote && (
                   <p className="text-gray-400 text-xs mt-2 italic">ℹ️ {apt.locationDetail.accessNote}</p>
+                )}
+                {isDelventto && (
+                  <Link
+                    to="/delventto/"
+                    className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-[#2D1B69] hover:text-[#D4A843] transition-colors"
+                  >
+                    Conoce el edificio Delventto: piscina infinita, sauna, gimnasio y más apartamentos →
+                  </Link>
                 )}
               </div>
             )}

@@ -20,6 +20,7 @@ import Blog from "./pages/Blog.tsx";
 import BlogPost from "./pages/BlogPost.tsx";
 import Ai from "./pages/Ai.tsx";
 import AiBlog, { AiBlogPost } from "./pages/AiBlog.tsx";
+import Delventto from "./pages/Delventto.tsx";
 
 // Loaded lazily because they pull in the Supabase client: if that project's
 // env vars or schema are ever misconfigured, the failure stays isolated to
@@ -73,6 +74,8 @@ const App = () => (
             <Route path="/ai/blog/:slug" element={<AiBlogPost />} />
             <Route path="/en/ai/blog" element={<AiBlog />} />
             <Route path="/en/ai/blog/:slug" element={<AiBlogPost />} />
+            <Route path="/delventto" element={<Delventto />} />
+            <Route path="/en/delventto" element={<Delventto />} />
             <Route path="/catalogo" element={<Catalog />} />
             <Route path="/cotizacion" element={<Cotizacion />} />
             <Route path="/reserva-confirmada" element={<ReservaConfirmada />} />

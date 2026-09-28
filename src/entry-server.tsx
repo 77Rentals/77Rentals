@@ -9,6 +9,8 @@ import Blog from '@/pages/Blog';
 import BlogPost from '@/pages/BlogPost';
 import Ai from '@/pages/Ai';
 import AiBlog, { AiBlogPost } from '@/pages/AiBlog';
+import Delventto from '@/pages/Delventto';
+import { delventtoHeadTags, delventtoPath } from '@/data/delventto';
 import { aiBlogCopy, aiBlogPath, aiBlogPosts } from '@/data/aiBlog';
 import { aiContent, aiPath } from '@/components/ai/content';
 import { translations } from '@/data/translations';
@@ -35,12 +37,27 @@ const aiBlogRoutes: string[] = (['es', 'en'] as Lang[]).flatMap((lang) => [
 ]);
 const isAiBlogRoute = (url: string) => aiBlogRoutes.includes(url);
 
-export const routes: string[] = [...blogRoutes, ...aiRoutes, ...aiBlogRoutes];
+// The Edificio Delventto landing page (/delventto/, /en/delventto/).
+const delventtoRoutes: string[] = (['es', 'en'] as Lang[]).map((lang) => delventtoPath(lang));
+const isDelventtoRoute = (url: string) => delventtoRoutes.includes(url);
+
+export const routes: string[] = [...blogRoutes, ...aiRoutes, ...aiBlogRoutes, ...delventtoRoutes];
 
 // Every page in both languages, with the date it last changed, for sitemap.xml.
 export const sitemapEntries = () =>
   routes.map((url) => {
     const lang = langFromPath(url);
+    if (isDelventtoRoute(url)) {
+      return {
+        loc: SITE_URL + url,
+        lastmod: new Date().toISOString().slice(0, 10),
+        alternates: {
+          es: SITE_URL + delventtoPath('es'),
+          en: SITE_URL + delventtoPath('en'),
+          'x-default': SITE_URL + delventtoPath('es'),
+        },
+      };
+    }
     if (isAiRoute(url)) {
       return {
         loc: SITE_URL + url,
@@ -170,10 +187,18 @@ export const render = (url: string) => {
           <Route path="/ai/blog/:slug" element={<AiBlogPost />} />
           <Route path="/en/ai/blog" element={<AiBlog />} />
           <Route path="/en/ai/blog/:slug" element={<AiBlogPost />} />
+          <Route path="/delventto" element={<Delventto />} />
+          <Route path="/en/delventto" element={<Delventto />} />
         </Routes>
       </StaticRouter>
     </LanguageProvider>,
   );
 
-  return { html, head: isAiRoute(url) ? aiHeadTags(url, lang) : headTags(url, lang, post, aiBlog), lang };
+  const head = isDelventtoRoute(url)
+    ? delventtoHeadTags(lang, esc)
+    : isAiRoute(url)
+      ? aiHeadTags(url, lang)
+      : headTags(url, lang, post, aiBlog);
+
+  return { html, head, lang };
 };
