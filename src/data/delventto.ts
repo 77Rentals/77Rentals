@@ -85,7 +85,7 @@ export interface DelventtoCopy {
     h2: string;
     intro: string;
     units: {
-      id: 'tipo-c' | 'tipo-d';
+      id: 'tipo-b' | 'tipo-c' | 'tipo-d';
       letter: string;
       label: string;
       name: string;
@@ -128,7 +128,7 @@ export const delventtoContent: Record<Lang, DelventtoCopy> = {
     hero: {
       eyebrow: 'Edificio Delventto · Pozos Colorados, Santa Marta',
       h1: 'Apartamentos en Delventto, Santa Marta',
-      subtitle: 'A 200 metros de Playa Cabo Tortuga, con piscina infinita en la terraza y vista al mar y a la Sierra Nevada. Empieza por Macondo, nuestro apartamento 10/10, o escoge entre más de 20 opciones en el mismo edificio.',
+      subtitle: 'A 200 metros de Playa Cabo Tortuga, con piscina infinita en la terraza y vista al mar y a la Sierra Nevada. Empieza por Macondo, nuestro apartamento 10/10, o escoge entre nuestros 12 apartamentos en el mismo edificio.',
       primaryCta: 'Reservar Macondo',
       secondaryCta: 'Ver más apartamentos',
       facts: [
@@ -171,9 +171,28 @@ export const delventtoContent: Record<Lang, DelventtoCopy> = {
     units: { guests: 'huéspedes', bedroom: 'habitación', bathroom: 'baño' },
     options: {
       eyebrow: 'Más opciones en Delventto',
-      h2: '¿Vienen en grupo? Tenemos más de 20 apartamentos en el edificio',
-      intro: 'Además de Macondo, en 77Rentals manejamos más de 20 apartamentos en Delventto. Cuéntanos tus fechas y cuántos son, y te mandamos por WhatsApp las opciones disponibles.',
+      h2: 'Más opciones en el mismo edificio: 12 apartamentos para escoger',
+      intro: 'En 77Rentals manejamos 12 apartamentos en Delventto, entre suites para parejas y apartamentos de una y dos habitaciones. Cuéntanos tus fechas y cuántos son, y te mandamos por WhatsApp las opciones disponibles.',
       units: [
+        {
+          id: 'tipo-b',
+          letter: 'B',
+          label: 'Tipo B',
+          name: 'Apartasuite para 4',
+          tagline: 'El equilibrio entre espacio y precio, ideal para parejas o familias pequeñas.',
+          guests: 'Hasta 4',
+          bedrooms: '1 ambiente',
+          bathrooms: '1 baño',
+          size: '~36–40 m²',
+          bullets: [
+            'Cama doble + sofá cama doble en la mayoría de unidades',
+            'Algunas unidades con 2 camas dobles',
+            'Cocina equipada y balcón',
+            'Acceso a todas las amenidades del edificio',
+          ],
+          cta: 'Consultar Tipo B por WhatsApp',
+          whatsapp: 'Hola 77Rentals, me interesa un apartasuite Tipo B (hasta 4 personas) en Delventto, Santa Marta. Fechas: ___ al ___. Somos ___ personas. ¿Qué opciones tienen?',
+        },
         {
           id: 'tipo-c',
           letter: 'C',
@@ -267,7 +286,7 @@ export const delventtoContent: Record<Lang, DelventtoCopy> = {
         },
         { icon: 'reception', label: 'Recepción 24 horas', description: 'Recepción abierta día y noche.' },
       ],
-      braceletNote: 'El acceso a las amenidades se hace con manilla: $25.000 COP por persona; los niños menores de 5 años no pagan. Por norma del edificio, no se puede andar mojado por ascensores ni zonas comunes.',
+      braceletNote: 'El acceso a las amenidades se hace con manilla: $25.000 COP por persona, por estadía; los niños menores de 5 años no pagan. Por norma del edificio, no se puede andar mojado por ascensores ni zonas comunes.',
     },
     location: {
       eyebrow: 'Ubicación',
@@ -356,7 +375,7 @@ export const delventtoContent: Record<Lang, DelventtoCopy> = {
         },
         {
           q: '¿Cuánto cuesta la manilla para usar las piscinas?',
-          a: 'La manilla cuesta $25.000 COP por persona y da acceso a todas las amenidades del edificio. Los niños menores de 5 años no pagan.',
+          a: 'La manilla cuesta $25.000 COP por persona, por estadía (no por día), y da acceso a todas las amenidades del edificio. Los niños menores de 5 años no pagan.',
         },
         {
           q: '¿Delventto tiene parqueadero?',
@@ -415,7 +434,7 @@ export const delventtoContent: Record<Lang, DelventtoCopy> = {
     hero: {
       eyebrow: 'Delventto · Pozos Colorados, Santa Marta',
       h1: 'Delventto Apartments in Santa Marta, Colombia',
-      subtitle: 'A short walk from Cabo Tortuga beach, with a rooftop infinity pool looking out over the Caribbean and the Sierra Nevada. Start with Macondo, our 10/10 apartment, or choose from 20+ units in the same building.',
+      subtitle: 'A short walk from Cabo Tortuga beach, with a rooftop infinity pool looking out over the Caribbean and the Sierra Nevada. Start with Macondo, our 10/10 apartment, or choose from our 12 apartments in the same building.',
       primaryCta: 'Book Macondo',
       secondaryCta: 'See more apartments',
       facts: [
@@ -455,9 +474,28 @@ export const delventtoContent: Record<Lang, DelventtoCopy> = {
     units: { guests: 'guests', bedroom: 'bedroom', bathroom: 'bathroom' },
     options: {
       eyebrow: 'More in Delventto',
-      h2: 'Traveling as a group? We have 20+ apartments in the building',
-      intro: 'Besides Macondo, 77Rentals manages more than 20 apartments at Delventto. Send us your dates and group size on WhatsApp and we\'ll reply with what\'s available.',
+      h2: 'More options in the same building: 12 apartments to choose from',
+      intro: '77Rentals manages 12 apartments at Delventto, from suites for couples to one- and two-bedroom apartments. Send us your dates and group size on WhatsApp and we\'ll reply with what\'s available.',
       units: [
+        {
+          id: 'tipo-b',
+          letter: 'B',
+          label: 'Type B',
+          name: 'Suite for 4',
+          tagline: 'The balance of space and price, ideal for couples or small families.',
+          guests: 'Up to 4',
+          bedrooms: 'Open plan',
+          bathrooms: '1 bathroom',
+          size: '~36–40 m²',
+          bullets: [
+            'Double bed + double sofa bed in most units',
+            'Some units with 2 double beds',
+            'Equipped kitchen and balcony',
+            'Access to all building amenities',
+          ],
+          cta: 'Ask about Type B on WhatsApp',
+          whatsapp: 'Hi 77Rentals, I\'m interested in a Type B suite (up to 4 guests) at Delventto, Santa Marta. Dates: ___ to ___. Guests: ___. What do you have available?',
+        },
         {
           id: 'tipo-c',
           letter: 'C',
@@ -527,7 +565,7 @@ export const delventtoContent: Record<Lang, DelventtoCopy> = {
         { icon: 'parking', label: 'Free parking', description: 'Secure parking at no extra cost.' },
         { icon: 'reception', label: '24-hour reception', description: 'The front desk is open day and night.' },
       ],
-      braceletNote: 'Amenity access is by wristband: COP 25,000 per person, free for children under 5. Building rules don\'t allow walking through elevators or common areas while wet.',
+      braceletNote: 'Amenity access is by wristband: COP 25,000 per person, per stay, free for children under 5. Building rules don\'t allow walking through elevators or common areas while wet.',
     },
     location: {
       eyebrow: 'Location',
@@ -612,7 +650,7 @@ export const delventtoContent: Record<Lang, DelventtoCopy> = {
         },
         {
           q: 'How much is the pool and amenity wristband?',
-          a: 'The wristband costs COP 25,000 per person and covers all building amenities. Children under 5 are free.',
+          a: 'The wristband costs COP 25,000 per person, per stay (not per day), and covers all building amenities. Children under 5 are free.',
         },
         {
           q: 'Is there parking at Delventto?',

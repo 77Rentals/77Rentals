@@ -221,7 +221,7 @@ const Delventto = () => {
 
         {/* ── More options in the building ──────────────────────────────── */}
         <section id="opciones" className="py-20 md:py-28 bg-[#F8F6FF] scroll-mt-20">
-          <div className="container mx-auto px-4 max-w-5xl">
+          <div className="container mx-auto px-4 max-w-6xl">
             <SectionHeading
               variant="split"
               eyebrow={c.options.eyebrow}
@@ -233,7 +233,7 @@ const Delventto = () => {
               className="mb-12"
             />
 
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {c.options.units.map((u) => (
                 <article key={u.id} className="flex flex-col bg-white rounded-2xl border border-[#2D1B69]/10 p-7 md:p-8">
                   <div className="flex items-start justify-between gap-4 mb-5">
