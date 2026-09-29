@@ -15,6 +15,14 @@ const { render, routes, sitemapEntries } = await import(
 );
 
 const template = fs.readFileSync(path.join(dist, 'index.html'), 'utf8');
+// The homepage is prerendered into dist/index.html below, so keep the bare
+// SPA shell as spa.html: .htaccess serves it for every non-prerendered route.
+// Everything served from the shell (Partner Hub, internal tools, signing
+// links, 404s) is private, so it's marked noindex.
+fs.writeFileSync(
+  path.join(dist, 'spa.html'),
+  template.replace('</head>', '  <meta name="robots" content="noindex, nofollow">\n</head>'),
+);
 
 // Drop the generic SPA tags that each page replaces with its own.
 const baseHead = template
@@ -36,10 +44,7 @@ for (const url of routes) {
   console.log(`prerendered ${url}`);
 }
 
-const today = new Date().toISOString().slice(0, 10);
-const staticPages = ['/'];
 const urlXml = [
-  ...staticPages.map((p) => `  <url><loc>https://77rentals.com${p}</loc><lastmod>${today}</lastmod></url>`),
   ...sitemapEntries().map(
     (e) =>
       `  <url>\n    <loc>${e.loc}</loc>\n    <lastmod>${e.lastmod}</lastmod>\n` +

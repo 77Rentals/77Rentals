@@ -10,6 +10,10 @@ import BlogPost from '@/pages/BlogPost';
 import Ai from '@/pages/Ai';
 import AiBlog, { AiBlogPost } from '@/pages/AiBlog';
 import Delventto from '@/pages/Delventto';
+import Index from '@/pages/Index';
+import PropertyDetail from '@/pages/PropertyDetail';
+import Catalog from '@/pages/Catalog';
+import { catalogHead, homeHead, listedApartments, propertyHead, propertyPath } from '@/data/seo';
 import { delventtoHeadTags, delventtoPath } from '@/data/delventto';
 import { aiBlogCopy, aiBlogPath, aiBlogPosts } from '@/data/aiBlog';
 import { aiContent, aiPath } from '@/components/ai/content';
@@ -41,12 +45,20 @@ const isAiBlogRoute = (url: string) => aiBlogRoutes.includes(url);
 const delventtoRoutes: string[] = (['es', 'en'] as Lang[]).map((lang) => delventtoPath(lang));
 const isDelventtoRoute = (url: string) => delventtoRoutes.includes(url);
 
-export const routes: string[] = [...blogRoutes, ...aiRoutes, ...aiBlogRoutes, ...delventtoRoutes];
+// Spanish-only pages: homepage, one page per listed property, and the catalog.
+const propertyRoutes = listedApartments.map((a) => propertyPath(a.slug));
+const siteRoutes: string[] = ['/', ...propertyRoutes, '/catalogo/'];
+const isSiteRoute = (url: string) => siteRoutes.includes(url);
+
+export const routes: string[] = [...siteRoutes, ...blogRoutes, ...aiRoutes, ...aiBlogRoutes, ...delventtoRoutes];
 
 // Every page in both languages, with the date it last changed, for sitemap.xml.
 export const sitemapEntries = () =>
   routes.map((url) => {
     const lang = langFromPath(url);
+    if (isSiteRoute(url)) {
+      return { loc: SITE_URL + url, lastmod: new Date().toISOString().slice(0, 10), alternates: {} };
+    }
     if (isDelventtoRoute(url)) {
       return {
         loc: SITE_URL + url,
@@ -187,6 +199,9 @@ export const render = (url: string) => {
           <Route path="/ai/blog/:slug" element={<AiBlogPost />} />
           <Route path="/en/ai/blog" element={<AiBlog />} />
           <Route path="/en/ai/blog/:slug" element={<AiBlogPost />} />
+          <Route path="/" element={<Index />} />
+          <Route path="/propiedades/:slug" element={<PropertyDetail />} />
+          <Route path="/catalogo" element={<Catalog />} />
           <Route path="/delventto" element={<Delventto />} />
           <Route path="/en/delventto" element={<Delventto />} />
         </Routes>
@@ -194,11 +209,15 @@ export const render = (url: string) => {
     </LanguageProvider>,
   );
 
-  const head = isDelventtoRoute(url)
-    ? delventtoHeadTags(lang, esc)
-    : isAiRoute(url)
-      ? aiHeadTags(url, lang)
-      : headTags(url, lang, post, aiBlog);
+  const apt = listedApartments.find((a) => propertyPath(a.slug) === url);
+  const head = (() => {
+    if (url === '/') return homeHead(esc);
+    if (apt) return propertyHead(apt, esc);
+    if (url === '/catalogo/') return catalogHead(esc);
+    if (isDelventtoRoute(url)) return delventtoHeadTags(lang, esc);
+    if (isAiRoute(url)) return aiHeadTags(url, lang);
+    return headTags(url, lang, post, aiBlog);
+  })();
 
   return { html, head, lang };
 };

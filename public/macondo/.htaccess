@@ -1,0 +1,4 @@
+# Guest guide / setup files: keep out of search results (door codes, WiFi).
+<IfModule mod_headers.c>
+  Header set X-Robots-Tag "noindex, nofollow"
+</IfModule>

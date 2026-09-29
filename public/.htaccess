@@ -5,4 +5,13 @@ AddType image/svg+xml .svg
 RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^ index.html [QSA,L]
+# Prerendered pages are served as real files. Everything else (Partner Hub,
+# internal tools, signing links) gets the SPA shell, which is marked noindex.
+RewriteRule ^ spa.html [QSA,L]
+
+<IfModule mod_headers.c>
+  # Keep private pages out of search results.
+  <Files "spa.html">
+    Header set X-Robots-Tag "noindex, nofollow"
+  </Files>
+</IfModule>
