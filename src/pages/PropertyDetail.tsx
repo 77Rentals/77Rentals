@@ -5,6 +5,9 @@ import { apartments } from '@/data/apartments';
 import { countryFlag } from '@/lib/flags';
 import { Users, BedDouble, Bath, MapPin, ChevronLeft, ChevronRight, ExternalLink, ChevronDown, ChevronUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import PhotoLightbox from '@/components/PhotoLightbox';
+import { photoSrcSet, thumb } from '@/lib/image';
+import { useSwipe } from '@/hooks/useSwipe';
 
 const AMENITY_ICONS: Record<string, string> = {
   wifi: '📶', pool: '🏊', oceanView: '🌊', beach: '🏖', kitchen: '🍳',
@@ -39,17 +42,38 @@ const PropertyDetail = () => {
   const navigate = useNavigate();
   const [showAllReviews, setShowAllReviews] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [autoplay, setAutoplay] = useState(true);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
 
   const apt = apartments.find(a => a.slug === slug);
+  const imageCount = apt?.images.length ?? 0;
 
-  // Auto-rotate hero images
+  // Any manual navigation stops the slideshow.
+  const showImage = (i: number) => {
+    setAutoplay(false);
+    setCurrentImageIndex((i + imageCount) % imageCount);
+  };
+  const { swiped, handlers: swipeHandlers } = useSwipe(
+    () => showImage(currentImageIndex - 1),
+    () => showImage(currentImageIndex + 1),
+  );
+
+  // Auto-rotate hero images until the visitor takes over
   useEffect(() => {
-    if (!apt || apt.images.length <= 1) return;
-    const interval = setInterval(() => {
-      setCurrentImageIndex(prev => (prev + 1) % apt.images.length);
-    }, 4000);
-    return () => clearInterval(interval);
-  }, [apt]);
+    if (!autoplay || lightboxOpen || imageCount <= 1) return;
+    const t = setTimeout(() => setCurrentImageIndex(prev => (prev + 1) % imageCount), 5000);
+    return () => clearTimeout(t);
+  }, [autoplay, lightboxOpen, imageCount, currentImageIndex]);
+
+  // Warm the cache with the next photo so the slide change is instant
+  useEffect(() => {
+    if (!apt || imageCount <= 1) return;
+    const img = new Image();
+    const next = apt.images[(currentImageIndex + 1) % imageCount];
+    img.sizes = '100vw';
+    img.srcset = photoSrcSet(next) ?? '';
+    img.src = next;
+  }, [apt, currentImageIndex, imageCount]);
 
   // SEO: set a descriptive page title per property
   useEffect(() => {
@@ -96,7 +120,7 @@ const PropertyDetail = () => {
   return (
     <div className="min-h-screen bg-white">
       {/* Navbar */}
-      <nav className="sticky top-0 z-40 bg-[#2D1B69]/98 backdrop-blur-sm shadow-lg">
+      <nav className="sticky top-0 z-40 bg-[#2D1B69]/95 backdrop-blur-sm shadow-lg">
         <div className="container mx-auto px-4 py-3 flex items-center justify-between">
           <Link to="/" className="text-[#D4A843] font-serif font-bold text-lg">77 Rentals</Link>
           <button onClick={() => navigate(-1)} className="flex items-center gap-1.5 text-white/70 hover:text-white text-sm transition-colors">
@@ -107,23 +131,37 @@ const PropertyDetail = () => {
       </nav>
 
       {/* Hero image carousel */}
-      <div className="relative h-72 md:h-96 overflow-hidden group">
-        <img src={apt.images[currentImageIndex]} alt={name} className="w-full h-full object-cover transition-opacity duration-500" />
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/40" />
+      <div className="relative h-72 md:h-[28rem] overflow-hidden group bg-gray-200" {...swipeHandlers}>
+        <button
+          type="button"
+          className="block w-full h-full cursor-zoom-in"
+          onClick={() => { if (!swiped.current) { setAutoplay(false); setLightboxOpen(true); } swiped.current = false; }}
+          aria-label="Ver fotos en pantalla completa"
+        >
+          <img
+            key={apt.images[currentImageIndex]}
+            srcSet={photoSrcSet(apt.images[currentImageIndex])}
+            sizes="100vw"
+            src={apt.images[currentImageIndex]}
+            alt={name}
+            className="w-full h-full object-cover animate-in fade-in duration-500"
+          />
+        </button>
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/40 pointer-events-none" />
 
         {/* Navigation arrows */}
         {apt.images.length > 1 && (
           <>
             <button
-              onClick={() => setCurrentImageIndex(prev => (prev - 1 + apt.images.length) % apt.images.length)}
-              className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/40 hover:bg-black/60 rounded-full flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-all duration-200 z-10"
+              onClick={() => showImage(currentImageIndex - 1)}
+              className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/40 hover:bg-black/60 rounded-full flex items-center justify-center text-white md:opacity-0 md:group-hover:opacity-100 transition-all duration-200 z-10"
               aria-label="Previous image"
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
             <button
-              onClick={() => setCurrentImageIndex(prev => (prev + 1) % apt.images.length)}
-              className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/40 hover:bg-black/60 rounded-full flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-all duration-200 z-10"
+              onClick={() => showImage(currentImageIndex + 1)}
+              className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/40 hover:bg-black/60 rounded-full flex items-center justify-center text-white md:opacity-0 md:group-hover:opacity-100 transition-all duration-200 z-10"
               aria-label="Next image"
             >
               <ChevronRight className="w-5 h-5" />
@@ -131,31 +169,51 @@ const PropertyDetail = () => {
           </>
         )}
 
-        {apt.stars && (
-          <div className="absolute top-4 left-4 bg-[#D4A843] text-[#2D1B69] text-xs font-bold px-3 py-1 rounded-full">
-            {'⭐'.repeat(Math.min(apt.stars, 5))} {apt.stars} estrellas
+        <div className="absolute top-4 inset-x-4 flex flex-wrap items-start justify-between gap-2 z-10 pointer-events-none">
+          {apt.stars ? (
+            <div className="bg-[#D4A843] text-[#2D1B69] text-xs font-bold px-3 py-1 rounded-full">
+              {'⭐'.repeat(Math.min(apt.stars, 5))} {apt.stars} estrellas
+            </div>
+          ) : <span />}
+          <div className="flex items-center gap-1.5 bg-black/50 backdrop-blur-sm text-white text-xs px-3 py-1.5 rounded-full">
+            <MapPin className="w-3 h-3 text-[#D4A843]" />
+            {apt.neighborhood} · {apt.city}
           </div>
-        )}
-        <div className="absolute top-4 right-4 flex items-center gap-1.5 bg-black/50 backdrop-blur-sm text-white text-xs px-3 py-1.5 rounded-full">
-          <MapPin className="w-3 h-3 text-[#D4A843]" />
-          {apt.neighborhood} · {apt.city}
         </div>
 
-        {/* Thumbnail strip - clickable */}
+        {/* Thumbnail strip (desktop) / photo counter (mobile) */}
         {apt.images.length > 1 && (
-          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2 z-10">
-            {apt.images.map((src, i) => (
-              <button
-                key={i}
-                onClick={() => setCurrentImageIndex(i)}
-                className={`w-16 h-12 rounded-lg border-2 transition-all ${i === currentImageIndex ? 'border-white scale-110' : 'border-white/60 opacity-70 hover:opacity-100'}`}
-              >
-                <img src={src} alt={`${name} - foto ${i + 1}`} loading="lazy" className="w-full h-full object-cover rounded-lg" />
-              </button>
-            ))}
-          </div>
+          <>
+            <div className="hidden md:flex absolute bottom-3 left-1/2 -translate-x-1/2 gap-2 z-10 max-w-[90%] overflow-x-auto p-1">
+              {apt.images.map((src, i) => (
+                <button
+                  key={i}
+                  onClick={() => showImage(i)}
+                  className={`shrink-0 w-16 h-12 rounded-lg border-2 transition-all ${i === currentImageIndex ? 'border-white scale-110' : 'border-white/60 opacity-70 hover:opacity-100'}`}
+                >
+                  <img src={thumb(src)} alt={`${name} - foto ${i + 1}`} loading="lazy" className="w-full h-full object-cover rounded-md" />
+                </button>
+              ))}
+            </div>
+            <button
+              onClick={() => { setAutoplay(false); setLightboxOpen(true); }}
+              className="md:hidden absolute bottom-3 right-3 z-10 bg-black/60 text-white text-xs font-medium px-3 py-1.5 rounded-full"
+            >
+              {currentImageIndex + 1} / {apt.images.length} · Ver fotos
+            </button>
+          </>
         )}
       </div>
+
+      {lightboxOpen && (
+        <PhotoLightbox
+          images={apt.images}
+          index={currentImageIndex}
+          name={name}
+          onChange={setCurrentImageIndex}
+          onClose={() => setLightboxOpen(false)}
+        />
+      )}
 
       {/* Main content */}
       <div className="container mx-auto px-4 max-w-5xl py-8 pb-24 lg:pb-8">
@@ -398,7 +456,7 @@ const PropertyDetail = () => {
                       to={`/propiedades/${sibling.slug}`}
                       className="flex items-center gap-3 bg-[#f8f7ff] border border-[#e8e4f5] rounded-xl p-3 hover:border-[#2D1B69]/30 transition-colors"
                     >
-                      <img src={sibling.images[0]} alt={sibling.name} loading="lazy" className="w-14 h-14 object-cover rounded-lg" />
+                      <img src={thumb(sibling.images[0])} alt={sibling.name} loading="lazy" className="w-14 h-14 object-cover rounded-lg" />
                       <div>
                         <p className="font-serif font-bold text-[#2D1B69] text-sm">{sibling.name}</p>
                         <p className="text-gray-400 text-xs">{sibling.priceFrom > 0 ? `$${sibling.priceFrom}/noche` : 'Consultar precio'}</p>

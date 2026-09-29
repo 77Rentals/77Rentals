@@ -8,6 +8,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import WhatsAppButton from '@/components/WhatsAppButton';
 import SectionHeading from '@/components/SectionHeading';
+import { thumb } from '@/lib/image';
 import { useBlogLang } from '@/hooks/useBlogLang';
 import {
   DELVENTTO_GEO, MACONDO, delventtoContent, delventtoGallery, delventtoPath, whatsappUrl,
@@ -112,7 +113,7 @@ const Delventto = () => {
                 className="w-full aspect-[4/5] object-cover rounded-2xl"
               />
               <img
-                src="/images/delventto/jacuzzi.jpg"
+                src="/images/delventto/jacuzzi-800.webp"
                 alt={c.alts.jacuzzi}
                 loading="lazy"
                 width={1600}
@@ -136,7 +137,7 @@ const Delventto = () => {
                 className="col-span-2 w-full aspect-[16/10] object-cover rounded-2xl"
               />
               <img
-                src="/images/delventto/macondo-bedroom.jpg"
+                src="/images/delventto/macondo-bedroom-800.webp"
                 alt={c.alts.macondoBedroom}
                 loading="lazy"
                 width={1400}
@@ -144,7 +145,7 @@ const Delventto = () => {
                 className="w-full aspect-[4/3] object-cover rounded-xl"
               />
               <img
-                src="/images/delventto/macondo-living.jpg"
+                src="/images/delventto/macondo-living-800.webp"
                 alt={c.alts.macondoLiving}
                 loading="lazy"
                 width={1400}
@@ -313,7 +314,7 @@ const Delventto = () => {
                   className={`relative overflow-hidden rounded-xl ${i === 0 ? 'col-span-2 row-span-2' : ''}`}
                 >
                   <img
-                    src={g.src}
+                    src={i === 0 ? g.src : thumb(g.src)}
                     alt={c.alts[g.alt]}
                     loading="lazy"
                     width={g.width}

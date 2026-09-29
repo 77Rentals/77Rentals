@@ -6,6 +6,7 @@ import Footer from '@/components/Footer';
 import WhatsAppButton from '@/components/WhatsAppButton';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { blogPath, blogPosts, formatPostDate } from '@/data/blog';
+import { thumb } from '@/lib/image';
 import { useBlogLang } from '@/hooks/useBlogLang';
 
 const Blog = () => {
@@ -48,7 +49,7 @@ const Blog = () => {
               >
                 <div className="aspect-[16/10] overflow-hidden">
                   <img
-                    src={post.cover}
+                    src={thumb(post.cover)}
                     alt=""
                     loading="lazy"
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"

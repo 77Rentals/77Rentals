@@ -1,7 +1,10 @@
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { ChevronDown, Star, MapPin } from 'lucide-react';
+import { photoSrcSet } from '@/lib/image';
 import SpaceBackground from '@/components/SpaceBackground';
+
+const HERO_IMAGE = 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=1920&q=80&auto=format';
 
 const Hero = () => {
   const { t } = useLanguage();
@@ -19,7 +22,9 @@ const Hero = () => {
       {/* Background image */}
       <div className="absolute inset-0">
         <img
-          src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=1920&q=85"
+          srcSet={photoSrcSet(HERO_IMAGE)}
+          sizes="100vw"
+          src={HERO_IMAGE}
           alt="Luxury property in Colombia"
           className="w-full h-full object-cover object-center"
           width={1920}
@@ -31,7 +36,7 @@ const Hero = () => {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 container mx-auto px-4 pt-24 pb-32">
+      <div className="relative z-10 container mx-auto px-4 pt-24 pb-64 md:pb-32">
         <div className="max-w-2xl">
           {/* Label */}
           <div className="flex items-center gap-2 mb-6">

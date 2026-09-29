@@ -11,10 +11,6 @@ import Index from "./pages/Index.tsx";
 import Gracias from "./pages/Gracias.tsx";
 import PropertyDetail from "./pages/PropertyDetail.tsx";
 import Catalog from "./pages/Catalog.tsx";
-import Cotizacion from "./pages/Cotizacion.tsx";
-import ReservaConfirmada from "./pages/ReservaConfirmada.tsx";
-import CompletarDatos from "./pages/CompletarDatos.tsx";
-import CuentaCobro from "./pages/CuentaCobro.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import Blog from "./pages/Blog.tsx";
 import BlogPost from "./pages/BlogPost.tsx";
@@ -26,6 +22,12 @@ import Delventto from "./pages/Delventto.tsx";
 // env vars or schema are ever misconfigured, the failure stays isolated to
 // these routes instead of crashing the whole site (they're imported eagerly
 // otherwise, since nothing else in App.tsx is code-split).
+// Internal tools (quotes, confirmations, invoices) pull in PDF and date-picker
+// code that guests never need, so they're split out of the main bundle too.
+const Cotizacion = lazy(() => import("./pages/Cotizacion.tsx"));
+const ReservaConfirmada = lazy(() => import("./pages/ReservaConfirmada.tsx"));
+const CompletarDatos = lazy(() => import("./pages/CompletarDatos.tsx"));
+const CuentaCobro = lazy(() => import("./pages/CuentaCobro.tsx"));
 const PartnerHub = lazy(() => import("./pages/PartnerHub"));
 const OwnerSigningPage = lazy(() => import("./pages/OwnerSigningPage.tsx"));
 const ClientSigningPage = lazy(() => import("./pages/ClientSigningPage.tsx"));
@@ -81,10 +83,10 @@ const App = () => (
             <Route path="/catalogo" element={<Catalog />} />
             <Route path="/murano-elite/plan" element={<Suspense fallback={<RouteLoadingScreen />}><MuranoPlan /></Suspense>} />
             <Route path="/murano-elite/guia" element={<Suspense fallback={<RouteLoadingScreen />}><MuranoGuiaForm /></Suspense>} />
-            <Route path="/cotizacion" element={<Cotizacion />} />
-            <Route path="/reserva-confirmada" element={<ReservaConfirmada />} />
-            <Route path="/completar-datos" element={<CompletarDatos />} />
-            <Route path="/cuenta-cobro" element={<CuentaCobro />} />
+            <Route path="/cotizacion" element={<Suspense fallback={<RouteLoadingScreen />}><Cotizacion /></Suspense>} />
+            <Route path="/reserva-confirmada" element={<Suspense fallback={<RouteLoadingScreen />}><ReservaConfirmada /></Suspense>} />
+            <Route path="/completar-datos" element={<Suspense fallback={<RouteLoadingScreen />}><CompletarDatos /></Suspense>} />
+            <Route path="/cuenta-cobro" element={<Suspense fallback={<RouteLoadingScreen />}><CuentaCobro /></Suspense>} />
             <Route
               path="/firmar/:linkId"
               element={

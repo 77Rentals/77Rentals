@@ -5,35 +5,58 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { apartments } from '@/data/apartments';
 import { Users, BedDouble, Bath, ChevronLeft, ChevronRight, Star, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { thumb } from '@/lib/image';
+import { useSwipe } from '@/hooks/useSwipe';
 import SectionHeading from '@/components/SectionHeading';
 
 // ── Image Carousel ──────────────────────────────────────────────────────────
+// Only photos that have been shown are in the DOM, so a card downloads one
+// light thumbnail until someone interacts with it. It rotates while hovered
+// (desktop) and swipes on touch screens.
 const ImageCarousel = ({ images, name }: { images: string[]; name: string }) => {
   const [current, setCurrent] = useState(0);
+  const [seen, setSeen] = useState<Set<number>>(() => new Set([0]));
+  const [hovering, setHovering] = useState(false);
+  const count = images.length;
+
+  const go = (i: number) => {
+    const n = (i + count) % count;
+    setCurrent(n);
+    setSeen(s => (s.has(n) ? s : new Set(s).add(n)));
+  };
+  const { swiped, handlers } = useSwipe(() => go(current - 1), () => go(current + 1));
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrent(c => (c + 1) % images.length);
-    }, 4000);
-    return () => clearInterval(interval);
-  }, [images.length]);
+    if (!hovering || count <= 1) return;
+    const t = setTimeout(() => go(current + 1), 2500);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hovering, current, count]);
 
-  const prev = (e: React.MouseEvent) => { e.stopPropagation(); setCurrent(c => (c - 1 + images.length) % images.length); };
-  const next = (e: React.MouseEvent) => { e.stopPropagation(); setCurrent(c => (c + 1) % images.length); };
+  const prev = (e: React.MouseEvent) => { e.stopPropagation(); go(current - 1); };
+  const next = (e: React.MouseEvent) => { e.stopPropagation(); go(current + 1); };
+  const upcoming = (current + 1) % count;
+
   return (
-    <div className="relative overflow-hidden aspect-[4/3] bg-gray-100 group/carousel">
-      {images.map((src, i) => (
-        <img key={src} src={src} alt={`${name} - foto ${i + 1}`}
+    <div
+      className="relative overflow-hidden aspect-[4/3] bg-gray-100 group/carousel"
+      onMouseEnter={() => setHovering(true)}
+      onMouseLeave={() => setHovering(false)}
+      onClickCapture={e => { if (swiped.current) { e.stopPropagation(); swiped.current = false; } }}
+      {...handlers}
+    >
+      {images.map((src, i) => (seen.has(i) || (hovering && i === upcoming)) && (
+        <img key={src} src={thumb(src)} alt={`${name} - foto ${i + 1}`}
           className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${i === current ? 'opacity-100' : 'opacity-0'}`}
-          loading={i === 0 ? 'eager' : 'lazy'} />
+          loading="lazy" decoding="async" />
       ))}
-      {images.length > 1 && (
+      {count > 1 && (
         <>
           <button onClick={prev} className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 bg-black/40 hover:bg-black/60 rounded-full flex items-center justify-center text-white opacity-0 group-hover/carousel:opacity-100 transition-all duration-200 backdrop-blur-sm" aria-label="Previous photo"><ChevronLeft className="w-4 h-4" /></button>
           <button onClick={next} className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 bg-black/40 hover:bg-black/60 rounded-full flex items-center justify-center text-white opacity-0 group-hover/carousel:opacity-100 transition-all duration-200 backdrop-blur-sm" aria-label="Next photo"><ChevronRight className="w-4 h-4" /></button>
           <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
             {images.map((_, i) => (
-              <button key={i} onClick={e => { e.stopPropagation(); setCurrent(i); }}
+              <button key={i} onClick={e => { e.stopPropagation(); go(i); }}
                 className={`h-1.5 rounded-full transition-all duration-200 ${i === current ? 'bg-white w-4' : 'bg-white/50 hover:bg-white/80 w-1.5'}`}
                 aria-label={`Photo ${i + 1}`} />
             ))}
@@ -104,7 +127,7 @@ const ApartmentCard = () => {
             onClick={() => setActiveCity(activeCity === 'Santa Marta' ? 'Todas' : 'Santa Marta')}
             className={`relative rounded-2xl overflow-hidden h-44 group transition-all duration-200 ${activeCity === 'Santa Marta' ? 'ring-2 ring-[#D4A843]' : ''}`}
           >
-            <img src={CITY_IMAGES['Santa Marta']} alt="Santa Marta" loading="lazy" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+            <img src={thumb(CITY_IMAGES['Santa Marta'])} alt="Santa Marta" loading="lazy" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
             <div className="absolute inset-0 bg-gradient-to-b from-[#2D1B69]/15 to-[#2D1B69]/80" />
             <div className="absolute top-3 left-3 bg-[#D4A843] text-[#2D1B69] text-xs font-bold px-3 py-1 rounded-full">DESTACADO</div>
             <div className="absolute bottom-0 left-0 right-0 p-4 text-left">
@@ -121,7 +144,7 @@ const ApartmentCard = () => {
                 onClick={() => setActiveCity(activeCity === city ? 'Todas' : city)}
                 className={`relative rounded-2xl overflow-hidden flex-1 group transition-all duration-200 ${activeCity === city ? 'ring-2 ring-[#D4A843]' : ''}`}
               >
-                <img src={CITY_IMAGES[city]} alt={city} loading="lazy" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                <img src={thumb(CITY_IMAGES[city])} alt={city} loading="lazy" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                 <div className="absolute inset-0 bg-gradient-to-b from-[#2D1B69]/15 to-[#2D1B69]/80" />
                 <div className="absolute bottom-0 left-0 right-0 p-3 text-left">
                   <div className="font-serif text-base font-bold text-white">{city}</div>

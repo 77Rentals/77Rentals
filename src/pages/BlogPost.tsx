@@ -7,6 +7,7 @@ import WhatsAppButton from '@/components/WhatsAppButton';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { blogPath, blogPosts, formatPostDate, getPostBySlug, type BlogBlock } from '@/data/blog';
+import { photoSrcSet, thumb } from '@/lib/image';
 import { useBlogLang } from '@/hooks/useBlogLang';
 
 const WHATSAPP_URL =
@@ -118,7 +119,7 @@ const BlogPost = () => {
       <Navbar langSwitchHref={{ es: blogPath('es', post.slug), en: blogPath('en', post.slug) }} />
 
       <header className="relative pt-32 pb-14 md:pt-44 md:pb-20">
-        <img src={post.cover} alt="" className="absolute inset-0 w-full h-full object-cover" />
+        <img srcSet={photoSrcSet(post.cover)} sizes="100vw" src={post.cover} alt="" className="absolute inset-0 w-full h-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-b from-[#2D1B69]/85 via-[#2D1B69]/75 to-[#2D1B69]/95" />
         <div className="relative container mx-auto px-4 max-w-3xl">
           <Link to={blogPath(lang)} className="inline-flex items-center gap-1.5 text-sm text-white/70 hover:text-[#D4A843] transition-colors mb-6">
@@ -163,7 +164,7 @@ const BlogPost = () => {
             <div className="grid gap-6 sm:grid-cols-2">
               {others.map((p) => (
                 <Link key={p.slug} to={blogPath(lang, p.slug)} className="group flex gap-4 bg-white rounded-xl p-4 shadow-sm border border-[#2D1B69]/5 hover:shadow-md transition-shadow">
-                  <img src={p.cover} alt="" loading="lazy" className="w-24 h-24 rounded-lg object-cover shrink-0" />
+                  <img src={thumb(p.cover)} alt="" loading="lazy" className="w-24 h-24 rounded-lg object-cover shrink-0" />
                   <div>
                     <p className="font-serif text-[#2D1B69] leading-snug group-hover:text-[#D4A843] transition-colors">{p[lang].title}</p>
                     <p className="mt-1 text-xs text-gray-500">{p.readingMinutes} {t('blog.minRead')}</p>
