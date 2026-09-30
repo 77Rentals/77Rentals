@@ -205,16 +205,6 @@ const phases: Phase[] = [
         check: 'Aparece la insignia azul "Genius" en tu anuncio.',
       },
       {
-        title: 'Activar los pagos por Booking',
-        where: 'Finanzas → Pagos por Booking.com',
-        why: 'Booking cobra al huésped y te paga a ti. Acepta más medios de pago, así que ya no hace falta pedir tarjeta de crédito en el check-in, que hoy frena reservas.',
-        how: [
-          'Entra a Finanzas y mira si aparece la opción de Pagos por Booking.com. Si está, actívala.',
-          'Si no aparece para Colombia, quita el requisito de "tarjeta de crédito en el check-in" de las normas y acepta débito o transferencia.',
-        ],
-        check: 'En las normas del anuncio ya no dice que el huésped debe presentar tarjeta de crédito.',
-      },
-      {
         title: 'Confirmar el número de licencia (RNT)',
         where: 'Propiedad → Información general (licencia)',
         why: 'En Colombia el RNT es obligatorio y se renueva cada año antes del 31 de marzo. Booking lo muestra en el anuncio.',
@@ -481,7 +471,7 @@ export default function MuranoPlan() {
         <section className="bg-gradient-to-br from-[#2D1B69] to-[#4B0082] text-white rounded-2xl p-7 md:p-10">
           <h2 className="font-serif text-2xl md:text-3xl mb-3">8. Su guía de bienvenida</h2>
           <p className="text-white/80 leading-relaxed mb-6">
-            Vamos a hacer una guía de bienvenida en español e inglés para cada apartamento, que el huésped recibe antes de llegar (plantilla 2 del paso 14). Para armarla necesitamos unos datos suyos: son unos 15 minutos.
+            Vamos a hacer una guía de bienvenida en español e inglés para cada apartamento, que el huésped recibe antes de llegar (plantilla 2 del paso 13). Para armarla necesitamos unos datos suyos: son unos 15 minutos.
           </p>
           <a href="/murano-elite/guia" className="inline-flex items-center gap-2 bg-[#D4A843] hover:bg-[#c49a3a] text-[#2D1B69] font-semibold px-7 h-12 rounded-full transition-colors">
             Llenar el formulario <ArrowRight className="w-4 h-4" />
