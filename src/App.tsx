@@ -31,6 +31,8 @@ const OwnerSigningPage = lazy(() => import("./pages/OwnerSigningPage.tsx"));
 const ClientSigningPage = lazy(() => import("./pages/ClientSigningPage.tsx"));
 const PetitionSigningPage = lazy(() => import("./pages/PetitionSigningPage.tsx"));
 const PetitionRosterPage = lazy(() => import("./pages/PetitionRosterPage.tsx"));
+const MuranoPlan = lazy(() => import("./pages/MuranoPlan.tsx"));
+const MuranoGuiaForm = lazy(() => import("./pages/MuranoGuiaForm.tsx"));
 
 function RouteLoadingScreen() {
   return (
@@ -77,6 +79,8 @@ const App = () => (
             <Route path="/delventto" element={<Delventto />} />
             <Route path="/en/delventto" element={<Delventto />} />
             <Route path="/catalogo" element={<Catalog />} />
+            <Route path="/murano-elite/plan" element={<Suspense fallback={<RouteLoadingScreen />}><MuranoPlan /></Suspense>} />
+            <Route path="/murano-elite/guia" element={<Suspense fallback={<RouteLoadingScreen />}><MuranoGuiaForm /></Suspense>} />
             <Route path="/cotizacion" element={<Cotizacion />} />
             <Route path="/reserva-confirmada" element={<ReservaConfirmada />} />
             <Route path="/completar-datos" element={<CompletarDatos />} />
