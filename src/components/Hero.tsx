@@ -4,7 +4,8 @@ import { ChevronDown, Star, MapPin } from 'lucide-react';
 import { photoSrcSet } from '@/lib/image';
 import SpaceBackground from '@/components/SpaceBackground';
 
-const HERO_IMAGE = 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=1920&q=80&auto=format';
+// Old town balconies in Cartagena. Photo by Jimmy Hu on Unsplash (Unsplash License).
+const HERO_IMAGE = '/images/hero-cartagena.jpg';
 
 const Hero = () => {
   const { t } = useLanguage();
@@ -25,10 +26,10 @@ const Hero = () => {
           srcSet={photoSrcSet(HERO_IMAGE)}
           sizes="100vw"
           src={HERO_IMAGE}
-          alt="Luxury property in Colombia"
+          alt="Balcones coloniales con buganvilias en el centro histórico de Cartagena"
           className="w-full h-full object-cover object-center"
           width={1920}
-          height={1080}
+          height={1280}
         />
         {/* Multi-layer overlay for depth */}
         <div className="absolute inset-0 bg-gradient-to-r from-[#1a0e3d]/90 via-[#2D1B69]/60 to-transparent" />
