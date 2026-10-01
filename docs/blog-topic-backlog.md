@@ -61,7 +61,7 @@ a concrete example or workflow in each. Written by the `ai-consulting-writer` ag
 | # | Topic | Status |
 |---|-------|--------|
 | 1 | Atención al cliente por WhatsApp con IA: qué se puede automatizar y qué no | published 2026-09-28 |
-| 2 | Facturas, remisiones y PDFs: automatizar la entrada de datos en una pyme | todo |
+| 2 | Facturas, remisiones y PDFs: automatizar la entrada de datos en una pyme | published 2026-10-01 |
 | 3 | Habeas data y Ley 1581: qué revisar antes de meter datos de clientes en una IA | todo |
 | 4 | Cómo escribir un buen prompt de trabajo (plantillas para ventas, soporte y operaciones) | todo |
 | 5 | Claude Code / Cursor para un equipo pequeño de desarrollo: cómo empezar sin romper nada | todo |

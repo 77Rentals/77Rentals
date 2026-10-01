@@ -7,6 +7,175 @@ import type { BlogPost } from './blog';
 
 export const aiBlogPosts: BlogPost[] = [
   {
+    slug: 'extraer-datos-facturas-ia',
+    date: '2026-10-01',
+    readingMinutes: 7,
+    cover: '/images/bogota.jpg',
+    es: {
+      title: 'Facturas y remisiones a Excel con IA: guía para pymes',
+      metaDescription:
+        'Cómo dejar de digitar facturas, remisiones y PDFs a mano: qué lee bien la IA, por qué el XML de la DIAN va primero y cómo empezar con tu equipo esta semana.',
+      excerpt:
+        'Tu equipo abre cada factura y cada remisión y copia los datos a Excel a mano. Qué parte resuelve el XML de la DIAN, qué parte la IA y qué debe revisar siempre una persona.',
+      tags: ['IA para pymes', 'Automatización de documentos', 'Negocio'],
+      body: [
+        { type: 'h2', text: '¿Tu equipo pasa facturas y remisiones a Excel a mano?' },
+        { type: 'p', text: 'Es martes y se acerca el cierre de mes. La auxiliar contable tiene el correo lleno de archivos comprimidos de proveedores, una carpeta con fotos de remisiones que el de bodega mandó por WhatsApp y un Excel abierto. Abre cada PDF y copia el NIT, el número de factura, la fecha, el subtotal, el IVA y el total. Después busca la remisión para confirmar que llegó lo que le están cobrando.' },
+        { type: 'p', text: 'Son unos minutos por documento, a veces más. Un cero de más o un NIT con un dígito cambiado no se nota hasta el cierre, cuando la cuenta no cuadra y toca revisar todo otra vez.' },
+        { type: 'p', text: 'Si te suena, no es un problema de disciplina. Es un proceso que se armó cuando los documentos llegaban en papel y que nadie volvió a pensar.' },
+
+        { type: 'h2', text: '¿Por qué se sigue digitando si ya existe la factura electrónica?' },
+        { type: 'p', text: 'Cuando tu proveedor es facturador electrónico, la factura no es el PDF. Según el anexo técnico de la DIAN adoptado con la Resolución 000165 de 2023, la factura es un archivo XML firmado digitalmente. El PDF es su representación gráfica, y la información que aparece en ese PDF tiene que estar contenida en el XML.' },
+        { type: 'p', text: 'Dicho de otra forma: buena parte de los datos que tu equipo digita ya llegan estructurados en el mismo correo. Se pierden por otras razones:' },
+        { type: 'ul', items: [
+          '**Se trabaja sobre el archivo equivocado.** El correo trae el XML y el PDF, y el equipo usa el PDF porque es el que se puede leer.',
+          '**No todo es factura electrónica.** Las remisiones, las cuentas de cobro de personas que no facturan y los soportes de caja menor llegan en papel, foto o PDF escaneado, cada uno con su propio formato.',
+          '**Los documentos entran por todos lados:** correo, WhatsApp, el portal del proveedor o la mano del mensajero.',
+          '**Nadie escribió las reglas.** Qué dato va en qué columna, cómo se clasifica cada gasto, qué se hace si la remisión no coincide. Cada persona lo resuelve a su manera.',
+        ] },
+        { type: 'p', text: 'La IA ayuda con el segundo punto. Para el primero no necesitas IA: necesitas leer el XML que ya tienes.' },
+
+        { type: 'h2', text: '¿Qué puede extraer la IA de una factura en PDF o una foto?' },
+        { type: 'p', text: 'A octubre de 2026 hay dos tipos de herramienta para leer documentos que no vienen estructurados:' },
+        { type: 'ul', items: [
+          '**Modelos generales con visión**, como Claude, ChatGPT o Gemini. Leen el PDF o la foto y te devuelven los campos que les pidas. Claude, por ejemplo, procesa cada página de un PDF como texto y como imagen, así que también entiende tablas y documentos escaneados.',
+          '**Servicios especializados en documentos**, como el Invoice Parser de Google Document AI o el modelo de facturas de Azure Document Intelligence. Vienen entrenados para facturas y aceptan documentos en español. El de Google, además, devuelve un nivel de confianza por cada campo.',
+        ] },
+        { type: 'p', text: 'Con cualquiera de los dos, la clave es pedir una **salida estructurada**: tú defines las columnas (NIT, número, fecha, subtotal, IVA, total, número de remisión) y la herramienta llena exactamente esas, siempre en el mismo formato, listas para tu Excel o para importar al software contable.' },
+        { type: 'p', text: 'Funciona bien con encabezados, totales y tablas de productos limpias en documentos digitales. Falla más con:' },
+        { type: 'ul', items: [
+          'Remisiones escritas a mano o con tachones.',
+          'Fotos movidas, oscuras o tomadas en ángulo.',
+          'Tablas que continúan en la página siguiente.',
+          'Números con formatos distintos: un proveedor escribe 1.250.000 y otro 1,250,000.',
+          'Sellos o firmas encima de los datos.',
+        ] },
+        { type: 'tip', title: 'Primero el XML, después la IA', text: 'Si el documento es una factura electrónica, no le pidas a un modelo que lea el PDF. Toma los datos del XML, que es el documento válido y no tiene errores de lectura. Deja la IA para lo que no viene estructurado: remisiones, cuentas de cobro y soportes en papel.' },
+
+        { type: 'h2', text: '¿Cómo empezar a automatizar la entrada de datos esta semana?' },
+        { type: 'p', text: 'Los primeros pasos no requieren comprar nada:' },
+        { type: 'ul', items: [
+          '**Día 1: cuenta los documentos.** Anota cuántos llegan por tipo (factura electrónica, remisión, cuenta de cobro, otros), por qué canal y cuánto tarda cada uno en quedar en el Excel. Si puedes, sigue midiendo toda la semana.',
+          '**Día 2: define la plantilla de salida.** Las columnas exactas que necesitas y su formato: fechas en un solo formato, valores sin signos, el NIT con o sin dígito de verificación, pero siempre igual.',
+          '**Día 3: separa el camino de las facturas electrónicas.** Pregunta si tu software contable o tu proveedor de facturación ya importa los XML recibidos. El portal "Facturando electrónicamente" de la DIAN también permite descargar listados de los documentos recibidos en un rango de fechas, útil para conciliar.',
+          '**Día 4: prueba la IA con 30 documentos reales.** Escoge remisiones y soportes de varios proveedores, incluidos los más feos. Pásalos por la herramienta con tu plantilla y compara el resultado contra lo que digitó tu equipo.',
+          '**Día 5: escribe las reglas de validación.** Subtotal más IVA igual al total, NIT que exista en tu lista de proveedores, número de factura que no esté repetido y cantidades de la remisión que coincidan con las de la factura.',
+        ] },
+        { type: 'p', text: 'Al final de la semana sabes qué tan grande es el problema, qué parte resuelve el XML y qué parte necesita IA. Para conectar las piezas puedes usar herramientas sin código como n8n, Make o Zapier junto con la API de un modelo, o el módulo de recepción de documentos de tu software contable si ya lo trae. La elección depende del volumen, de tus sistemas y de los datos que va a tocar.' },
+        { type: 'tip', title: 'Mide por campo, no por documento', text: '"Acertó en 28 de 30 documentos" dice poco. Cuenta los errores por campo: si siempre falla en el número de remisión o en el IVA, sabes exactamente qué ajustar o qué dejar en revisión manual.' },
+
+        { type: 'h2', text: '¿Cómo se cruza esto con los plazos de la factura electrónica?' },
+        { type: 'p', text: 'Aquí la automatización deja de ser solo ahorro de tiempo. En las facturas electrónicas a crédito, el comprador registra eventos ante la DIAN: acuse de recibo, recibo del bien o servicio y aceptación. Y según el artículo 773 del Código de Comercio, si no reclamas dentro de los tres días hábiles siguientes a recibir la mercancía o el servicio, la factura queda aceptada tácitamente.' },
+        { type: 'p', text: 'Si la comparación entre remisión y factura se hace a fin de mes, ese plazo ya pasó. Un flujo que cruza los dos documentos el mismo día que llegan te avisa a tiempo cuando te cobraron 100 unidades y la remisión dice 90. La IA señala la diferencia; la decisión de reclamar la toma una persona.' },
+        { type: 'p', text: 'Algo parecido pasa con las compras a personas que no están obligadas a facturar: ahí eres tú quien genera el documento soporte electrónico, según la Resolución 000167 de 2021 de la DIAN. La IA puede preparar los datos a partir de la cuenta de cobro, pero alguien los revisa antes de transmitir.' },
+        { type: 'p', text: 'Esto es información general, no asesoría tributaria ni legal. Antes de cambiar cómo recibes y aceptas facturas, revísalo con tu contador.' },
+
+        { type: 'h2', text: '¿Qué riesgos tiene y qué no debería hacer la IA?' },
+        { type: 'ul', items: [
+          '**Leer mal un número.** Un modelo puede confundir un 7 con un 1 en una foto borrosa. La salida estructurada garantiza el formato, no que el valor sea correcto. Para eso están las reglas del día 5: lo que no pase la validación va a revisión.',
+          '**Decidir por ti.** La IA extrae y propone. No aprueba pagos, no acepta ni rechaza facturas y no define el tratamiento tributario de un gasto.',
+          '**Mandar datos a donde no deben.** Las facturas y cuentas de cobro de personas naturales traen nombre, cédula y a veces cuenta bancaria: son datos personales bajo la Ley 1581 de 2012. Usa cuentas empresariales o una API con condiciones claras sobre el uso de tus datos, nunca un chat gratuito.',
+          '**Costos que crecen con el volumen.** Estas herramientas cobran por página o por cantidad de contenido procesado, y las tarifas cambian seguido. Calcula con tu volumen real del día 1 y revisa el precio vigente del proveedor.',
+          '**Botar el original.** El Excel no reemplaza el soporte. Guarda los XML, los PDF y las fotos de las remisiones.',
+        ] },
+        { type: 'p', text: 'Durante el primer mes, revisa todo lo que extrae la herramienta. Cuando tengas claro dónde se equivoca, deja la revisión solo para los documentos que no pasan la validación o que salen con baja confianza.' },
+
+        { type: 'h2', text: '¿Vale la pena para tu empresa?' },
+        { type: 'p', text: 'Si recibes pocos documentos a la semana, quizá basta con importar los XML y ordenar la carpeta. Si son cientos al mes, de muchos proveedores y con remisiones en papel, la combinación de XML, IA y reglas de validación libera horas y te muestra a tiempo errores que hoy encuentras tarde.' },
+        { type: 'p', text: 'Es la misma lógica que usamos en 77Rentals con los contratos: primero datos estructurados y reglas claras, después la automatización. La IA hace la parte repetitiva y una persona revisa lo que importa.' },
+        { type: 'cta' },
+      ],
+    },
+    en: {
+      title: 'Invoice data extraction with AI for small businesses',
+      metaDescription:
+        'How to stop typing invoices, delivery notes and PDFs by hand: what AI reads well, why the DIAN XML comes first and how your team can start this week.',
+      excerpt:
+        'Your team opens every invoice and delivery note and types the data into Excel by hand. What the DIAN XML already solves, what AI can handle and what a person must always check.',
+      tags: ['AI for SMBs', 'Document automation', 'Business'],
+      body: [
+        { type: 'h2', text: 'Is your team typing invoices and delivery notes into Excel by hand?' },
+        { type: 'p', text: 'It is Tuesday and month-end close is coming. Your accounting assistant has an inbox full of zipped files from suppliers, a folder of delivery-note (remisión) photos the warehouse sent over WhatsApp, and an open spreadsheet. She opens each PDF and copies the tax ID (NIT), invoice number, date, subtotal, VAT and total. Then she looks for the delivery note to confirm that what arrived matches what was billed.' },
+        { type: 'p', text: 'That is a few minutes per document, sometimes more. An extra zero or a NIT with one wrong digit goes unnoticed until the close, when the numbers do not add up and everything has to be checked again.' },
+        { type: 'p', text: 'If this sounds familiar, it is not a discipline problem. It is a process designed when documents arrived on paper, and nobody has rethought it since.' },
+
+        { type: 'h2', text: 'Why is data still typed by hand if Colombia already has e-invoicing?' },
+        { type: 'p', text: 'When your supplier issues electronic invoices, the invoice is not the PDF. Under the DIAN technical annex adopted by Resolution 000165 of 2023, the invoice is a digitally signed XML file. The PDF is its graphic representation, and the information shown in that PDF must be contained in the XML.' },
+        { type: 'p', text: 'In other words, much of the data your team types already arrives structured in the same email. It gets lost for other reasons:' },
+        { type: 'ul', items: [
+          '**People work from the wrong file.** The email carries both the XML and the PDF, and the team uses the PDF because it is the one they can read.',
+          '**Not everything is an e-invoice.** Delivery notes, bills from individuals who are not required to invoice, and petty-cash receipts arrive on paper, as photos or as scanned PDFs, each in its own format.',
+          '**Documents come in through every channel:** email, WhatsApp, the supplier\'s portal or the courier\'s hand.',
+          '**Nobody wrote down the rules.** Which field goes in which column, how each expense is classified, what to do when the delivery note does not match. Everyone handles it their own way.',
+        ] },
+        { type: 'p', text: 'AI helps with the second point. For the first one you do not need AI: you need to read the XML you already have.' },
+
+        { type: 'h2', text: 'What can AI extract from a PDF invoice or a photo?' },
+        { type: 'p', text: 'As of October 2026 there are two kinds of tools for reading documents that do not arrive structured:' },
+        { type: 'ul', items: [
+          '**General models with vision**, such as Claude, ChatGPT or Gemini. They read the PDF or photo and return the fields you ask for. Claude, for example, processes each PDF page as both text and image, so it also handles tables and scanned documents.',
+          '**Specialized document services**, such as the Invoice Parser in Google Document AI or the invoice model in Azure Document Intelligence. They are trained for invoices and support Spanish documents. Google\'s also returns a confidence score for each field.',
+        ] },
+        { type: 'p', text: 'With either one, the key is to ask for **structured output**: you define the columns (NIT, number, date, subtotal, VAT, total, delivery-note number) and the tool fills exactly those, always in the same format, ready for your spreadsheet or for import into your accounting software.' },
+        { type: 'p', text: 'It works well on headers, totals and clean product tables in digital documents. It struggles more with:' },
+        { type: 'ul', items: [
+          'Handwritten delivery notes or notes with crossed-out values.',
+          'Blurry, dark or angled photos.',
+          'Tables that continue onto the next page.',
+          'Different number formats: one supplier writes 1.250.000 and another 1,250,000.',
+          'Stamps or signatures on top of the data.',
+        ] },
+        { type: 'tip', title: 'XML first, AI second', text: 'If the document is an electronic invoice, do not ask a model to read the PDF. Take the data from the XML, which is the valid document and has no reading errors. Save AI for what is not structured: delivery notes, bills from individuals and paper receipts.' },
+
+        { type: 'h2', text: 'How can you start automating data entry this week?' },
+        { type: 'p', text: 'The first steps do not require buying anything:' },
+        { type: 'ul', items: [
+          '**Day 1: count the documents.** Log how many arrive by type (e-invoice, delivery note, bill from an individual, other), through which channel, and how long each one takes to land in the spreadsheet. If you can, keep logging for the whole week.',
+          '**Day 2: define the output template.** The exact columns you need and their format: dates in a single format, amounts without symbols, the NIT with or without its check digit, but always the same way.',
+          '**Day 3: split off the e-invoice path.** Ask whether your accounting software or e-invoicing provider already imports received XML files. DIAN\'s "Facturando electrónicamente" portal also lets you download lists of documents received within a date range, which helps with reconciliation.',
+          '**Day 4: test AI on 30 real documents.** Pick delivery notes and receipts from several suppliers, including the messiest ones. Run them through the tool with your template and compare the output with what your team typed.',
+          '**Day 5: write the validation rules.** Subtotal plus VAT equals the total, the NIT exists in your supplier list, the invoice number is not a duplicate, and the delivery-note quantities match the invoice.',
+        ] },
+        { type: 'p', text: 'By the end of the week you know how big the problem is, what the XML solves and what needs AI. To connect the pieces you can use no-code tools such as n8n, Make or Zapier together with a model\'s API, or the document-intake module in your accounting software if it has one. The right choice depends on volume, your systems and which data it will touch.' },
+        { type: 'tip', title: 'Measure by field, not by document', text: '"It got 28 out of 30 documents right" tells you little. Count errors per field: if it always misses the delivery-note number or the VAT, you know exactly what to adjust or keep under manual review.' },
+
+        { type: 'h2', text: 'How does this fit with Colombian e-invoicing deadlines?' },
+        { type: 'p', text: 'This is where automation stops being only about saving time. For electronic invoices on credit, the buyer registers events with DIAN: acknowledgment of receipt, receipt of the goods or service, and acceptance. Under Article 773 of the Colombian Commercial Code, if you do not dispute the invoice within three business days after receiving the goods or service, it is tacitly accepted.' },
+        { type: 'p', text: 'If delivery notes and invoices are compared at month-end, that window has already closed. A flow that matches both documents the day they arrive warns you in time when you were billed for 100 units and the delivery note says 90. AI flags the difference; a person decides whether to dispute it.' },
+        { type: 'p', text: 'Something similar applies to purchases from individuals who are not required to invoice: there, you are the one who issues the electronic support document (documento soporte), under DIAN Resolution 000167 of 2021. AI can prepare the data from the individual\'s bill, but someone checks it before it is transmitted.' },
+        { type: 'p', text: 'This is general information, not tax or legal advice. Before changing how you receive and accept invoices, review it with your accountant.' },
+
+        { type: 'h2', text: 'What are the risks, and what should AI not do?' },
+        { type: 'ul', items: [
+          '**Misreading a number.** A model can mistake a 7 for a 1 in a blurry photo. Structured output guarantees the format, not that the value is correct. That is what the day-5 rules are for: anything that fails validation goes to review.',
+          '**Deciding for you.** AI extracts and proposes. It does not approve payments, accept or reject invoices, or decide the tax treatment of an expense.',
+          '**Sending data where it should not go.** Invoices and bills from individuals include names, ID numbers and sometimes bank accounts: that is personal data under Colombia\'s Law 1581 of 2012. Use business accounts or an API with clear terms on how your data is used, never a free chat.',
+          '**Costs that grow with volume.** These tools charge per page or by the amount of content processed, and rates change often. Estimate with your real volume from day 1 and check the provider\'s current pricing.',
+          '**Throwing away the original.** The spreadsheet does not replace the source document. Keep the XML files, the PDFs and the delivery-note photos.',
+        ] },
+        { type: 'p', text: 'During the first month, review everything the tool extracts. Once you know where it gets things wrong, limit review to documents that fail validation or come back with low confidence.' },
+
+        { type: 'h2', text: 'Is it worth it for your company?' },
+        { type: 'p', text: 'If you receive only a few documents a week, importing the XML files and organizing the folder may be enough. If you get hundreds a month from many suppliers, with paper delivery notes, combining XML, AI and validation rules frees up hours and shows you in time the errors you now find too late.' },
+        { type: 'p', text: 'It is the same logic we use at 77Rentals for contracts: structured data and clear rules first, automation second. AI does the repetitive part and a person reviews what matters.' },
+        { type: 'cta' },
+      ],
+    },
+    sources: [
+      { title: 'DIAN: Anexo técnico de la factura electrónica de venta v1.9 (Resolución 000165 de 2023)', url: 'https://www.dian.gov.co/impuestos/factura-electronica/Documents/Anexo-Tecnico-Factura-Electronica-de-Venta-vr-1-9.pdf' },
+      { title: 'DIAN: Documento soporte con sujetos no obligados a expedir factura', url: 'https://www.dian.gov.co/impuestos/Paginas/Sistema-de-Factura-Electronica/Documento-Soporte-Adquisiciones-No-Obligados.aspx' },
+      { title: 'DIAN: Resolución 000167 de 2021 (documento soporte)', url: 'https://www.dian.gov.co/normatividad/Normatividad/Resoluci%C3%B3n%20000167%20de%2030-12-2021.pdf' },
+      { title: 'Código de Comercio, artículo 773: aceptación de la factura', url: 'https://leyes.co/codigo_de_comercio/773.htm' },
+      { title: 'Gerencie: aceptación y rechazo de la factura electrónica', url: 'https://www.gerencie.com/aceptacion-y-rechazo-de-la-factura-electronica.html' },
+      { title: 'Alegra: cómo descargar listados de documentos en la DIAN', url: 'https://ayuda.alegra.com/col/descargar-listados-en-la-dian' },
+      { title: 'Anthropic: PDF support (Claude)', url: 'https://platform.claude.com/docs/en/build-with-claude/pdf-support' },
+      { title: 'Anthropic: Structured outputs (Claude)', url: 'https://platform.claude.com/docs/en/build-with-claude/structured-outputs' },
+      { title: 'Google Cloud: Document AI processor list (Invoice Parser)', url: 'https://docs.cloud.google.com/document-ai/docs/processors-list' },
+      { title: 'Microsoft: Document Intelligence language support for prebuilt models', url: 'https://learn.microsoft.com/en-us/azure/ai-services/document-intelligence/language-support/prebuilt?view=doc-intel-4.0.0' },
+      { title: 'Función Pública: Ley 1581 de 2012', url: 'https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=49981' },
+    ],
+  },
+  {
     slug: 'agente-whatsapp-ia-atencion-cliente',
     date: '2026-09-28',
     readingMinutes: 7,
