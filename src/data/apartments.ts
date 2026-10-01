@@ -558,9 +558,15 @@ export const apartments: Apartment[] = [
     hostName: '77Rentals',
     hostBio: 'Somos una empresa familiar especializada en rentas cortas. Somos pet friendly, porque entendemos que las mascotas también son parte de la familia. Nos apasionan los carros, el buceo y viajar. ¡Será un placer recibirte!',
     images: [
-      '/images/perla-suite/placeholder.jpg',
+      '/images/perla-suite/1.jpg',
+      '/images/perla-suite/2.jpg',
+      '/images/perla-suite/3.jpg',
+      '/images/perla-suite/4.jpg',
+      '/images/perla-suite/5.jpg',
+      '/images/perla-suite/6.jpg',
+      '/images/perla-suite/7.jpg',
+      '/images/perla-suite/8.jpg',
     ],
-    showMorePhotosComingSoon: true,
     amenities: ['oceanView', 'beach', 'wifi', 'kitchen', 'balcony', 'ac', 'parking', 'streaming', 'pets'],
     amenitiesDetail: {
       kitchen: ['Mesa de comedor', 'Cafetera', 'Tostadora', 'Cocina', 'Utensilios de cocina', 'Lavavajillas', 'Microondas', 'Nevera'],
@@ -693,6 +699,80 @@ export const apartments: Apartment[] = [
 
   // ─────────────────────────────────────────
   // 7. Coming Soon - Full Portfolio Available
+  // ─────────────────────────────────────────
+  // Apartasuite Vista a la Sierra — Edificio Delventto
+  // ─────────────────────────────────────────
+  {
+    id: 'apartasuite-sierra',
+    slug: 'apartasuite-sierra',
+    name: 'Apartasuite Vista a la Sierra',
+    nameEn: 'Sierra View Suite',
+    buildingName: 'Edificio Delventto',
+    city: 'Santa Marta',
+    cityEn: 'Santa Marta',
+    neighborhood: 'Pozos Colorados',
+    neighborhoodEn: 'Pozos Colorados',
+    description: 'Apartasuite en Delventto con balcón y vista a la Sierra Nevada, a 200 metros de la playa. Cama queen, sofá cama, cocina equipada y escritorio con WiFi rápido.',
+    descriptionEn: 'Suite at Delventto with a balcony facing the Sierra Nevada, 200 meters from the beach. Queen bed, sofa bed, equipped kitchen and a desk with fast WiFi.',
+    descriptionLong: 'Desde el balcón de tu apartasuite, las montañas de la Sierra Nevada se asoman entre el cielo y el mar, y a solo 200 metros tienes la playa esperándote con su brisa caribeña. Tiene cama queen, sofá cama doble, aire acondicionado, cocina equipada con zona de café y escritorio con WiFi rápido. Está en el sector de Cabo Tortuga, Pozos Colorados, a unos 10 minutos del aeropuerto, en un ambiente familiar y tranquilo con vigilancia 24/7.',
+    guests: 4,
+    rooms: 1,
+    bathrooms: 1,
+    priceFrom: 0,
+    reviewCount: 0,
+    views: ['Vista a la montaña', 'Balcón'],
+    bedConfiguration: '1 cama queen + 1 sofá cama doble',
+    isNewListing: true,
+    images: [
+      '/images/apartasuite-sierra/1.jpg',
+      '/images/apartasuite-sierra/2.jpg',
+      '/images/apartasuite-sierra/3.jpg',
+      '/images/apartasuite-sierra/4.jpg',
+      '/images/apartasuite-sierra/5.jpg',
+      '/images/apartasuite-sierra/6.jpg',
+      '/images/apartasuite-sierra/7.jpg',
+      '/images/apartasuite-sierra/8.jpg',
+      '/images/apartasuite-sierra/9.jpg',
+      '/images/apartasuite-sierra/10.jpg',
+      '/images/apartasuite-sierra/11.jpg',
+      '/images/apartasuite-sierra/12.jpg',
+      '/images/apartasuite-sierra/13.jpg',
+      '/images/apartasuite-sierra/14.jpg',
+      '/images/apartasuite-sierra/15.jpg',
+    ],
+    amenities: ['beach', 'pool', 'gym', 'wifi', 'kitchen', 'balcony', 'ac', 'parking', 'security'],
+    amenitiesDetail: {
+      kitchen: ['Cocina equipada', 'Nevera', 'Estufa', 'Cafetera de filtro', 'Prensa francesa', 'Zona de café'],
+      bathroom: ['Baño privado', 'Ducha', 'Toallas'],
+      bedroom: ['Cama queen', 'Sofá cama doble', 'Ropa de cama'],
+      tech: ['WiFi rápido', 'TV', 'Escritorio'],
+      outdoors: ['Balcón con vista a la montaña', 'Piscina infinita en la azotea', 'Piscina principal', 'Jacuzzi', 'Zona BBQ'],
+      services: ['Recepción y vigilancia 24/7', 'Gimnasio', 'Sauna', 'Cancha de squash', 'Parqueadero'],
+      other: ['Aire acondicionado', 'Ascensor', 'No fumar'],
+    },
+    houseRules: {
+      checkIn: '15:00',
+      checkOut: '11:00',
+      pets: 'No se admiten',
+      smoking: 'No permitido',
+      parties: 'No permitidas',
+      children: 'Todas las edades bienvenidas',
+      specialNote: 'Horario de silencio de 11:00 p.m. a 8:00 a.m. Sin visitantes no registrados. El uso de las amenidades del edificio requiere manilla ($25.000 COP por persona, por estadía).',
+    },
+    locationDetail: {
+      address: 'Carrera 4C #70-75, Pozos Colorados, Santa Marta',
+      neighborhood: 'Pozos Colorados',
+      city: 'Santa Marta',
+      distanceToCenter: 'Centro Histórico a unos 15–20 min en carro',
+      distanceToAirport: 'Aeropuerto Simón Bolívar a unos 10 min',
+      beaches: [
+        { name: 'Playa Cabo Tortuga', distance: '200 m' },
+        { name: 'Playa del Ritmo', distance: '4 min a pie' },
+        { name: 'El Rodadero', distance: '10 min en carro' },
+      ],
+    },
+    reviews: [],
+  },
   // ─────────────────────────────────────────
   // Murano Elite · Balcón al Atardecer — Murano Elite, Bocagrande
   // ─────────────────────────────────────────

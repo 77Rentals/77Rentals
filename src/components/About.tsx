@@ -21,15 +21,16 @@ const About = () => {
           </div>
           <div className="relative">
             <img
-              src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=600"
-              alt="77 Rentals Experience"
+              src="/images/about-tayrona-800.webp"
+              alt="Playa con palmeras en el Parque Tayrona, cerca de Santa Marta"
               className="rounded-xl shadow-2xl w-full object-cover h-80 md:h-96"
               loading="lazy"
-              width={600}
-              height={400}
+              width={800}
+              height={533}
             />
-            <div className="absolute -bottom-4 -left-4 w-24 h-24 rounded-xl overflow-hidden shadow-lg">
-              <img src={logo} alt="77 Rentals" className="w-full h-full object-cover" loading="lazy" width={96} height={96} />
+            {/* Logo badge at the logo's own proportions (661×475), so nothing is cropped */}
+            <div className="absolute bottom-3 left-3 md:-bottom-5 md:-left-5 w-28 md:w-36 rounded-xl overflow-hidden border-4 border-white shadow-lg bg-[#3B2055]">
+              <img src={logo} alt="77 Rentals" className="block w-full h-auto" loading="lazy" width={661} height={475} />
             </div>
           </div>
         </div>
