@@ -25,7 +25,7 @@ export const translations = {
 
     // Hero
     'hero.title': 'Vive tu experiencia de alojamiento con 77Rentals',
-    'hero.subtitle': 'Propiedades exclusivas en Cartagena, Santa Marta y Bogotá. Vistas al mar, diseño premium y atención personalizada.',
+    'hero.subtitle': 'Viajar es abrir la ventana y encontrar una vista que todavía no conoces. Es el primer café frente al mar, la caminata sin plan y la ciudad que te sorprende. Tú pones las ganas; nosotros, la casa.',
     'hero.cta': 'Ver Propiedades',
 
     // Reservation
@@ -149,7 +149,7 @@ export const translations = {
 
     // Hero
     'hero.title': 'Luxury Stays in Colombia',
-    'hero.subtitle': 'Exclusive properties in Cartagena, Santa Marta and Bogotá. Ocean views, premium design and personalized service.',
+    'hero.subtitle': "Travel is opening the window to a view you don't know yet. The first coffee by the sea, the walk with no plan, the city that surprises you. You bring the curiosity; we'll have the home ready.",
     'hero.cta': 'Explore Properties',
 
     // Reservation

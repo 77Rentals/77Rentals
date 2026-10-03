@@ -53,7 +53,7 @@ const Hero = () => {
           </h1>
 
           {/* Subtitle */}
-          <p className="text-white/70 text-base md:text-lg leading-relaxed mb-10 max-w-lg">
+          <p className="text-white/70 text-base md:text-lg leading-relaxed mb-10 max-w-xl">
             {t('hero.subtitle')}
           </p>
 
