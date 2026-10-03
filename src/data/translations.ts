@@ -42,10 +42,10 @@ export const translations = {
     'reservation.selectGuests': 'Número de huéspedes',
 
     // About
-    'about.title': 'Experiencia 77 Rentals',
+    'about.title': '¿Por qué 77Rentals?',
     'about.subtitle': 'Tu Hogar Lejos de Casa',
-    'about.text1': 'En 77 Rentals nos especializamos en ofrecer apartamentos de lujo completamente equipados en las ciudades más vibrantes de Colombia. Cada propiedad ha sido cuidadosamente seleccionada para garantizar la mejor experiencia.',
-    'about.text2': 'Desde vistas al mar hasta ubicaciones privilegiadas en el corazón de la ciudad, nuestros apartamentos combinan comodidad, estilo y un servicio personalizado que supera expectativas.',
+    'about.text1': 'El 7 es el número de la suerte, y nosotros lo tenemos doble: la suerte de tenerte como huésped y la suerte de encontrarnos. Por eso nuestro nombre lleva dos sietes.',
+    'about.text2': 'Cada apartamento lo escogemos y lo cuidamos como si fuera para nuestra propia familia, y te acompañamos por WhatsApp desde que reservas hasta que te despides de la ciudad. Queremos que te vayas con ganas de volver, y que esa suerte se repita.',
 
     // Apartments
     'apartments.title': 'Nuestros Apartamentos',
@@ -166,10 +166,10 @@ export const translations = {
     'reservation.selectGuests': 'Number of guests',
 
     // About
-    'about.title': '77 Rentals Experience',
+    'about.title': 'Why 77Rentals?',
     'about.subtitle': 'Your Home Away From Home',
-    'about.text1': 'At 77 Rentals we specialize in offering fully equipped luxury apartments in Colombia\'s most vibrant cities. Each property has been carefully selected to guarantee the best experience.',
-    'about.text2': 'From ocean views to prime locations in the heart of the city, our apartments combine comfort, style, and personalized service that exceeds expectations.',
+    'about.text1': "Seven is the lucky number, and we have it twice: the luck of having you as our guest, and the luck of finding each other. That's why our name carries two sevens.",
+    'about.text2': "We choose and look after every apartment as if it were for our own family, and we're with you on WhatsApp from the moment you book until you say goodbye to the city. We want you to leave already planning your return, so the luck happens again.",
 
     // Apartments
     'apartments.title': 'Our Apartments',
